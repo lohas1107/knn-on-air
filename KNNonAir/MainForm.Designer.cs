@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.gmap = new GMap.NET.WindowsForms.GMapControl();
+            this.gmapStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.gmapToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.gmapStatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // gmap
@@ -58,22 +61,43 @@
             this.gmap.Size = new System.Drawing.Size(784, 534);
             this.gmap.TabIndex = 0;
             this.gmap.Zoom = 7D;
+            this.gmap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseMove);
+            // 
+            // gmapStatusStrip
+            // 
+            this.gmapStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gmapToolStripStatusLabel});
+            this.gmapStatusStrip.Location = new System.Drawing.Point(0, 539);
+            this.gmapStatusStrip.Name = "gmapStatusStrip";
+            this.gmapStatusStrip.Size = new System.Drawing.Size(784, 22);
+            this.gmapStatusStrip.TabIndex = 1;
+            // 
+            // gmapToolStripStatusLabel
+            // 
+            this.gmapToolStripStatusLabel.Name = "gmapToolStripStatusLabel";
+            this.gmapToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.gmapStatusStrip);
             this.Controls.Add(this.gmap);
             this.Name = "MainForm";
             this.Text = "kNN Search";
+            this.gmapStatusStrip.ResumeLayout(false);
+            this.gmapStatusStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private GMap.NET.WindowsForms.GMapControl gmap;
+        private System.Windows.Forms.StatusStrip gmapStatusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel gmapToolStripStatusLabel;
     }
 }
 

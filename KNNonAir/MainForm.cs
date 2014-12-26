@@ -31,5 +31,10 @@ namespace KNNonAir
             gmap.Position = center;
             gmap.Zoom = zoom;
         }
+
+        private void gmap_MouseMove(object sender, MouseEventArgs e)
+        {
+            gmapToolStripStatusLabel.Text = gmap.FromLocalToLatLng(e.X, e.Y).ToString();
+        }
     }
 }
