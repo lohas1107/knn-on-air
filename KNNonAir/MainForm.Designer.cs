@@ -132,6 +132,7 @@
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
             this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
+            this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.addRoadsToolStripMenuItem_Click);
             // 
             // MainForm
             // 

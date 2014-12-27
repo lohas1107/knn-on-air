@@ -5,6 +5,8 @@ namespace KNNonAir
 {
     public partial class MainForm : Form
     {
+        private RoadNetwork _roadNetwork;
+
         public MainForm()
         {
             InitializeComponent();
@@ -30,6 +32,11 @@ namespace KNNonAir
         private void gmap_MouseLeave(object sender, System.EventArgs e)
         {
             gmapToolStripStatusLabel.Text = string.Empty;
+        }
+
+        private void addRoadsToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            _roadNetwork = new RoadNetwork() { Graph = FileIO.ReadRoadFile() };
         }
     }
 }
