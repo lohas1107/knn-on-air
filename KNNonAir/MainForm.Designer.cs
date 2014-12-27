@@ -61,6 +61,7 @@
             this.gmap.Size = new System.Drawing.Size(784, 534);
             this.gmap.TabIndex = 0;
             this.gmap.Zoom = 7D;
+            this.gmap.MouseLeave += new System.EventHandler(this.gmap_MouseLeave);
             this.gmap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseMove);
             // 
             // gmapStatusStrip

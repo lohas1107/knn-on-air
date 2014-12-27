@@ -26,5 +26,10 @@ namespace KNNonAir
         {
             gmapToolStripStatusLabel.Text = gmap.FromLocalToLatLng(e.X, e.Y).ToString();
         }
+
+        private void gmap_MouseLeave(object sender, System.EventArgs e)
+        {
+            gmapToolStripStatusLabel.Text = string.Empty;
+        }
     }
 }
