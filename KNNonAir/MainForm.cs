@@ -1,5 +1,8 @@
-﻿using System.Windows.Forms;
-using GMap.NET;
+﻿using GMap.NET;
+using GMap.NET.WindowsForms;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace KNNonAir
 {
@@ -37,6 +40,25 @@ namespace KNNonAir
         private void addRoadsToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
             _roadNetwork = new RoadNetwork() { Graph = FileIO.ReadRoadFile() };
+            DrawRoad();
+        }
+
+        private void DrawRoad()
+        {
+            gmap.Overlays.Clear();
+
+            GMapOverlay routesOverlay = new GMapOverlay("routes");
+            List<MapRoute> mapRouteList = _roadNetwork.getMapRouteList();
+
+            foreach (MapRoute mapRoute in mapRouteList)
+            {
+                GMapRoute route = new GMapRoute(mapRoute.Points, "");
+                route.Stroke.Width = 10;
+                route.Stroke.Color = Color.SeaGreen;
+                routesOverlay.Routes.Add(route);
+            }
+
+            gmap.Overlays.Add(routesOverlay);
         }
     }
 }
