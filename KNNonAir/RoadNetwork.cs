@@ -9,6 +9,11 @@ namespace KNNonAir
     {
         public AdjacencyGraph<Point, Edge<Point>> Graph { get; set; }
 
+        public RoadNetwork()
+        {
+            Graph = new AdjacencyGraph<Point, Edge<Point>>(false);
+        }
+
         public List<MapRoute> getMapRouteList()
         {
             List<MapRoute> mapRouteList = new List<MapRoute>();
