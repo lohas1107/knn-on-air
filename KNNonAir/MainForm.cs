@@ -16,6 +16,8 @@ namespace KNNonAir
 
             PointLatLng GUAM = new PointLatLng(13.45, 144.783333);
             InitializeGMap(GUAM, 11);
+
+            _roadNetwork = new RoadNetwork();
         }
 
         private void InitializeGMap(PointLatLng center, double zoom)
@@ -39,7 +41,8 @@ namespace KNNonAir
 
         private void addRoadsToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            _roadNetwork = new RoadNetwork() { Graph = FileIO.ReadRoadFile() };
+            _roadNetwork.Graph.Clear();
+            _roadNetwork.Graph = FileIO.ReadRoadFile();
             DrawRoad();
         }
 
