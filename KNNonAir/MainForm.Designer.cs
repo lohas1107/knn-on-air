@@ -70,8 +70,8 @@
             this.gmap.Size = new System.Drawing.Size(784, 514);
             this.gmap.TabIndex = 0;
             this.gmap.Zoom = 7D;
-            this.gmap.MouseLeave += new System.EventHandler(this.gmap_MouseLeave);
-            this.gmap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseMove);
+            this.gmap.MouseLeave += new System.EventHandler(this.MouseLeaveGMap);
+            this.gmap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveGMap);
             // 
             // gmapStatusStrip
             // 
@@ -132,7 +132,7 @@
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
             this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
-            this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.addRoadsToolStripMenuItem_Click);
+            this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // MainForm
             // 

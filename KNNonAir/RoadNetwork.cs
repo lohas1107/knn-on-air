@@ -14,7 +14,7 @@ namespace KNNonAir
             Graph = new AdjacencyGraph<Point, Edge<Point>>(false);
         }
 
-        public List<MapRoute> getMapRouteList()
+        public List<MapRoute> GetMapRouteList()
         {
             List<MapRoute> mapRouteList = new List<MapRoute>();
 

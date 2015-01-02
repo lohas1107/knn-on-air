@@ -29,17 +29,17 @@ namespace KNNonAir
             gmap.Zoom = zoom;
         }
 
-        private void gmap_MouseMove(object sender, MouseEventArgs e)
+        private void MouseMoveGMap(object sender, MouseEventArgs e)
         {
             gmapToolStripStatusLabel.Text = gmap.FromLocalToLatLng(e.X, e.Y).ToString();
         }
 
-        private void gmap_MouseLeave(object sender, System.EventArgs e)
+        private void MouseLeaveGMap(object sender, System.EventArgs e)
         {
             gmapToolStripStatusLabel.Text = string.Empty;
         }
 
-        private void addRoadsToolStripMenuItem_Click(object sender, System.EventArgs e)
+        private void ClickAddRoadsToolStripMenuItem(object sender, System.EventArgs e)
         {
             _roadNetwork.Graph.Clear();
             _roadNetwork.Graph = FileIO.ReadRoadFile();
@@ -51,7 +51,7 @@ namespace KNNonAir
             gmap.Overlays.Clear();
 
             GMapOverlay routesOverlay = new GMapOverlay("routes");
-            List<MapRoute> mapRouteList = _roadNetwork.getMapRouteList();
+            List<MapRoute> mapRouteList = _roadNetwork.GetMapRouteList();
 
             foreach (MapRoute mapRoute in mapRouteList)
             {
