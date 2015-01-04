@@ -1,5 +1,6 @@
 ﻿using GMap.NET;
 using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -9,6 +10,7 @@ namespace KNNonAir
     public partial class MainForm : Form
     {
         private RoadNetwork _roadNetwork;
+        private GMapOverlay _markersOverlay;
 
         public MainForm()
         {
@@ -48,9 +50,9 @@ namespace KNNonAir
 
         private void DrawRoad()
         {
-            gmap.Overlays.Clear();
+            gmap.Overlays.Clear(); //bug
 
-            GMapOverlay routesOverlay = new GMapOverlay("routes");
+            GMapOverlay routesOverlay = new GMapOverlay("routes"); //bug
             List<MapRoute> mapRouteList = _roadNetwork.GetMapRouteList();
 
             foreach (MapRoute mapRoute in mapRouteList)
@@ -62,6 +64,16 @@ namespace KNNonAir
             }
 
             gmap.Overlays.Add(routesOverlay);
+        }
+
+        private void ClickAddLandMarkToolStripMenuItem(object sender, System.EventArgs e)
+        {
+            gmap.Overlays.Remove(_markersOverlay);
+
+            _markersOverlay = new GMapOverlay("marker");
+            GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(13.4946, 144.79433), GMarkerGoogleType.red_dot);
+            _markersOverlay.Markers.Add(marker);
+            gmap.Overlays.Add(_markersOverlay);
         }
     }
 }
