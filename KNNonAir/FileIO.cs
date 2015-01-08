@@ -4,6 +4,7 @@ using Geo.IO.GeoJson;
 using QuickGraph;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace KNNonAir
 {
@@ -69,6 +70,21 @@ namespace KNNonAir
                     source = target;
                 }
             }
+        }
+
+        public static List<Point> ReadSiteFile()
+        {
+            if (OpenGeoJsonFile() == DialogResult.Cancel) return null;
+
+            List<Point> siteList = new List<Point>();
+
+            FeatureCollection geoObject = (FeatureCollection)GeoJson.DeSerialize(File.ReadAllText(_fileName));
+            foreach (Feature feature in geoObject.Features)
+            {
+                siteList.Add(feature.Geometry as Point);
+            }
+
+            return siteList;
         }
     }
 }

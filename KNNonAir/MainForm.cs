@@ -1,9 +1,9 @@
-﻿using GMap.NET;
-using GMap.NET.WindowsForms;
-using GMap.NET.WindowsForms.Markers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using GMap.NET;
+using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
 
 namespace KNNonAir
 {
@@ -20,6 +20,7 @@ namespace KNNonAir
             InitializeGMap(GUAM, 11);
 
             _roadNetwork = new RoadNetwork();
+            _roadNetwork.LoadSiteCompleted += DrawLandMark;
         }
 
         private void InitializeGMap(PointLatLng center, double zoom)
@@ -68,12 +69,21 @@ namespace KNNonAir
 
         private void ClickAddLandMarkToolStripMenuItem(object sender, System.EventArgs e)
         {
-            gmap.Overlays.Remove(_markersOverlay);
+            _roadNetwork.LoadSite();
+        }
 
+        private void DrawLandMark()
+        {
+            gmap.Overlays.Remove(_markersOverlay);
             _markersOverlay = new GMapOverlay("marker");
-            GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(13.4946, 144.79433), GMarkerGoogleType.red_dot);
-            _markersOverlay.Markers.Add(marker);
-            gmap.Overlays.Add(_markersOverlay);
+
+            foreach (PointLatLng site in _roadNetwork.Sites)
+            {
+                GMarkerGoogle marker = new GMarkerGoogle(site, GMarkerGoogleType.red_dot);
+                _markersOverlay.Markers.Add(marker);
+            }
+
+            gmap.Overlays.Add(_markersOverlay);            
         }
     }
 }
