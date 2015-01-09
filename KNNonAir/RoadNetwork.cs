@@ -94,6 +94,8 @@ namespace KNNonAir
 
         private void InsertVertex(Vertex vertex, Edge<Vertex> edge)
         {
+            if (vertex == null || edge == null) return;
+
             Graph.RemoveEdge(edge);
             Graph.AddVertex(vertex);
             Graph.AddEdge(new Edge<Vertex>(edge.Source, vertex));
