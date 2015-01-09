@@ -36,7 +36,7 @@
             this.fileToolStrip = new System.Windows.Forms.ToolStrip();
             this.readFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.addRoadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addLandMarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -123,7 +123,7 @@
             this.readFileToolStripSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.readFileToolStripSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addRoadsToolStripMenuItem,
-            this.addLandMarkToolStripMenuItem});
+            this.addPoIsToolStripMenuItem});
             this.readFileToolStripSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("readFileToolStripSplitButton.Image")));
             this.readFileToolStripSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.readFileToolStripSplitButton.Name = "readFileToolStripSplitButton";
@@ -132,16 +132,16 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
-            // addLandMarkToolStripMenuItem
+            // addPoIsToolStripMenuItem
             // 
-            this.addLandMarkToolStripMenuItem.Name = "addLandMarkToolStripMenuItem";
-            this.addLandMarkToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-            this.addLandMarkToolStripMenuItem.Text = "Add Land Mark";
-            this.addLandMarkToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
+            this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addPoIsToolStripMenuItem.Text = "Add PoIs";
+            this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
             // MainForm
             // 
@@ -175,7 +175,7 @@
         private System.Windows.Forms.ToolStrip fileToolStrip;
         private System.Windows.Forms.ToolStripSplitButton readFileToolStripSplitButton;
         private System.Windows.Forms.ToolStripMenuItem addRoadsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addLandMarkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addPoIsToolStripMenuItem;
     }
 }
 
