@@ -1,14 +1,16 @@
-﻿using GMap.NET;
-using GMap.NET.WindowsForms;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using GMap.NET;
+using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
 
 namespace KNNonAir
 {
     public partial class MainForm : Form
     {
         private RoadNetwork _roadNetwork;
+        private GMapOverlay _markersOverlay;
 
         public MainForm()
         {
@@ -18,6 +20,7 @@ namespace KNNonAir
             InitializeGMap(GUAM, 11);
 
             _roadNetwork = new RoadNetwork();
+            _roadNetwork.LoadSiteCompleted += DrawLandMark;
         }
 
         private void InitializeGMap(PointLatLng center, double zoom)
@@ -29,17 +32,17 @@ namespace KNNonAir
             gmap.Zoom = zoom;
         }
 
-        private void gmap_MouseMove(object sender, MouseEventArgs e)
+        private void MouseMoveGMap(object sender, MouseEventArgs e)
         {
             gmapToolStripStatusLabel.Text = gmap.FromLocalToLatLng(e.X, e.Y).ToString();
         }
 
-        private void gmap_MouseLeave(object sender, System.EventArgs e)
+        private void MouseLeaveGMap(object sender, System.EventArgs e)
         {
             gmapToolStripStatusLabel.Text = string.Empty;
         }
 
-        private void addRoadsToolStripMenuItem_Click(object sender, System.EventArgs e)
+        private void ClickAddRoadsToolStripMenuItem(object sender, System.EventArgs e)
         {
             _roadNetwork.Graph.Clear();
             _roadNetwork.Graph = FileIO.ReadRoadFile();
@@ -48,10 +51,10 @@ namespace KNNonAir
 
         private void DrawRoad()
         {
-            gmap.Overlays.Clear();
+            gmap.Overlays.Clear(); //bug
 
-            GMapOverlay routesOverlay = new GMapOverlay("routes");
-            List<MapRoute> mapRouteList = _roadNetwork.getMapRouteList();
+            GMapOverlay routesOverlay = new GMapOverlay("routes"); //bug
+            List<MapRoute> mapRouteList = _roadNetwork.GetMapRouteList();
 
             foreach (MapRoute mapRoute in mapRouteList)
             {
@@ -62,6 +65,25 @@ namespace KNNonAir
             }
 
             gmap.Overlays.Add(routesOverlay);
+        }
+
+        private void ClickAddLandMarkToolStripMenuItem(object sender, System.EventArgs e)
+        {
+            _roadNetwork.LoadSite();
+        }
+
+        private void DrawLandMark()
+        {
+            gmap.Overlays.Remove(_markersOverlay);
+            _markersOverlay = new GMapOverlay("marker");
+
+            foreach (PointLatLng site in _roadNetwork.Sites)
+            {
+                GMarkerGoogle marker = new GMarkerGoogle(site, GMarkerGoogleType.red_dot);
+                _markersOverlay.Markers.Add(marker);
+            }
+
+            gmap.Overlays.Add(_markersOverlay);            
         }
     }
 }

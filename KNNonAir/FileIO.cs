@@ -4,6 +4,7 @@ using Geo.IO.GeoJson;
 using QuickGraph;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace KNNonAir
 {
@@ -23,9 +24,9 @@ namespace KNNonAir
             return result;
         }
 
-        internal static AdjacencyGraph<Point, Edge<Point>> ReadRoadFile()
+        internal static AdjacencyGraph<Vertex, Edge<Vertex>> ReadRoadFile()
         {
-            AdjacencyGraph<Point,Edge<Point>> roadGraph = new AdjacencyGraph<Point,Edge<Point>>(false);
+            AdjacencyGraph<Vertex,Edge<Vertex>> roadGraph = new AdjacencyGraph<Vertex,Edge<Vertex>>(false);
 
             if (OpenGeoJsonFile() == DialogResult.Cancel) return roadGraph;
 
@@ -49,26 +50,42 @@ namespace KNNonAir
             return roadGraph;
         }
 
-        private static void LoadLineString(AdjacencyGraph<Point, Edge<Point>> roadGraph, LineString lineString)
+        private static void LoadLineString(AdjacencyGraph<Vertex, Edge<Vertex>> roadGraph, LineString lineString)
         {
-            Point source = null;
-            Point target = null;
+            Vertex source = null;
+            Vertex target = null;
 
             foreach (Coordinate coordinate in lineString.Coordinates)
             {
                 if (source == null)
                 {
-                    source = new Point(coordinate.Latitude, coordinate.Longitude);
+                    source = new Vertex(coordinate.Latitude, coordinate.Longitude);
                     roadGraph.AddVertex(source);
                 }
                 else
                 {
-                    target = new Point(coordinate.Latitude, coordinate.Longitude);
+                    target = new Vertex(coordinate.Latitude, coordinate.Longitude);
                     roadGraph.AddVertex(target);
-                    roadGraph.AddEdge(new Edge<Point>(source, target));
+                    roadGraph.AddEdge(new Edge<Vertex>(source, target));
                     source = target;
                 }
             }
+        }
+
+        public static List<Vertex> ReadSiteFile()
+        {
+            if (OpenGeoJsonFile() == DialogResult.Cancel) return null;
+
+            List<Vertex> siteList = new List<Vertex>();
+
+            FeatureCollection geoObject = (FeatureCollection)GeoJson.DeSerialize(File.ReadAllText(_fileName));
+            foreach (Feature feature in geoObject.Features)
+            {
+                Point point = feature.Geometry as Point;
+                siteList.Add(new Vertex(point.Coordinate.Latitude, point.Coordinate.Longitude));
+            }
+
+            return siteList;
         }
     }
 }
