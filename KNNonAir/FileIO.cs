@@ -1,15 +1,16 @@
-﻿using Geo;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+using Geo;
 using Geo.Geometries;
 using Geo.IO.GeoJson;
 using QuickGraph;
-using System.IO;
-using System.Windows.Forms;
 
 namespace KNNonAir
 {
     class FileIO
     {
-        static string _fileName;
+        private static string _fileName;
 
         private static DialogResult OpenGeoJsonFile()
         {
@@ -23,11 +24,11 @@ namespace KNNonAir
             return result;
         }
 
-        internal static AdjacencyGraph<Point, Edge<Point>> ReadRoadFile()
+        public static List<Edge<Vertex>> ReadRoadFile()
         {
-            AdjacencyGraph<Point,Edge<Point>> roadGraph = new AdjacencyGraph<Point,Edge<Point>>(false);
+            if (OpenGeoJsonFile() == DialogResult.Cancel) return null;
 
-            if (OpenGeoJsonFile() == DialogResult.Cancel) return roadGraph;
+            List<Edge<Vertex>> edgeList = new List<Edge<Vertex>>();
 
             FeatureCollection geoObject = (FeatureCollection)GeoJson.DeSerialize(File.ReadAllText(_fileName));
             foreach (Feature feature in geoObject.Features)
@@ -37,38 +38,53 @@ namespace KNNonAir
                     MultiLineString multiLingString = feature.Geometry as MultiLineString;
                     foreach (LineString lineString in multiLingString.Geometries)
                     {
-                        LoadLineString(roadGraph, lineString);
+                        LoadLineString(edgeList, lineString);
                     }
                 }
                 else
                 {
                     LineString lineString = feature.Geometry as LineString;
-                    LoadLineString(roadGraph, lineString);
+                    LoadLineString(edgeList, lineString);
                 }
             }
-            return roadGraph;
+
+            return edgeList;
         }
 
-        private static void LoadLineString(AdjacencyGraph<Point, Edge<Point>> roadGraph, LineString lineString)
+        private static void LoadLineString(List<Edge<Vertex>> edgeList, LineString lineString)
         {
-            Point source = null;
-            Point target = null;
+            Vertex source = null;
+            Vertex target = null;
 
             foreach (Coordinate coordinate in lineString.Coordinates)
             {
                 if (source == null)
                 {
-                    source = new Point(coordinate.Latitude, coordinate.Longitude);
-                    roadGraph.AddVertex(source);
+                    source = new Vertex(coordinate.Latitude, coordinate.Longitude);
                 }
                 else
                 {
-                    target = new Point(coordinate.Latitude, coordinate.Longitude);
-                    roadGraph.AddVertex(target);
-                    roadGraph.AddEdge(new Edge<Point>(source, target));
+                    target = new Vertex(coordinate.Latitude, coordinate.Longitude);
+                    edgeList.Add(new Edge<Vertex>(source, target));
                     source = target;
                 }
             }
+        }
+
+        public static List<Vertex> ReadPoIFile()
+        {
+            if (OpenGeoJsonFile() == DialogResult.Cancel) return null;
+
+            List<Vertex> poiList = new List<Vertex>();
+
+            FeatureCollection geoObject = (FeatureCollection)GeoJson.DeSerialize(File.ReadAllText(_fileName));
+            foreach (Feature feature in geoObject.Features)
+            {
+                Point point = feature.Geometry as Point;
+                poiList.Add(new Vertex(point.Coordinate.Latitude, point.Coordinate.Longitude));
+            }
+
+            return poiList;
         }
     }
 }

@@ -36,6 +36,7 @@
             this.fileToolStrip = new System.Windows.Forms.ToolStrip();
             this.readFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.addRoadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -70,8 +71,8 @@
             this.gmap.Size = new System.Drawing.Size(784, 514);
             this.gmap.TabIndex = 0;
             this.gmap.Zoom = 7D;
-            this.gmap.MouseLeave += new System.EventHandler(this.gmap_MouseLeave);
-            this.gmap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gmap_MouseMove);
+            this.gmap.MouseLeave += new System.EventHandler(this.MouseLeaveGMap);
+            this.gmap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveGMap);
             // 
             // gmapStatusStrip
             // 
@@ -114,14 +115,15 @@
             this.readFileToolStripSplitButton});
             this.fileToolStrip.Location = new System.Drawing.Point(3, 0);
             this.fileToolStrip.Name = "fileToolStrip";
-            this.fileToolStrip.Size = new System.Drawing.Size(44, 25);
+            this.fileToolStrip.Size = new System.Drawing.Size(75, 25);
             this.fileToolStrip.TabIndex = 0;
             // 
             // readFileToolStripSplitButton
             // 
             this.readFileToolStripSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.readFileToolStripSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addRoadsToolStripMenuItem});
+            this.addRoadsToolStripMenuItem,
+            this.addPoIsToolStripMenuItem});
             this.readFileToolStripSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("readFileToolStripSplitButton.Image")));
             this.readFileToolStripSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.readFileToolStripSplitButton.Name = "readFileToolStripSplitButton";
@@ -132,7 +134,14 @@
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
             this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
-            this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.addRoadsToolStripMenuItem_Click);
+            this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
+            // 
+            // addPoIsToolStripMenuItem
+            // 
+            this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addPoIsToolStripMenuItem.Text = "Add PoIs";
+            this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
             // MainForm
             // 
@@ -166,6 +175,7 @@
         private System.Windows.Forms.ToolStrip fileToolStrip;
         private System.Windows.Forms.ToolStripSplitButton readFileToolStripSplitButton;
         private System.Windows.Forms.ToolStripMenuItem addRoadsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addPoIsToolStripMenuItem;
     }
 }
 
