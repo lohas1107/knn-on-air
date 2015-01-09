@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Geo;
-using Geo.Geometries;
 using GMap.NET;
 using QuickGraph;
 
@@ -9,15 +8,31 @@ namespace KNNonAir
 {
     class RoadNetwork
     {
-        public event Event.Handler LoadSiteCompleted;
+        public event Event.Handler LoadRoadsCompleted;
+        public event Event.Handler LoadPoIsCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
-        public List<PointLatLng> Sites { get; set; }
+        public List<PointLatLng> PoIs { get; set; }
 
         public RoadNetwork()
         {
             Graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
-            Sites = new List<PointLatLng>();
+            PoIs = new List<PointLatLng>();
+        }
+
+        public void LoadRoads()
+        {
+            List<Edge<Vertex>> edgeList = FileIO.ReadRoadFile();
+            if (edgeList == null) return;
+
+            foreach (Edge<Vertex> edge in edgeList)
+            {
+                Graph.AddVertex(edge.Source);
+                Graph.AddVertex(edge.Target);
+                Graph.AddEdge(edge);
+            }
+
+            LoadRoadsCompleted();
         }
 
         public List<MapRoute> GetMapRouteList()
@@ -29,77 +44,75 @@ namespace KNNonAir
                 PointLatLng start = new PointLatLng(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude);
                 PointLatLng end = new PointLatLng(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude);
                 MapRoute mapRoute = GMap.NET.MapProviders.GoogleMapProvider.Instance.GetRoute(start, end, false, true, 15);
+                if (mapRoute == null) continue;
 
-                if (mapRoute != null)
-                {
-                    mapRouteList.Add(mapRoute);
-                }
+                mapRouteList.Add(mapRoute);
             }
 
             return mapRouteList;
         }
 
-        public void LoadSite()
+        public void LoadPoIs()
         {
-            List<Vertex> siteList = FileIO.ReadSiteFile();
-            if (siteList == null) return;
+            List<Vertex> poiList = FileIO.ReadPoIFile();
+            if (poiList == null) return;
 
-            foreach (Vertex site in siteList)
+            foreach (Vertex poi in poiList)
             {
-                Vertex adjustedSite = AdjustSiteToEdge(site);
-                if (adjustedSite == null) continue;
+                Vertex adjustedPoI = AdjustPoIToEdge(poi);
+                if (adjustedPoI == null) continue;
 
-                Sites.Add(new PointLatLng(adjustedSite.Coordinate.Latitude, adjustedSite.Coordinate.Longitude));
+                PoIs.Add(new PointLatLng(adjustedPoI.Coordinate.Latitude, adjustedPoI.Coordinate.Longitude));
             }
 
-            LoadSiteCompleted();
+            LoadPoIsCompleted();
         }
 
-        private Vertex AdjustSiteToEdge(Vertex site)
+        private Vertex AdjustPoIToEdge(Vertex poi)
         {
             double minDiatance = double.MaxValue;
-            Vertex adjustedSite = null;
+            Vertex adjustedPoI = null;
             Edge<Vertex> toEdge = null;
 
             foreach (Edge<Vertex> edge in Graph.Edges)
             {
-                Vertex newSite = Project(edge.Source.Coordinate, edge.Target.Coordinate, site.Coordinate);
-                if (newSite == null) continue;
+                Vertex newPoI = Project(edge.Source.Coordinate, edge.Target.Coordinate, poi.Coordinate);
+                if (newPoI == null) continue;
 
-                double distance = Math.Sqrt(Math.Pow(newSite.Coordinate.Latitude - site.Coordinate.Latitude, 2) + Math.Pow(newSite.Coordinate.Longitude - site.Coordinate.Longitude, 2));
+                double distance = Math.Sqrt(Math.Pow(newPoI.Coordinate.Latitude - poi.Coordinate.Latitude, 2) + Math.Pow(newPoI.Coordinate.Longitude - poi.Coordinate.Longitude, 2));
                 if (distance >= minDiatance) continue;
 
                 minDiatance = distance;
-                adjustedSite = newSite;
+                adjustedPoI = newPoI;
                 toEdge = edge;
             }
 
-            InsertVertex(adjustedSite, toEdge);
+            InsertVertex(adjustedPoI, toEdge);
 
-            return adjustedSite;
+            return adjustedPoI;
         }
 
-        private void InsertVertex(Vertex adjustedSite, Edge<Vertex> edge)
+        private void InsertVertex(Vertex vertex, Edge<Vertex> edge)
         {
             Graph.RemoveEdge(edge);
-            Graph.AddVertex(adjustedSite);
-            Graph.AddEdge(new Edge<Vertex>(edge.Source, adjustedSite));
-            Graph.AddEdge(new Edge<Vertex>(adjustedSite, edge.Target));
+            Graph.AddVertex(vertex);
+            Graph.AddEdge(new Edge<Vertex>(edge.Source, vertex));
+            Graph.AddEdge(new Edge<Vertex>(vertex, edge.Target));
         }
 
-        private bool IsEdgeContainsVertex(Vertex site)
+        private bool IsEdgeContainsVertex(Vertex vertex)
         {
             foreach (Edge<Vertex> edge in Graph.Edges)
             {
-                if (edge.IsAdjacent(site)) return true;
+                if (edge.IsAdjacent(vertex)) return true;
             }
 
             return false;
         }
 
-        private Vertex Project(Coordinate source, Coordinate target, Coordinate site)
+        private Vertex Project(Coordinate source, Coordinate target, Coordinate vertex)
         {
-            double U = ((site.Latitude - source.Latitude) * (target.Latitude - source.Latitude)) + ((site.Longitude - source.Longitude) * (target.Longitude - source.Longitude));
+            double U = ((vertex.Latitude - source.Latitude) * (target.Latitude - source.Latitude)) + ((vertex.Longitude - source.Longitude) * (target.Longitude - source.Longitude));
             double Udenom = Math.Pow(target.Latitude - source.Latitude, 2) + Math.Pow(target.Longitude - source.Longitude, 2);
             U /= Udenom;
 

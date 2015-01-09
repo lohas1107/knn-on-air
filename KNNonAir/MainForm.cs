@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using GMap.NET;
 using GMap.NET.WindowsForms;
@@ -10,6 +9,7 @@ namespace KNNonAir
     public partial class MainForm : Form
     {
         private RoadNetwork _roadNetwork;
+        private GMapOverlay _routesOverlay;
         private GMapOverlay _markersOverlay;
 
         public MainForm()
@@ -20,7 +20,8 @@ namespace KNNonAir
             InitializeGMap(GUAM, 11);
 
             _roadNetwork = new RoadNetwork();
-            _roadNetwork.LoadSiteCompleted += DrawLandMark;
+            _roadNetwork.LoadRoadsCompleted += DrawRoads;
+            _roadNetwork.LoadPoIsCompleted += DrawPoIs;
         }
 
         private void InitializeGMap(PointLatLng center, double zoom)
@@ -44,40 +45,36 @@ namespace KNNonAir
 
         private void ClickAddRoadsToolStripMenuItem(object sender, System.EventArgs e)
         {
-            _roadNetwork.Graph.Clear();
-            _roadNetwork.Graph = FileIO.ReadRoadFile();
-            DrawRoad();
+            _roadNetwork.LoadRoads();
         }
 
-        private void DrawRoad()
+        private void DrawRoads()
         {
-            gmap.Overlays.Clear(); //bug
+            gmap.Overlays.Remove(_routesOverlay);
+            _routesOverlay = new GMapOverlay("routes");
 
-            GMapOverlay routesOverlay = new GMapOverlay("routes"); //bug
-            List<MapRoute> mapRouteList = _roadNetwork.GetMapRouteList();
-
-            foreach (MapRoute mapRoute in mapRouteList)
+            foreach (MapRoute mapRoute in _roadNetwork.GetMapRouteList())
             {
                 GMapRoute route = new GMapRoute(mapRoute.Points, "");
                 route.Stroke.Width = 10;
                 route.Stroke.Color = Color.SeaGreen;
-                routesOverlay.Routes.Add(route);
+                _routesOverlay.Routes.Add(route);
             }
 
-            gmap.Overlays.Add(routesOverlay);
+            gmap.Overlays.Add(_routesOverlay);
         }
 
         private void ClickAddLandMarkToolStripMenuItem(object sender, System.EventArgs e)
         {
-            _roadNetwork.LoadSite();
+            _roadNetwork.LoadPoIs();
         }
 
-        private void DrawLandMark()
+        private void DrawPoIs()
         {
             gmap.Overlays.Remove(_markersOverlay);
             _markersOverlay = new GMapOverlay("marker");
 
-            foreach (PointLatLng site in _roadNetwork.Sites)
+            foreach (PointLatLng site in _roadNetwork.PoIs)
             {
                 GMarkerGoogle marker = new GMarkerGoogle(site, GMarkerGoogleType.red_dot);
                 _markersOverlay.Markers.Add(marker);

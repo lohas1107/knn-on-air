@@ -9,12 +9,10 @@ namespace KNNonAir
         public Coordinate Coordinate { get; set; }
 
         public Vertex() { }
-
         public Vertex(double latitude, double longitude)
         {
             point = new Point(latitude, longitude);
             Coordinate = point.Coordinate;
         }
-
     }
 }
