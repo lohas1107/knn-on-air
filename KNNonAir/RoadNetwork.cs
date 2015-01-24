@@ -8,8 +8,8 @@ namespace KNNonAir
 {
     class RoadNetwork
     {
-        public event Event.Handler LoadRoadsCompleted;
-        public event Event.Handler LoadPoIsCompleted;
+        public event Handler LoadRoadsCompleted;
+        public event Handler LoadPoIsCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
         public List<PointLatLng> PoIs { get; set; }

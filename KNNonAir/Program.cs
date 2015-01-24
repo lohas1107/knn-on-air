@@ -3,6 +3,8 @@ using System.Windows.Forms;
 
 namespace KNNonAir
 {
+    public delegate void Handler();
+
     static class Program
     {
         /// <summary>
