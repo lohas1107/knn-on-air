@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Geo;
-using GMap.NET;
+﻿using GMap.NET;
 using QuickGraph;
+using System.Collections.Generic;
 
 namespace KNNonAir
 {
@@ -10,14 +8,17 @@ namespace KNNonAir
     {
         public event Handler LoadRoadsCompleted;
         public event Handler LoadPoIsCompleted;
+        public event Handler GenerateNVDCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
-        public List<PointLatLng> PoIs { get; set; }
+        public List<Vertex> PoIs { get; set; }
+        public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
 
         public RoadNetwork()
         {
             Graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
-            PoIs = new List<PointLatLng>();
+            PoIs = new List<Vertex>();
+            NVD = new Dictionary<Vertex, VoronoiCell>();
         }
 
         public void LoadRoads()
@@ -35,7 +36,7 @@ namespace KNNonAir
             LoadRoadsCompleted();
         }
 
-        public List<MapRoute> GetMapRouteList()
+        public List<MapRoute> GetRoadMapRouteList()
         {
             List<MapRoute> mapRouteList = new List<MapRoute>();
 
@@ -62,7 +63,7 @@ namespace KNNonAir
                 Vertex adjustedPoI = AdjustPoIToEdge(poi);
                 if (adjustedPoI == null) continue;
 
-                PoIs.Add(new PointLatLng(adjustedPoI.Coordinate.Latitude, adjustedPoI.Coordinate.Longitude));
+                PoIs.Add(adjustedPoI);
             }
 
             LoadPoIsCompleted();
@@ -76,10 +77,10 @@ namespace KNNonAir
 
             foreach (Edge<Vertex> edge in Graph.Edges)
             {
-                Vertex newPoI = Project(edge.Source.Coordinate, edge.Target.Coordinate, poi.Coordinate);
+                Vertex newPoI = Arithmetics.Project(edge.Source.Coordinate, edge.Target.Coordinate, poi.Coordinate);
                 if (newPoI == null) continue;
 
-                double distance = Math.Sqrt(Math.Pow(newPoI.Coordinate.Latitude - poi.Coordinate.Latitude, 2) + Math.Pow(newPoI.Coordinate.Longitude - poi.Coordinate.Longitude, 2));
+                double distance = Arithmetics.CalculateDistance(poi.Coordinate, newPoI.Coordinate);
                 if (distance >= minDiatance) continue;
 
                 minDiatance = distance;
@@ -97,6 +98,7 @@ namespace KNNonAir
             if (vertex == null || edge == null) return;
 
             Graph.RemoveEdge(edge);
+
             Graph.AddVertex(vertex);
             Graph.AddEdge(new Edge<Vertex>(edge.Source, vertex));
             Graph.AddEdge(new Edge<Vertex>(vertex, edge.Target));
@@ -112,24 +114,10 @@ namespace KNNonAir
             return false;
         }
 
-        private Vertex Project(Coordinate source, Coordinate target, Coordinate vertex)
+        public void GenerateNVD()
         {
-            double U = ((vertex.Latitude - source.Latitude) * (target.Latitude - source.Latitude)) + ((vertex.Longitude - source.Longitude) * (target.Longitude - source.Longitude));
-            double Udenom = Math.Pow(target.Latitude - source.Latitude, 2) + Math.Pow(target.Longitude - source.Longitude, 2);
-            U /= Udenom;
-
-            double latitude = source.Latitude + (U * (target.Latitude - source.Latitude));
-            double longitude = source.Longitude + (U * (target.Longitude - source.Longitude));
-            Vertex result = new InterestPoint(latitude, longitude);
-
-            double minX, maxX, minY, maxY;
-            minX = Math.Min(source.Latitude, target.Latitude);
-            maxX = Math.Max(source.Latitude, target.Latitude);
-            minY = Math.Min(source.Longitude, target.Longitude);
-            maxY = Math.Max(source.Longitude, target.Longitude);
-
-            bool isValid = (result.Coordinate.Latitude >= minX && result.Coordinate.Latitude <= maxX) && (result.Coordinate.Longitude >= minY && result.Coordinate.Longitude <= maxY);
-            return isValid ? result : null;
+            NVD.Add(PoIs[0], new PathTree(PoIs[0]).GenerateNVC(Graph));
+            GenerateNVDCompleted();
         }
     }
 }

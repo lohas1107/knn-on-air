@@ -3,7 +3,8 @@ using System.Windows.Forms;
 
 namespace KNNonAir
 {
-    public delegate void Handler();
+    delegate void Handler();
+    delegate void PathNodeHandler(PathNode node);
 
     static class Program
     {

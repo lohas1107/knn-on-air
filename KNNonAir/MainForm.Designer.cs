@@ -136,14 +136,14 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
@@ -165,6 +165,7 @@
             this.nvdToolStripButton.Name = "nvdToolStripButton";
             this.nvdToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.nvdToolStripButton.Text = "Generate NVD";
+            this.nvdToolStripButton.Click += new System.EventHandler(this.ClickNvdToolStripButton);
             // 
             // MainForm
             // 
