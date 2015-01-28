@@ -1,6 +1,8 @@
 ﻿using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -66,6 +68,20 @@ namespace KNNonAir
             }
 
             gmap.Overlays.Add(_routesOverlay);
+
+
+            gmap.Overlays.Remove(_markersOverlay);
+            _markersOverlay = new GMapOverlay("marker");
+
+            foreach (Vertex site in _roadNetwork.GetSideVertexs())
+            {
+                GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.red_dot);
+                _markersOverlay.Markers.Add(marker);
+            }
+
+            gmap.Overlays.Add(_markersOverlay);   
+
+
         }
 
         private void ClickAddLandMarkToolStripMenuItem(object sender, System.EventArgs e)
@@ -97,15 +113,22 @@ namespace KNNonAir
             gmap.Overlays.Remove(_routesOverlay);
             _routesOverlay = new GMapOverlay("routes");
 
-            foreach (MapRoute mapRoute in _presentationModel.GetNVCMapRouteList(_roadNetwork.PoIs[0]))
+            foreach (MapRoute mapRoute in _presentationModel.GetNVCMapRouteList(_roadNetwork.PoIs[i]))
+            //foreach (Tuple<Color, MapRoute> mapRoute in _presentationModel.GetNVDMapRoutes())
             {
                 GMapRoute route = new GMapRoute(mapRoute.Points, "");
                 route.Stroke.Width = 10;
-                route.Stroke.Color = Color.Blue;
+                route.Stroke.Color = Color.Navy;
                 _routesOverlay.Routes.Add(route);
             }
 
             gmap.Overlays.Add(_routesOverlay);
+        }
+        int i = 0;
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            i++;
+            DrawNVD();
         }
     }
 }

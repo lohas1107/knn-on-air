@@ -36,6 +36,18 @@ namespace KNNonAir
             LoadRoadsCompleted();
         }
 
+        public List<Vertex> GetSideVertexs()
+        {
+            List<Vertex> sideVertexs = new List<Vertex>();
+
+            foreach(Vertex vertex in Graph.Vertices)
+            {
+                if (IsEdgeContainsVertex(vertex) < 2) sideVertexs.Add(vertex);
+            }
+
+            return sideVertexs;
+        }
+
         public List<MapRoute> GetRoadMapRouteList()
         {
             List<MapRoute> mapRouteList = new List<MapRoute>();
@@ -104,19 +116,25 @@ namespace KNNonAir
             Graph.AddEdge(new Edge<Vertex>(vertex, edge.Target));
         }
 
-        private bool IsEdgeContainsVertex(Vertex vertex)
+        private int IsEdgeContainsVertex(Vertex vertex)
         {
+            int count = 0;
+
             foreach (Edge<Vertex> edge in Graph.Edges)
             {
-                if (edge.IsAdjacent(vertex)) return true;
+                if (edge.IsAdjacent(vertex)) count++;
             }
 
-            return false;
+            return count;
         }
 
         public void GenerateNVD()
         {
-            NVD.Add(PoIs[0], new PathTree(PoIs[0]).GenerateNVC(Graph));
+            foreach (Vertex poi in PoIs)
+            {
+                NVD.Add(poi, new PathTree(poi).GenerateNVC(Graph));
+            }
+
             GenerateNVDCompleted();
         }
     }
