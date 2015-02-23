@@ -40,5 +40,19 @@ namespace KNNonAir
 
             return new Vertex(latitude, longitude);
         }
+
+        public static double GetSlope(QuickGraph.Edge<Vertex> edge)
+        {
+            double x = edge.Target.Coordinate.Latitude - edge.Source.Coordinate.Latitude;
+            double y = edge.Target.Coordinate.Longitude - edge.Source.Coordinate.Longitude;
+
+            if (x == 0) return double.MaxValue;
+            else return y / x;
+        }
+
+        public static double GetIncludedAngle(double slope1, double slope2)
+        {
+            return Math.Abs(Math.Atan(slope2) - Math.Atan(slope1));
+        }
     }
 }

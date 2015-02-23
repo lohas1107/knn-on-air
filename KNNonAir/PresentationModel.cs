@@ -34,24 +34,25 @@ namespace KNNonAir
             return mapRouteList;
         }
 
-        public List<Tuple<Color, MapRoute>> GetNVDMapRoutes()
+        public List<Tuple<Color, List<PointLatLng>>> GetNVDEdges()
         {
-            List<Tuple<Color, MapRoute>> mapRoutes = new List<Tuple<Color, MapRoute>>();
-            Color originColor = Color.White;
-            Color color = Color.White;
+            List<Tuple<Color, List<PointLatLng>>> nvdEdges = new List<Tuple<Color, List<PointLatLng>>>();
+            Color color;
 
             foreach (KeyValuePair<Vertex, VoronoiCell> nvc in _roadNetwork.NVD)
-            {              
-                while (color == originColor) { color = RandomizeColor(); }
-                originColor = color;
+            {
+                color = RandomizeColor();
 
-                foreach (MapRoute route in GetNVCMapRouteList(nvc.Key))
+                foreach (Edge<Vertex> edge in nvc.Value.Graph.Edges)
                 {
-                    mapRoutes.Add(new Tuple<Color, MapRoute>(color, route));
+                    List<PointLatLng> points = new List<PointLatLng>();
+                    points.Add(new PointLatLng(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude));
+                    points.Add(new PointLatLng(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude));
+                    nvdEdges.Add(new Tuple<Color, List<PointLatLng>>(color, points));
                 }
             }
 
-            return mapRoutes;
+            return nvdEdges;
         }
 
         private Color RandomizeColor()

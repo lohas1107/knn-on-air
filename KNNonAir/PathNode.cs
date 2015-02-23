@@ -26,8 +26,12 @@ namespace KNNonAir
             Children = new List<PathNode>();
         }
 
-        public void FindPath(AdjacencyGraph<Vertex, Edge<Vertex>> graph, PathNodeHandler findPathCompleted)
+        public void FindPathsByRange(AdjacencyGraph<Vertex, Edge<Vertex>> graph, double range, PathNodeHandler findPathCompleted)
         {
+            findPathCompleted(this);
+
+            List<Edge<Vertex>> removeEdges = new List<Edge<Vertex>>();
+
             foreach (Edge<Vertex> edge in graph.Edges)
             {
                 if (!edge.IsAdjacent(Vertex)) continue;
@@ -37,16 +41,54 @@ namespace KNNonAir
                 child.Vertex = edge.GetOtherVertex(Vertex);
                 child.Edge = new Edge<Vertex>(Vertex, child.Vertex);
                 child.Parent = this;
-
                 Children.Add(child);
+
+                removeEdges.Add(edge);
             }
+
+            foreach (Edge<Vertex> edge in removeEdges) graph.RemoveEdge(edge);
 
             foreach (PathNode child in Children)
             {
-                if (child.Vertex.GetType() == new InterestPoint().GetType()) findPathCompleted(child);
+                if (child.Distance > range) continue;
+                else child.FindPathsByRange(graph, range, findPathCompleted);
+            }
+        }
+
+        public void FindPath(AdjacencyGraph<Vertex, Edge<Vertex>> graph, PathNodeHandler findPathCompleted)
+        {
+            List<Edge<Vertex>> removeEdges = new List<Edge<Vertex>>();
+
+            foreach (Edge<Vertex> edge in graph.Edges)
+            {
+                if (!edge.IsAdjacent(Vertex)) continue;
+                if (Parent != null && edge.GetOtherVertex(Vertex) == Parent.Vertex) continue;
+
+                PathNode child = new PathNode();
+                child.Vertex = edge.GetOtherVertex(Vertex);
+                child.Edge = new Edge<Vertex>(Vertex, child.Vertex);
+                child.Parent = this;
+                Children.Add(child);
+
+                removeEdges.Add(edge);
+            }
+
+            foreach (Edge<Vertex> edge in removeEdges) graph.RemoveEdge(edge);
+
+            foreach (PathNode child in Children)
+            {
+                if (child.Vertex.GetType() == new InterestPoint().GetType()) findPathCompleted(child); ////type 可信度
                 else child.FindPath(graph, findPathCompleted);
             }
         }
+
+        //private bool IsCycle(Edge<Vertex> edge, int count)
+        //{
+        //    if (count++ > 5 || Parent == null) return false;
+        //    if (edge.GetOtherVertex(Vertex) == Parent.Vertex) 
+        //        return true;
+        //    else return Parent.IsCycle(edge, count);
+        //}
 
         public void InsertBorderPoint(double halfDistance)
         {

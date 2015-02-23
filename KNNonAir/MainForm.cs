@@ -1,6 +1,7 @@
 ﻿using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
+using QuickGraph;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,7 +13,7 @@ namespace KNNonAir
     {
         private RoadNetwork _roadNetwork;
         private PresentationModel _presentationModel;
-        private GMapOverlay _routesOverlay;
+        private GMapOverlay _polyOverlay;
         private GMapOverlay _markersOverlay;
 
         public MainForm()
@@ -56,32 +57,32 @@ namespace KNNonAir
 
         private void DrawRoads()
         {
-            gmap.Overlays.Remove(_routesOverlay);
-            _routesOverlay = new GMapOverlay("routes");
+            gmap.Overlays.Remove(_polyOverlay);
+            _polyOverlay = new GMapOverlay("polygons");
 
-            foreach (MapRoute mapRoute in _roadNetwork.GetRoadMapRouteList())
+            foreach (Edge<Vertex> edge in _roadNetwork.Graph.Edges)
             {
-                GMapRoute route = new GMapRoute(mapRoute.Points, "");
-                route.Stroke.Width = 10;
-                route.Stroke.Color = Color.SeaGreen;
-                _routesOverlay.Routes.Add(route);
+                List<PointLatLng> points = new List<PointLatLng>();
+                points.Add(new PointLatLng(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude));
+                points.Add(new PointLatLng(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude));
+                GMapPolygon polygon = new GMapPolygon(points, "");
+                polygon.Fill = new SolidBrush(Color.FromArgb(50, Color.Red));
+                polygon.Stroke = new Pen(Color.FromArgb(80, Color.Red), 3);
+                _polyOverlay.Polygons.Add(polygon);
             }
 
-            gmap.Overlays.Add(_routesOverlay);
+             gmap.Overlays.Add(_polyOverlay);
 
+             gmap.Overlays.Remove(_markersOverlay);
+             _markersOverlay = new GMapOverlay("marker");
 
-            gmap.Overlays.Remove(_markersOverlay);
-            _markersOverlay = new GMapOverlay("marker");
+             foreach (Vertex site in _roadNetwork.GetSideVertexs())
+             {
+                 GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.red_dot);
+                 _markersOverlay.Markers.Add(marker);
+             }
 
-            foreach (Vertex site in _roadNetwork.GetSideVertexs())
-            {
-                GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.red_dot);
-                _markersOverlay.Markers.Add(marker);
-            }
-
-            gmap.Overlays.Add(_markersOverlay);   
-
-
+             gmap.Overlays.Add(_markersOverlay);
         }
 
         private void ClickAddLandMarkToolStripMenuItem(object sender, System.EventArgs e)
@@ -110,19 +111,18 @@ namespace KNNonAir
 
         private void DrawNVD()
         {
-            gmap.Overlays.Remove(_routesOverlay);
-            _routesOverlay = new GMapOverlay("routes");
+            gmap.Overlays.Remove(_polyOverlay);
+            _polyOverlay = new GMapOverlay("polygons");
 
-            foreach (MapRoute mapRoute in _presentationModel.GetNVCMapRouteList(_roadNetwork.PoIs[i]))
-            //foreach (Tuple<Color, MapRoute> mapRoute in _presentationModel.GetNVDMapRoutes())
+            foreach (Tuple<Color, List<PointLatLng>> edge in _presentationModel.GetNVDEdges())
             {
-                GMapRoute route = new GMapRoute(mapRoute.Points, "");
-                route.Stroke.Width = 10;
-                route.Stroke.Color = Color.Navy;
-                _routesOverlay.Routes.Add(route);
+                GMapPolygon polygon = new GMapPolygon(edge.Item2, "");
+                polygon.Fill = new SolidBrush(Color.FromArgb(50, edge.Item1));
+                polygon.Stroke = new Pen(edge.Item1, 5);
+                _polyOverlay.Polygons.Add(polygon);
             }
 
-            gmap.Overlays.Add(_routesOverlay);
+            gmap.Overlays.Add(_polyOverlay);
         }
         int i = 0;
         private void toolStripButton1_Click(object sender, EventArgs e)

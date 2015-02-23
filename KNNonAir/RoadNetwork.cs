@@ -1,11 +1,16 @@
 ﻿using GMap.NET;
 using QuickGraph;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KNNonAir
 {
     class RoadNetwork
     {
+        private const double ROAD_WIDTH_OFFSET = 0.00001; // 1m
+        private const double FIFTY_METER = 0.0005;
+        private const double TEN_METER = 0.0001;
+
         public event Handler LoadRoadsCompleted;
         public event Handler LoadPoIsCompleted;
         public event Handler GenerateNVDCompleted;
@@ -28,12 +33,105 @@ namespace KNNonAir
 
             foreach (Edge<Vertex> edge in edgeList)
             {
-                Graph.AddVertex(edge.Source);
-                Graph.AddVertex(edge.Target);
-                Graph.AddEdge(edge);
+                Edge<Vertex> sourceEdge = null;
+                Edge<Vertex> targetEdge = null;
+                Vertex source = edge.Source;
+                Vertex target = edge.Target;
+
+                if (!Graph.ContainsVertex(source)) sourceEdge = FindOverlapedEdge(source, Arithmetics.GetSlope(edge), 0.1, true, ROAD_WIDTH_OFFSET);
+                if (!Graph.ContainsVertex(target)) targetEdge = FindOverlapedEdge(target, Arithmetics.GetSlope(edge), 0.1, true, ROAD_WIDTH_OFFSET);
+                if (sourceEdge != null) source = AdjustOverlap(sourceEdge, target);
+                if (targetEdge != null) target = AdjustOverlap(targetEdge, source);
+                if (sourceEdge != null && targetEdge != null && (sourceEdge == targetEdge)) continue;
+
+                Graph.AddVertex(source);
+                Graph.AddVertex(target);
+                Graph.AddEdge(new Edge<Vertex>(source, target));
             }
 
+            ConnectBrokenEdge();
             LoadRoadsCompleted();
+        }
+
+        private Edge<Vertex> FindOverlapedEdge(Vertex vertex, double slope, double angle, bool isBelow, double far)
+        {
+            Vertex projectVertex = null;
+            Edge<Vertex> projectEdge = null;
+            double minDistance = double.MaxValue;
+
+            foreach (Edge<Vertex> edge in Graph.Edges)
+            {
+                if (isBelow)
+                {
+                    if (edge.Source == vertex || edge.Target == vertex) return null;
+                    if (Arithmetics.GetIncludedAngle(Arithmetics.GetSlope(edge), slope) > angle) continue;
+                }
+                if (!isBelow && Arithmetics.GetIncludedAngle(Arithmetics.GetSlope(edge), slope) < angle) continue;
+
+                projectVertex = Arithmetics.Project(edge.Source.Coordinate, edge.Target.Coordinate, vertex.Coordinate);
+                if (projectVertex == null) continue;
+
+                double distance = Arithmetics.CalculateDistance( vertex.Coordinate, projectVertex.Coordinate);
+                if (distance < minDistance && distance < far)
+                {
+                    minDistance = distance;
+                    projectEdge = edge;
+                }
+            }
+
+            return projectEdge;
+        }
+
+        private Vertex AdjustOverlap(Edge<Vertex> edge, Vertex vertex)
+        {
+            double sourceDistance = Arithmetics.CalculateDistance(edge.Source.Coordinate, vertex.Coordinate);
+            double targetDistance = Arithmetics.CalculateDistance(edge.Target.Coordinate, vertex.Coordinate);
+
+            if (sourceDistance < targetDistance) return edge.Source;
+            else return edge.Target;            
+        }
+
+        private void ConnectBrokenEdge()
+        {
+            List<Vertex> sideVertexs = GetSideVertexs();
+
+            sideVertexs = sideVertexs.OrderBy(o => o.Coordinate.Latitude).ToList();
+            FindNearPointPair(sideVertexs);
+            sideVertexs = sideVertexs.OrderBy(o => o.Coordinate.Longitude).ToList();
+            FindNearPointPair(sideVertexs);
+
+            foreach (Vertex sideVertex in GetSideVertexs())
+            {
+                PathTree pathTree = new PathTree(sideVertex);
+                List<Vertex> connectVertex = pathTree.FindPathsByRange(Graph, FIFTY_METER);
+
+                double minDistance = double.MaxValue;
+                Vertex minVertex = null;
+                foreach (Vertex vertex in Graph.Vertices)
+                {
+                    if (connectVertex.Contains(vertex)) continue;
+
+                    double distance = Arithmetics.CalculateDistance(vertex.Coordinate, sideVertex.Coordinate);
+                    if (distance < minDistance && distance < TEN_METER)
+                    {
+                        minDistance = distance;
+                        minVertex = vertex;
+                    }
+                }
+
+                if (minVertex != null) Graph.AddEdge(new Edge<Vertex>(sideVertex, minVertex));
+            }
+        }
+
+        private void FindNearPointPair(List<Vertex> points)
+        {
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                if (Arithmetics.CalculateDistance(points[i].Coordinate, points[i + 1].Coordinate) < ROAD_WIDTH_OFFSET)
+                {
+                    Graph.AddEdge(new Edge<Vertex>(points[i], points[i + 1]));
+                }
+            }
         }
 
         public List<Vertex> GetSideVertexs()
@@ -42,7 +140,7 @@ namespace KNNonAir
 
             foreach(Vertex vertex in Graph.Vertices)
             {
-                if (IsEdgeContainsVertex(vertex) < 2) sideVertexs.Add(vertex);
+                if (IsEdgeContainsVertex(vertex) != null) sideVertexs.Add(vertex);
             }
 
             return sideVertexs;
@@ -116,16 +214,19 @@ namespace KNNonAir
             Graph.AddEdge(new Edge<Vertex>(vertex, edge.Target));
         }
 
-        private int IsEdgeContainsVertex(Vertex vertex)
+        private Edge<Vertex> IsEdgeContainsVertex(Vertex vertex)
         {
             int count = 0;
+            Edge<Vertex> sideEdge = null;
 
             foreach (Edge<Vertex> edge in Graph.Edges)
             {
                 if (edge.IsAdjacent(vertex)) count++;
+                sideEdge = edge;
             }
 
-            return count;
+            if (count < 2) return sideEdge;
+            return null;
         }
 
         public void GenerateNVD()
