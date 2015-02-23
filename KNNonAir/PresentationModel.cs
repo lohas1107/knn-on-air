@@ -17,21 +17,19 @@ namespace KNNonAir
             _roadNetwork = roadNetwork;
         }
 
-        public List<MapRoute> GetNVCMapRouteList(Vertex vertex)
+        public List<List<PointLatLng>> GetRoads()
         {
-            List<MapRoute> mapRouteList = new List<MapRoute>();
+            List<List<PointLatLng>> roads = new List<List<PointLatLng>>();
 
-            foreach (Edge<Vertex> edge in _roadNetwork.NVD[vertex].Graph.Edges)
+            foreach (Edge<Vertex> edge in _roadNetwork.Graph.Edges)
             {
-                PointLatLng start = new PointLatLng(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude);
-                PointLatLng end = new PointLatLng(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude);
-                MapRoute mapRoute = GMap.NET.MapProviders.GoogleMapProvider.Instance.GetRoute(start, end, false, true, 15);
-                if (mapRoute == null) continue;
-
-                mapRouteList.Add(mapRoute);
+                List<PointLatLng> points = new List<PointLatLng>();
+                points.Add(new PointLatLng(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude));
+                points.Add(new PointLatLng(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude));
+                roads.Add(points);
             }
 
-            return mapRouteList;
+            return roads;
         }
 
         public List<Tuple<Color, List<PointLatLng>>> GetNVDEdges()

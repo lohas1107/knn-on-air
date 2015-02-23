@@ -1,5 +1,4 @@
-﻿using GMap.NET;
-using QuickGraph;
+﻿using QuickGraph;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +11,7 @@ namespace KNNonAir
         private const double TEN_METER = 0.0001;
 
         public event Handler LoadRoadsCompleted;
-        public event Handler LoadPoIsCompleted;
+        public event VertexListHandler LoadPoIsCompleted;
         public event Handler GenerateNVDCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
@@ -38,8 +37,8 @@ namespace KNNonAir
                 Vertex source = edge.Source;
                 Vertex target = edge.Target;
 
-                if (!Graph.ContainsVertex(source)) sourceEdge = FindOverlapedEdge(source, Arithmetics.GetSlope(edge), 0.1, true, ROAD_WIDTH_OFFSET);
-                if (!Graph.ContainsVertex(target)) targetEdge = FindOverlapedEdge(target, Arithmetics.GetSlope(edge), 0.1, true, ROAD_WIDTH_OFFSET);
+                if (!Graph.ContainsVertex(source)) sourceEdge = FindOverlapedEdge(source, Arithmetics.GetSlope(edge));
+                if (!Graph.ContainsVertex(target)) targetEdge = FindOverlapedEdge(target, Arithmetics.GetSlope(edge));
                 if (sourceEdge != null) source = AdjustOverlap(sourceEdge, target);
                 if (targetEdge != null) target = AdjustOverlap(targetEdge, source);
                 if (sourceEdge != null && targetEdge != null && (sourceEdge == targetEdge)) continue;
@@ -53,7 +52,13 @@ namespace KNNonAir
             LoadRoadsCompleted();
         }
 
-        private Edge<Vertex> FindOverlapedEdge(Vertex vertex, double slope, double angle, bool isBelow, double far)
+        /// <summary>
+        /// 找出有重疊到的 Edge
+        /// </summary>
+        /// <param name="vertex">投影到 Edge 上</param>
+        /// <param name="slope">判斷斜率相近的 Edge</param>
+        /// <returns></returns>
+        private Edge<Vertex> FindOverlapedEdge(Vertex vertex, double slope)
         {
             Vertex projectVertex = null;
             Edge<Vertex> projectEdge = null;
@@ -61,18 +66,14 @@ namespace KNNonAir
 
             foreach (Edge<Vertex> edge in Graph.Edges)
             {
-                if (isBelow)
-                {
-                    if (edge.Source == vertex || edge.Target == vertex) return null;
-                    if (Arithmetics.GetIncludedAngle(Arithmetics.GetSlope(edge), slope) > angle) continue;
-                }
-                if (!isBelow && Arithmetics.GetIncludedAngle(Arithmetics.GetSlope(edge), slope) < angle) continue;
+                if (edge.Source == vertex || edge.Target == vertex) return null;
+                if (Arithmetics.GetIncludedAngle(Arithmetics.GetSlope(edge), slope) > 0.1) continue;
 
-                projectVertex = Arithmetics.Project(edge.Source.Coordinate, edge.Target.Coordinate, vertex.Coordinate);
+                projectVertex = Arithmetics.Project(edge.Source, edge.Target, vertex);
                 if (projectVertex == null) continue;
 
-                double distance = Arithmetics.CalculateDistance( vertex.Coordinate, projectVertex.Coordinate);
-                if (distance < minDistance && distance < far)
+                double distance = Arithmetics.GetDistance( vertex, projectVertex);
+                if (distance < minDistance && distance < ROAD_WIDTH_OFFSET)
                 {
                     minDistance = distance;
                     projectEdge = edge;
@@ -82,10 +83,16 @@ namespace KNNonAir
             return projectEdge;
         }
 
+        /// <summary>
+        /// 將重疊到的點，調整到沒有重疊的位置
+        /// </summary>
+        /// <param name="edge">被重疊到的 Edge</param>
+        /// <param name="vertex">重疊的 Edge 另一端</param>
+        /// <returns></returns>
         private Vertex AdjustOverlap(Edge<Vertex> edge, Vertex vertex)
         {
-            double sourceDistance = Arithmetics.CalculateDistance(edge.Source.Coordinate, vertex.Coordinate);
-            double targetDistance = Arithmetics.CalculateDistance(edge.Target.Coordinate, vertex.Coordinate);
+            double sourceDistance = Arithmetics.GetDistance(edge.Source, vertex);
+            double targetDistance = Arithmetics.GetDistance(edge.Target, vertex);
 
             if (sourceDistance < targetDistance) return edge.Source;
             else return edge.Target;            
@@ -93,13 +100,14 @@ namespace KNNonAir
 
         private void ConnectBrokenEdge()
         {
+            // 孤點對孤點連接
             List<Vertex> sideVertexs = GetSideVertexs();
-
             sideVertexs = sideVertexs.OrderBy(o => o.Coordinate.Latitude).ToList();
             FindNearPointPair(sideVertexs);
             sideVertexs = sideVertexs.OrderBy(o => o.Coordinate.Longitude).ToList();
             FindNearPointPair(sideVertexs);
 
+            // 孤點對線連接
             foreach (Vertex sideVertex in GetSideVertexs())
             {
                 PathTree pathTree = new PathTree(sideVertex);
@@ -111,7 +119,7 @@ namespace KNNonAir
                 {
                     if (connectVertex.Contains(vertex)) continue;
 
-                    double distance = Arithmetics.CalculateDistance(vertex.Coordinate, sideVertex.Coordinate);
+                    double distance = Arithmetics.GetDistance(vertex, sideVertex);
                     if (distance < minDistance && distance < TEN_METER)
                     {
                         minDistance = distance;
@@ -127,7 +135,7 @@ namespace KNNonAir
         {
             for (int i = 0; i < points.Count - 1; i++)
             {
-                if (Arithmetics.CalculateDistance(points[i].Coordinate, points[i + 1].Coordinate) < ROAD_WIDTH_OFFSET)
+                if (Arithmetics.GetDistance(points[i], points[i + 1]) < ROAD_WIDTH_OFFSET)
                 {
                     Graph.AddEdge(new Edge<Vertex>(points[i], points[i + 1]));
                 }
@@ -140,27 +148,22 @@ namespace KNNonAir
 
             foreach(Vertex vertex in Graph.Vertices)
             {
-                if (IsEdgeContainsVertex(vertex) != null) sideVertexs.Add(vertex);
+                if (IsEdgeContainsVertex(vertex) < 2) sideVertexs.Add(vertex);
             }
 
             return sideVertexs;
         }
 
-        public List<MapRoute> GetRoadMapRouteList()
+        private int IsEdgeContainsVertex(Vertex vertex)
         {
-            List<MapRoute> mapRouteList = new List<MapRoute>();
+            int count = 0;
 
             foreach (Edge<Vertex> edge in Graph.Edges)
             {
-                PointLatLng start = new PointLatLng(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude);
-                PointLatLng end = new PointLatLng(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude);
-                MapRoute mapRoute = GMap.NET.MapProviders.GoogleMapProvider.Instance.GetRoute(start, end, false, true, 15);
-                if (mapRoute == null) continue;
-
-                mapRouteList.Add(mapRoute);
+                if (edge.IsAdjacent(vertex)) count++;
             }
 
-            return mapRouteList;
+            return count;
         }
 
         public void LoadPoIs()
@@ -176,7 +179,7 @@ namespace KNNonAir
                 PoIs.Add(adjustedPoI);
             }
 
-            LoadPoIsCompleted();
+            LoadPoIsCompleted(PoIs);
         }
 
         private Vertex AdjustPoIToEdge(Vertex poi)
@@ -187,10 +190,10 @@ namespace KNNonAir
 
             foreach (Edge<Vertex> edge in Graph.Edges)
             {
-                Vertex newPoI = Arithmetics.Project(edge.Source.Coordinate, edge.Target.Coordinate, poi.Coordinate);
+                Vertex newPoI = Arithmetics.Project(edge.Source, edge.Target, poi);
                 if (newPoI == null) continue;
 
-                double distance = Arithmetics.CalculateDistance(poi.Coordinate, newPoI.Coordinate);
+                double distance = Arithmetics.GetDistance(poi, newPoI);
                 if (distance >= minDiatance) continue;
 
                 minDiatance = distance;
@@ -212,21 +215,6 @@ namespace KNNonAir
             Graph.AddVertex(vertex);
             Graph.AddEdge(new Edge<Vertex>(edge.Source, vertex));
             Graph.AddEdge(new Edge<Vertex>(vertex, edge.Target));
-        }
-
-        private Edge<Vertex> IsEdgeContainsVertex(Vertex vertex)
-        {
-            int count = 0;
-            Edge<Vertex> sideEdge = null;
-
-            foreach (Edge<Vertex> edge in Graph.Edges)
-            {
-                if (edge.IsAdjacent(vertex)) count++;
-                sideEdge = edge;
-            }
-
-            if (count < 2) return sideEdge;
-            return null;
         }
 
         public void GenerateNVD()

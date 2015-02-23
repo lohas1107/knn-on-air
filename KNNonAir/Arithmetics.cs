@@ -1,47 +1,48 @@
 ﻿using Geo;
+using QuickGraph;
 using System;
 
 namespace KNNonAir
 {
     class Arithmetics
     {
-        public static double CalculateDistance(Coordinate source, Coordinate target)
+        public static double GetDistance(Vertex source, Vertex target)
         {
-            return Math.Sqrt(Math.Pow(target.Latitude - source.Latitude, 2) + Math.Pow(target.Longitude - source.Longitude, 2));
+            return Math.Sqrt(Math.Pow(target.Coordinate.Latitude - source.Coordinate.Latitude, 2) + Math.Pow(target.Coordinate.Longitude - source.Coordinate.Longitude, 2));
         }
 
-        public static Vertex Project(Coordinate source, Coordinate target, Coordinate vertex)
+        public static Vertex Project(Vertex source, Vertex target, Vertex vertex)
         {
-            double U = ((vertex.Latitude - source.Latitude) * (target.Latitude - source.Latitude)) + ((vertex.Longitude - source.Longitude) * (target.Longitude - source.Longitude));
-            double Udenom = Math.Pow(target.Latitude - source.Latitude, 2) + Math.Pow(target.Longitude - source.Longitude, 2);
+            double U = ((vertex.Coordinate.Latitude - source.Coordinate.Latitude) * (target.Coordinate.Latitude - source.Coordinate.Latitude)) + ((vertex.Coordinate.Longitude - source.Coordinate.Longitude) * (target.Coordinate.Longitude - source.Coordinate.Longitude));
+            double Udenom = Math.Pow(target.Coordinate.Latitude - source.Coordinate.Latitude, 2) + Math.Pow(target.Coordinate.Longitude - source.Coordinate.Longitude, 2);
             U /= Udenom;
 
-            double latitude = source.Latitude + (U * (target.Latitude - source.Latitude));
-            double longitude = source.Longitude + (U * (target.Longitude - source.Longitude));
+            double latitude = source.Coordinate.Latitude + (U * (target.Coordinate.Latitude - source.Coordinate.Latitude));
+            double longitude = source.Coordinate.Longitude + (U * (target.Coordinate.Longitude - source.Coordinate.Longitude));
             Vertex result = new InterestPoint(latitude, longitude);
 
             double minX, maxX, minY, maxY;
-            minX = Math.Min(source.Latitude, target.Latitude);
-            maxX = Math.Max(source.Latitude, target.Latitude);
-            minY = Math.Min(source.Longitude, target.Longitude);
-            maxY = Math.Max(source.Longitude, target.Longitude);
+            minX = Math.Min(source.Coordinate.Latitude, target.Coordinate.Latitude);
+            maxX = Math.Max(source.Coordinate.Latitude, target.Coordinate.Latitude);
+            minY = Math.Min(source.Coordinate.Longitude, target.Coordinate.Longitude);
+            maxY = Math.Max(source.Coordinate.Longitude, target.Coordinate.Longitude);
 
             bool isValid = (result.Coordinate.Latitude >= minX && result.Coordinate.Latitude <= maxX) && (result.Coordinate.Longitude >= minY && result.Coordinate.Longitude <= maxY);
             return isValid ? result : null;
         }
 
-        public static Vertex FindDivisionPoint(double distance, Coordinate source, Coordinate target)
+        public static Vertex FindDivisionPoint(double distance, Vertex source, Vertex target)
         {
             double m = distance;
-            double n = CalculateDistance(source, target) - distance;
+            double n = GetDistance(source, target) - distance;
 
-            double latitude = (m * target.Latitude + n * source.Latitude) / (m + n);
-            double longitude = (m * target.Longitude + n * source.Longitude) / (m + n);
+            double latitude = (m * target.Coordinate.Latitude + n * source.Coordinate.Latitude) / (m + n);
+            double longitude = (m * target.Coordinate.Longitude + n * source.Coordinate.Longitude) / (m + n);
 
             return new Vertex(latitude, longitude);
         }
 
-        public static double GetSlope(QuickGraph.Edge<Vertex> edge)
+        public static double GetSlope(Edge<Vertex> edge)
         {
             double x = edge.Target.Coordinate.Latitude - edge.Source.Coordinate.Latitude;
             double y = edge.Target.Coordinate.Longitude - edge.Source.Coordinate.Longitude;

@@ -39,7 +39,6 @@
             this.addPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionToolStrip = new System.Windows.Forms.ToolStrip();
             this.nvdToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -152,11 +151,10 @@
             // 
             this.actionToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.actionToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.nvdToolStripButton,
-            this.toolStripButton1});
+            this.nvdToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(47, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(89, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(66, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -168,16 +166,6 @@
             this.nvdToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.nvdToolStripButton.Text = "Generate NVD";
             this.nvdToolStripButton.Click += new System.EventHandler(this.ClickNvdToolStripButton);
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // MainForm
             // 
@@ -216,7 +204,6 @@
         private System.Windows.Forms.ToolStripMenuItem addPoIsToolStripMenuItem;
         private System.Windows.Forms.ToolStrip actionToolStrip;
         private System.Windows.Forms.ToolStripButton nvdToolStripButton;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
 

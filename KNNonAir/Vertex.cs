@@ -5,14 +5,15 @@ namespace KNNonAir
 {
     class Vertex
     {
-        private Point point;
+        private Point _point;
         public Coordinate Coordinate { get; set; }
 
-        public Vertex() { }
+        public Vertex() { } // InterestPoint() 繼承 Vertex()
+
         public Vertex(double latitude, double longitude)
         {
-            point = new Point(latitude, longitude);
-            Coordinate = point.Coordinate;
+            _point = new Point(latitude, longitude);
+            Coordinate = _point.Coordinate;
         }
     }
 }
