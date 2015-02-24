@@ -116,5 +116,10 @@ namespace KNNonAir
 
             DrawMarkers(_roadNetwork.PoIs);
         }
+
+        private void ClickSaveNVDToolStripMenuItem(object sender, EventArgs e)
+        {
+
+        }
     }
 }
