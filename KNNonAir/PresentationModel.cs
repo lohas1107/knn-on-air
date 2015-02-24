@@ -6,15 +6,15 @@ using System.Drawing;
 
 namespace KNNonAir
 {
-    enum RouteColors { Red, Orange, Yellow, Green, SkyBlue, Blue, Purple };
-
     class PresentationModel
     {
         private RoadNetwork _roadNetwork;
+        private Random _random;
 
         public PresentationModel(RoadNetwork roadNetwork)
         {
             _roadNetwork = roadNetwork;
+            _random = new Random(Guid.NewGuid().GetHashCode());
         }
 
         public List<List<PointLatLng>> GetRoads()
@@ -35,11 +35,11 @@ namespace KNNonAir
         public List<Tuple<Color, List<PointLatLng>>> GetNVDEdges()
         {
             List<Tuple<Color, List<PointLatLng>>> nvdEdges = new List<Tuple<Color, List<PointLatLng>>>();
-            Color color;
+
 
             foreach (KeyValuePair<Vertex, VoronoiCell> nvc in _roadNetwork.NVD)
             {
-                color = RandomizeColor();
+                Color color = Color.FromArgb(_random.Next(0, 255), _random.Next(0, 255), _random.Next(0, 255));
 
                 foreach (Edge<Vertex> edge in nvc.Value.Graph.Edges)
                 {
@@ -51,14 +51,6 @@ namespace KNNonAir
             }
 
             return nvdEdges;
-        }
-
-        private Color RandomizeColor()
-        {
-            Array values = Enum.GetValues(typeof(RouteColors));
-            Random random = new Random();
-            RouteColors randomColor = (RouteColors)values.GetValue(random.Next(values.Length));
-            return Color.FromName(randomColor.ToString());
         }
     }
 }

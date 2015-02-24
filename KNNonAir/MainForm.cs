@@ -61,7 +61,7 @@ namespace KNNonAir
 
             foreach (List<PointLatLng> points in _presentationModel.GetRoads())
             {
-                SetPolygon(points, Color.Red);
+                SetPolygon(points, Color.Red, 100);
             }
             
             gmap.Overlays.Add(_polyOverlay);
@@ -70,11 +70,11 @@ namespace KNNonAir
             DrawMarkers(_roadNetwork.GetSideVertexs());
         }
 
-        private void SetPolygon(List<PointLatLng> points, Color color)
+        private void SetPolygon(List<PointLatLng> points, Color color, int alpha)
         {
             GMapPolygon polygon = new GMapPolygon(points, "");
-            polygon.Fill = new SolidBrush(Color.FromArgb(50, color));
-            polygon.Stroke = new Pen(Color.FromArgb(80, color), 3);
+            polygon.Fill = new SolidBrush(Color.FromArgb(alpha, color));
+            polygon.Stroke = new Pen(Color.FromArgb(alpha, color), 5);
             _polyOverlay.Polygons.Add(polygon);
         }
 
@@ -109,10 +109,12 @@ namespace KNNonAir
 
             foreach (Tuple<Color, List<PointLatLng>> edge in _presentationModel.GetNVDEdges())
             {
-                SetPolygon(edge.Item2, edge.Item1);
+                SetPolygon(edge.Item2, edge.Item1, 255);
             }
 
             gmap.Overlays.Add(_polyOverlay);
+
+            DrawMarkers(_roadNetwork.PoIs);
         }
     }
 }
