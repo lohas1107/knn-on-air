@@ -1,10 +1,11 @@
-﻿using GMap.NET;
-using GMap.NET.WindowsForms;
-using GMap.NET.WindowsForms.Markers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using GMap.NET;
+using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
+using KNNonAir.Access;
 
 namespace KNNonAir
 {
@@ -119,7 +120,11 @@ namespace KNNonAir
 
         private void ClickSaveNVDToolStripMenuItem(object sender, EventArgs e)
         {
+            List<NVDItem> nvdList = new List<NVDItem>();
+            nvdList.Add(new NVDItem() { PoI = new double[] { 10.0, 1.0 } });
+            nvdList.Add(new NVDItem() { PoI = new double[] { 7.0, 8.0 } });
 
+            FileIO.SaveNVDFile(nvdList);
         }
     }
 }

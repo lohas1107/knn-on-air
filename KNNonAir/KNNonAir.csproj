@@ -85,6 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Access\NVDItem.cs" />
     <Compile Include="Domain\Service\Arithmetics.cs" />
     <Compile Include="Domain\Entity\BorderPoint.cs" />
     <Compile Include="Domain\Service\FileIO.cs" />
@@ -130,7 +131,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Access\" />
     <Folder Include="Domain\IRepository\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
