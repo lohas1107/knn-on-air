@@ -1,10 +1,12 @@
-﻿using GMap.NET;
-using GMap.NET.WindowsForms;
-using GMap.NET.WindowsForms.Markers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using GMap.NET;
+using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
+using KNNonAir.Access;
+using KNNonAir.Domain.Service;
 
 namespace KNNonAir
 {
@@ -115,6 +117,19 @@ namespace KNNonAir
             gmap.Overlays.Add(_polyOverlay);
 
             DrawMarkers(_roadNetwork.PoIs);
+        }
+
+        private void ClickSaveNVDToolStripMenuItem(object sender, EventArgs e)
+        {
+            FileIO.SaveNVDFile(Parser.ParseNVD(_roadNetwork.NVD));
+        }
+
+        private void ClickAddNVDToolStripMenuItem(object sender, EventArgs e)
+        {
+            List<NVCInfo> nvcList = FileIO.ReadNVDFile();
+            _roadNetwork.NVD = Parser.ParseNVCInfo(nvcList);
+            _roadNetwork.PoIs = Parser.ParsePoIInfo(nvcList);
+            DrawNVD();
         }
     }
 }

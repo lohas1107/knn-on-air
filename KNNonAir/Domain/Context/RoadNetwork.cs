@@ -42,6 +42,7 @@ namespace KNNonAir
                 if (sourceEdge != null) source = AdjustOverlap(sourceEdge, target);
                 if (targetEdge != null) target = AdjustOverlap(targetEdge, source);
                 if (sourceEdge != null && targetEdge != null && (sourceEdge == targetEdge)) continue;
+                if (IsEdgeContainsVertex(source) > 1 && IsEdgeContainsVertex(target) > 1) continue;
 
                 Graph.AddVertex(source);
                 Graph.AddVertex(target);
