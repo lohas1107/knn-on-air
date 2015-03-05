@@ -13,12 +13,15 @@ namespace KNNonAir
 {
     class FileIO
     {
+        private const string GEOJSON_FILE_FILTER = "geojson files (*.geojson)|*.geojson";
+        private const string XML_FILE_FILTER = "xml files (*.xml)|*.xml";
+
         private static string _fileName;
 
-        private static DialogResult OpenGeoJsonFile()
+        private static DialogResult OpenFile(string filter)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "geojson files (*.geojson)|*.geojson";
+            openFileDialog.Filter = filter;
             openFileDialog.RestoreDirectory = true;
 
             DialogResult result = openFileDialog.ShowDialog();
@@ -27,9 +30,21 @@ namespace KNNonAir
             return result;
         }
 
+        private static DialogResult SaveFile(string filter)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = filter;
+            saveFileDialog.RestoreDirectory = true;
+
+            DialogResult result = saveFileDialog.ShowDialog();
+            _fileName = saveFileDialog.FileName;
+
+            return result;
+        }
+
         public static List<Edge<Vertex>> ReadRoadFile()
         {
-            if (OpenGeoJsonFile() == DialogResult.Cancel) return null;
+            if (OpenFile(GEOJSON_FILE_FILTER) == DialogResult.Cancel) return null;
 
             List<Edge<Vertex>> edgeList = new List<Edge<Vertex>>();
 
@@ -76,7 +91,7 @@ namespace KNNonAir
 
         public static List<Vertex> ReadPoIFile()
         {
-            if (OpenGeoJsonFile() == DialogResult.Cancel) return null;
+            if (OpenFile(GEOJSON_FILE_FILTER) == DialogResult.Cancel) return null;
 
             List<Vertex> poiList = new List<Vertex>();
 
@@ -90,21 +105,9 @@ namespace KNNonAir
             return poiList;
         }
 
-        private static DialogResult SaveXMLFile()
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "xml files (*.xml)|*.xml";
-            saveFileDialog.RestoreDirectory = true;
-
-            DialogResult result = saveFileDialog.ShowDialog();
-            _fileName = saveFileDialog.FileName;
-
-            return result;
-        }
-
         public static void SaveNVDFile(List<NVCInfo> nvd)
         {
-            if (SaveXMLFile() == DialogResult.Cancel) return;
+            if (SaveFile(XML_FILE_FILTER) == DialogResult.Cancel) return;
 
             StringWriter writer = new StringWriter(new StringBuilder());
             XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
@@ -112,21 +115,9 @@ namespace KNNonAir
             File.WriteAllText(_fileName, writer.ToString());
         }
 
-        private static DialogResult OpenXMLFile()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "xml files (*.xml)|*.xml";
-            openFileDialog.RestoreDirectory = true;
-
-            DialogResult result = openFileDialog.ShowDialog();
-            _fileName = openFileDialog.FileName;
-
-            return result;
-        }
-
         public static List<NVCInfo> ReadNVDFile()
         {
-            if (OpenXMLFile() == DialogResult.Cancel) return null;
+            if (OpenFile(XML_FILE_FILTER) == DialogResult.Cancel) return null;
             
             XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
             List<NVCInfo> nvdList = (List<NVCInfo>)serializer.Deserialize(File.OpenText(_fileName));
