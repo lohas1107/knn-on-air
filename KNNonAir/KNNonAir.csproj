@@ -85,10 +85,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Access\EdgeInfo.cs" />
+    <Compile Include="Access\NVCInfo.cs" />
+    <Compile Include="Access\VertexInfo.cs" />
     <Compile Include="Domain\Service\Arithmetics.cs" />
     <Compile Include="Domain\Entity\BorderPoint.cs" />
     <Compile Include="Domain\Service\FileIO.cs" />
     <Compile Include="Domain\Entity\InterestPoint.cs" />
+    <Compile Include="Domain\Service\Parser.cs" />
     <Compile Include="Presentation\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,7 +134,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Access\" />
     <Folder Include="Domain\IRepository\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

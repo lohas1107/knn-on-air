@@ -37,6 +37,9 @@
             this.readFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.addRoadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.saveNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionToolStrip = new System.Windows.Forms.ToolStrip();
             this.nvdToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.gmapStatusStrip.SuspendLayout();
@@ -116,10 +119,11 @@
             // 
             this.fileToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.fileToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.readFileToolStripSplitButton});
+            this.readFileToolStripSplitButton,
+            this.saveFileToolStripSplitButton});
             this.fileToolStrip.Location = new System.Drawing.Point(3, 0);
             this.fileToolStrip.Name = "fileToolStrip";
-            this.fileToolStrip.Size = new System.Drawing.Size(44, 25);
+            this.fileToolStrip.Size = new System.Drawing.Size(76, 25);
             this.fileToolStrip.TabIndex = 0;
             // 
             // readFileToolStripSplitButton
@@ -127,32 +131,59 @@
             this.readFileToolStripSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.readFileToolStripSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addRoadsToolStripMenuItem,
-            this.addPoIsToolStripMenuItem});
+            this.addPoIsToolStripMenuItem,
+            this.addNVDToolStripMenuItem});
             this.readFileToolStripSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("readFileToolStripSplitButton.Image")));
             this.readFileToolStripSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.readFileToolStripSplitButton.Name = "readFileToolStripSplitButton";
             this.readFileToolStripSplitButton.Size = new System.Drawing.Size(32, 22);
+            this.readFileToolStripSplitButton.ToolTipText = "Read File";
             // 
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
+            // 
+            // addNVDToolStripMenuItem
+            // 
+            this.addNVDToolStripMenuItem.Name = "addNVDToolStripMenuItem";
+            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addNVDToolStripMenuItem.Text = "Add NVD";
+            this.addNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNVDToolStripMenuItem);
+            // 
+            // saveFileToolStripSplitButton
+            // 
+            this.saveFileToolStripSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveFileToolStripSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveNVDToolStripMenuItem});
+            this.saveFileToolStripSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("saveFileToolStripSplitButton.Image")));
+            this.saveFileToolStripSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveFileToolStripSplitButton.Name = "saveFileToolStripSplitButton";
+            this.saveFileToolStripSplitButton.Size = new System.Drawing.Size(32, 22);
+            this.saveFileToolStripSplitButton.ToolTipText = "Save File";
+            // 
+            // saveNVDToolStripMenuItem
+            // 
+            this.saveNVDToolStripMenuItem.Name = "saveNVDToolStripMenuItem";
+            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.saveNVDToolStripMenuItem.Text = "Save NVD";
+            this.saveNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNVDToolStripMenuItem);
             // 
             // actionToolStrip
             // 
             this.actionToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.actionToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.nvdToolStripButton});
-            this.actionToolStrip.Location = new System.Drawing.Point(47, 0);
+            this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
             this.actionToolStrip.Size = new System.Drawing.Size(66, 25);
             this.actionToolStrip.TabIndex = 1;
@@ -204,6 +235,9 @@
         private System.Windows.Forms.ToolStripMenuItem addPoIsToolStripMenuItem;
         private System.Windows.Forms.ToolStrip actionToolStrip;
         private System.Windows.Forms.ToolStripButton nvdToolStripButton;
+        private System.Windows.Forms.ToolStripSplitButton saveFileToolStripSplitButton;
+        private System.Windows.Forms.ToolStripMenuItem saveNVDToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addNVDToolStripMenuItem;
     }
 }
 

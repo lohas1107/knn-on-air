@@ -1,10 +1,13 @@
-﻿using Geo;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
+using System.Xml.Serialization;
+using Geo;
 using Geo.Geometries;
 using Geo.IO.GeoJson;
+using KNNonAir.Access;
 using QuickGraph;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
 
 namespace KNNonAir
 {
@@ -85,6 +88,50 @@ namespace KNNonAir
             }
 
             return poiList;
+        }
+
+        private static DialogResult SaveXMLFile()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "xml files (*.xml)|*.xml";
+            saveFileDialog.RestoreDirectory = true;
+
+            DialogResult result = saveFileDialog.ShowDialog();
+            _fileName = saveFileDialog.FileName;
+
+            return result;
+        }
+
+        public static void SaveNVDFile(List<NVCInfo> nvd)
+        {
+            if (SaveXMLFile() == DialogResult.Cancel) return;
+
+            StringWriter writer = new StringWriter(new StringBuilder());
+            XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
+            serializer.Serialize(writer, nvd);
+            File.WriteAllText(_fileName, writer.ToString());
+        }
+
+        private static DialogResult OpenXMLFile()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "xml files (*.xml)|*.xml";
+            openFileDialog.RestoreDirectory = true;
+
+            DialogResult result = openFileDialog.ShowDialog();
+            _fileName = openFileDialog.FileName;
+
+            return result;
+        }
+
+        public static List<NVCInfo> ReadNVDFile()
+        {
+            if (OpenXMLFile() == DialogResult.Cancel) return null;
+            
+            XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
+            List<NVCInfo> nvdList = (List<NVCInfo>)serializer.Deserialize(File.OpenText(_fileName));
+
+            return nvdList;
         }
     }
 }
