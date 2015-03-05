@@ -32,5 +32,46 @@ namespace KNNonAir.Domain.Service
 
             return nvcList;
         }
+
+        public static Dictionary<Vertex, VoronoiCell> ParseNVCInfo(List<NVCInfo> nvcList)
+        {
+            Dictionary<Vertex, VoronoiCell> nvd = new Dictionary<Vertex, VoronoiCell>();
+
+            foreach (NVCInfo nvc in nvcList)
+            {
+                VoronoiCell vc = new VoronoiCell();
+                vc.PoI = new Vertex(nvc.PoI.Latitude, nvc.PoI.Longitude);
+
+                foreach (EdgeInfo edge in nvc.Graph)
+                {
+                    Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
+                    Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
+                    vc.Graph.AddVertex(source);
+                    vc.Graph.AddVertex(target);
+                    vc.Graph.AddEdge(new Edge<Vertex>(source, target));
+                }
+
+                foreach (VertexInfo borderPoint in nvc.BPs)
+                {
+                    vc.BorderPoints.Add(new Vertex(borderPoint.Latitude, borderPoint.Longitude));
+                }
+
+                nvd.Add(vc.PoI, vc);
+            }
+
+            return nvd;
+        }
+
+        public static List<Vertex> ParsePoIInfo(List<NVCInfo> nvcList)
+        {
+            List<Vertex> pois = new List<Vertex>();
+
+            foreach (NVCInfo nvc in nvcList)
+            {
+                pois.Add(new Vertex(nvc.PoI.Latitude, nvc.PoI.Longitude));
+            }
+
+            return pois;
+        }
     }
 }
