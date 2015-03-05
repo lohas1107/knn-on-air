@@ -102,14 +102,14 @@ namespace KNNonAir
             return result;
         }
 
-        public static void SaveNVDFile(List<NVDItem> nvd)
+        public static void SaveNVDFile(List<NVCInfo> nvd)
         {
             if (SaveXMLFile() == DialogResult.Cancel) return;
 
             StringWriter writer = new StringWriter(new StringBuilder());
-            XmlSerializer serializer = new XmlSerializer(typeof(List<NVDItem>));
+            XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
             serializer.Serialize(writer, nvd);
-            File.WriteAllText(_fileName, writer.ToString()); ReadNVDFile();
+            File.WriteAllText(_fileName, writer.ToString());
         }
 
         private static DialogResult OpenXMLFile()
@@ -124,12 +124,12 @@ namespace KNNonAir
             return result;
         }
 
-        public static List<NVDItem> ReadNVDFile()
+        public static List<NVCInfo> ReadNVDFile()
         {
             if (OpenXMLFile() == DialogResult.Cancel) return null;
             
-            XmlSerializer serializer = new XmlSerializer(typeof(List<NVDItem>));
-            List<NVDItem> nvdList = (List<NVDItem>)serializer.Deserialize(File.OpenText(_fileName));
+            XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
+            List<NVCInfo> nvdList = (List<NVCInfo>)serializer.Deserialize(File.OpenText(_fileName));
 
             return nvdList;
         }
