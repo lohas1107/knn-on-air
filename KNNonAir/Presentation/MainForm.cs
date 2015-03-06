@@ -131,5 +131,10 @@ namespace KNNonAir
             _roadNetwork.PoIs = Parser.ParsePoIInfo(nvcList);
             DrawNVD();
         }
+
+        private void partitionToolStripButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

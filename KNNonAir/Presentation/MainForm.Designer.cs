@@ -42,6 +42,7 @@
             this.saveNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionToolStrip = new System.Windows.Forms.ToolStrip();
             this.nvdToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.partitionToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -74,7 +75,7 @@
             this.gmap.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.gmap.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gmap.ShowTileGridLines = false;
-            this.gmap.Size = new System.Drawing.Size(784, 514);
+            this.gmap.Size = new System.Drawing.Size(784, 515);
             this.gmap.TabIndex = 0;
             this.gmap.Zoom = 7D;
             this.gmap.MouseLeave += new System.EventHandler(this.MouseLeaveGMap);
@@ -84,7 +85,7 @@
             // 
             this.gmapStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.gmapToolStripStatusLabel});
-            this.gmapStatusStrip.Location = new System.Drawing.Point(0, 539);
+            this.gmapStatusStrip.Location = new System.Drawing.Point(0, 540);
             this.gmapStatusStrip.Name = "gmapStatusStrip";
             this.gmapStatusStrip.Size = new System.Drawing.Size(784, 22);
             this.gmapStatusStrip.TabIndex = 1;
@@ -103,11 +104,11 @@
             // toolStripContainer.ContentPanel
             // 
             this.toolStripContainer.ContentPanel.Controls.Add(this.gmap);
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(784, 514);
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(784, 515);
             this.toolStripContainer.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer.Margin = new System.Windows.Forms.Padding(0);
             this.toolStripContainer.Name = "toolStripContainer";
-            this.toolStripContainer.Size = new System.Drawing.Size(784, 539);
+            this.toolStripContainer.Size = new System.Drawing.Size(784, 540);
             this.toolStripContainer.TabIndex = 2;
             // 
             // toolStripContainer.TopToolStripPanel
@@ -142,21 +143,21 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
             // addNVDToolStripMenuItem
             // 
             this.addNVDToolStripMenuItem.Name = "addNVDToolStripMenuItem";
-            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.addNVDToolStripMenuItem.Text = "Add NVD";
             this.addNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNVDToolStripMenuItem);
             // 
@@ -182,10 +183,11 @@
             // 
             this.actionToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.actionToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.nvdToolStripButton});
+            this.nvdToolStripButton,
+            this.partitionToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(66, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(58, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -198,11 +200,21 @@
             this.nvdToolStripButton.Text = "Generate NVD";
             this.nvdToolStripButton.Click += new System.EventHandler(this.ClickNvdToolStripButton);
             // 
+            // partitionToolStripButton
+            // 
+            this.partitionToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.partitionToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("partitionToolStripButton.Image")));
+            this.partitionToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.partitionToolStripButton.Name = "partitionToolStripButton";
+            this.partitionToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.partitionToolStripButton.Text = "Partition";
+            this.partitionToolStripButton.Click += new System.EventHandler(this.partitionToolStripButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.ClientSize = new System.Drawing.Size(784, 562);
             this.Controls.Add(this.toolStripContainer);
             this.Controls.Add(this.gmapStatusStrip);
             this.Name = "MainForm";
@@ -238,6 +250,7 @@
         private System.Windows.Forms.ToolStripSplitButton saveFileToolStripSplitButton;
         private System.Windows.Forms.ToolStripMenuItem saveNVDToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNVDToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton partitionToolStripButton;
     }
 }
 
