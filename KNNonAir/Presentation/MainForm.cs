@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using GMap.NET;
+﻿using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using KNNonAir.Access;
 using KNNonAir.Domain.Service;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace KNNonAir
 {
@@ -132,9 +132,9 @@ namespace KNNonAir
             DrawNVD();
         }
 
-        private void partitionToolStripButton_Click(object sender, EventArgs e)
+        private void ClickPartitionToolStripButton(object sender, EventArgs e)
         {
-
+            _roadNetwork.Partition(16);
         }
     }
 }

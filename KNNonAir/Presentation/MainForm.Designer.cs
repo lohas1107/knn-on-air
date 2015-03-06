@@ -208,7 +208,7 @@
             this.partitionToolStripButton.Name = "partitionToolStripButton";
             this.partitionToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.partitionToolStripButton.Text = "Partition";
-            this.partitionToolStripButton.Click += new System.EventHandler(this.partitionToolStripButton_Click);
+            this.partitionToolStripButton.Click += new System.EventHandler(this.ClickPartitionToolStripButton);
             // 
             // MainForm
             // 
