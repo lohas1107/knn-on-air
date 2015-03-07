@@ -43,6 +43,9 @@
             this.actionToolStrip = new System.Windows.Forms.ToolStrip();
             this.nvdToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.partitionToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -143,21 +146,21 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
             // addNVDToolStripMenuItem
             // 
             this.addNVDToolStripMenuItem.Name = "addNVDToolStripMenuItem";
-            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addNVDToolStripMenuItem.Text = "Add NVD";
             this.addNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNVDToolStripMenuItem);
             // 
@@ -175,7 +178,7 @@
             // saveNVDToolStripMenuItem
             // 
             this.saveNVDToolStripMenuItem.Name = "saveNVDToolStripMenuItem";
-            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.saveNVDToolStripMenuItem.Text = "Save NVD";
             this.saveNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNVDToolStripMenuItem);
             // 
@@ -184,10 +187,13 @@
             this.actionToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.actionToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.nvdToolStripButton,
-            this.partitionToolStripButton});
+            this.toolStripSeparator1,
+            this.partitionToolStripButton,
+            this.partitionToolStripComboBox,
+            this.toolStripSeparator2});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(58, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(146, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -209,6 +215,29 @@
             this.partitionToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.partitionToolStripButton.Text = "Partition";
             this.partitionToolStripButton.Click += new System.EventHandler(this.ClickPartitionToolStripButton);
+            // 
+            // partitionToolStripComboBox
+            // 
+            this.partitionToolStripComboBox.AutoSize = false;
+            this.partitionToolStripComboBox.Items.AddRange(new object[] {
+            "16",
+            "32",
+            "64",
+            "128"});
+            this.partitionToolStripComboBox.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
+            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 25);
+            this.partitionToolStripComboBox.Text = "16";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // MainForm
             // 
@@ -251,6 +280,9 @@
         private System.Windows.Forms.ToolStripMenuItem saveNVDToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNVDToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton partitionToolStripButton;
+        private System.Windows.Forms.ToolStripComboBox partitionToolStripComboBox;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 
