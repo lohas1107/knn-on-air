@@ -33,7 +33,8 @@ namespace KNNonAir.Domain.Service
 
         private bool canPartition(Dictionary<Vertex, VoronoiCell> nvd, int depth, int frames, RegionHandler partitionCompleted)
         {
-            if (nvd.Count == 0 || depth >= Math.Sqrt(frames))
+            if (nvd.Count == 0) return true;
+            if (depth == Math.Log(frames, 2))
             {
                 Region region = new Region();
                 foreach (KeyValuePair<Vertex, VoronoiCell> nvc in nvd) region.AddNVC(nvc);

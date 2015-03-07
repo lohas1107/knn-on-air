@@ -134,7 +134,7 @@ namespace KNNonAir
 
         private void ClickPartitionToolStripButton(object sender, EventArgs e)
         {
-            _roadNetwork.Partition(16);
+            _roadNetwork.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
         }
     }
 }
