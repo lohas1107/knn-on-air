@@ -1,4 +1,5 @@
-﻿using KNNonAir.Domain.Entity;
+﻿using KNNonAir.Access;
+using KNNonAir.Domain.Entity;
 using KNNonAir.Domain.Service;
 using QuickGraph;
 using System.Collections.Generic;
@@ -227,6 +228,13 @@ namespace KNNonAir
             {
                 NVD.Add(poi, new PathTree(poi).GenerateNVC(Graph));
             }
+        }
+
+        public void AddNVD()
+        {
+            List<NVCInfo> nvcList = FileIO.ReadNVDFile();
+            NVD = Parser.ParseNVCInfo(nvcList);
+            PoIs = Parser.ParsePoIInfo(nvcList);
         }
 
         public void Partition(int frames)

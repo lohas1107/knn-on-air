@@ -1,7 +1,6 @@
 ﻿using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
-using KNNonAir.Access;
 using KNNonAir.Domain.Service;
 using System;
 using System.Collections.Generic;
@@ -126,9 +125,7 @@ namespace KNNonAir
 
         private void ClickAddNVDToolStripMenuItem(object sender, EventArgs e)
         {
-            List<NVCInfo> nvcList = FileIO.ReadNVDFile();
-            _roadNetwork.NVD = Parser.ParseNVCInfo(nvcList);
-            _roadNetwork.PoIs = Parser.ParsePoIInfo(nvcList);
+            _roadNetwork.AddNVD();
             DrawNVD(_presentationModel.GetNVDEdges());
         }
 
