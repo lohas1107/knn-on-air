@@ -1,13 +1,15 @@
 ﻿using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
+using KNNonAir.Domain.Context;
+using KNNonAir.Domain.Entity;
 using KNNonAir.Domain.Service;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace KNNonAir
+namespace KNNonAir.Presentation
 {
     public partial class MainForm : Form
     {

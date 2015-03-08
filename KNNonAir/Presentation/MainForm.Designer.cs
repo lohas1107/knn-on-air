@@ -1,4 +1,4 @@
-﻿namespace KNNonAir
+﻿namespace KNNonAir.Presentation
 {
     partial class MainForm
     {

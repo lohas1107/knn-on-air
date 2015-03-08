@@ -5,7 +5,7 @@ using QuickGraph;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Context
 {
     class RoadNetwork
     {

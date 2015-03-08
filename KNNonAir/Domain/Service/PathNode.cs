@@ -1,7 +1,8 @@
-﻿using QuickGraph;
+﻿using KNNonAir.Domain.Entity;
+using QuickGraph;
 using System.Collections.Generic;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Service
 {
     class PathNode
     {

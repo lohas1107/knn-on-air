@@ -1,7 +1,7 @@
 ﻿using Geo;
 using Geo.Geometries;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Entity
 {
     class Vertex
     {
