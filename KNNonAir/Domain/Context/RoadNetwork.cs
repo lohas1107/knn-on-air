@@ -46,7 +46,7 @@ namespace KNNonAir
                 if (sourceEdge != null) source = AdjustOverlap(sourceEdge, target);
                 if (targetEdge != null) target = AdjustOverlap(targetEdge, source);
                 if (sourceEdge != null && targetEdge != null && (sourceEdge == targetEdge)) continue;
-                if (IsEdgeContainsVertex(source) > 1 && IsEdgeContainsVertex(target) > 1) continue;
+                if (ConnectVertexCount(source) > 1 && ConnectVertexCount(target) > 1) continue;
 
                 Graph.AddVertex(source);
                 Graph.AddVertex(target);
@@ -153,13 +153,13 @@ namespace KNNonAir
 
             foreach(Vertex vertex in Graph.Vertices)
             {
-                if (IsEdgeContainsVertex(vertex) < 2) sideVertexs.Add(vertex);
+                if (ConnectVertexCount(vertex) < 2) sideVertexs.Add(vertex);
             }
 
             return sideVertexs;
         }
 
-        private int IsEdgeContainsVertex(Vertex vertex)
+        private int ConnectVertexCount(Vertex vertex)
         {
             int count = 0;
 
