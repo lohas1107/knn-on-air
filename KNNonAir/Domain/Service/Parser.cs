@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using KNNonAir.Access;
+﻿using KNNonAir.Access;
+using KNNonAir.Domain.Entity;
 using QuickGraph;
+using System.Collections.Generic;
 
 namespace KNNonAir.Domain.Service
 {

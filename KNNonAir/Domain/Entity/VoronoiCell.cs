@@ -1,7 +1,7 @@
 ﻿using QuickGraph;
 using System.Collections.Generic;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Entity
 {
     class VoronoiCell
     {

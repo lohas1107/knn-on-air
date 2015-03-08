@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using Geo;
+using Geo.Geometries;
+using Geo.IO.GeoJson;
+using KNNonAir.Access;
+using KNNonAir.Domain.Entity;
+using QuickGraph;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using Geo;
-using Geo.Geometries;
-using Geo.IO.GeoJson;
-using KNNonAir.Access;
-using QuickGraph;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Service
 {
     class FileIO
     {

@@ -1,10 +1,11 @@
 ﻿using GMap.NET;
+using KNNonAir.Domain.Entity;
 using QuickGraph;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Context
 {
     class PresentationModel
     {

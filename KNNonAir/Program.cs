@@ -1,4 +1,6 @@
 ﻿using KNNonAir.Domain.Entity;
+using KNNonAir.Domain.Service;
+using KNNonAir.Presentation;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;

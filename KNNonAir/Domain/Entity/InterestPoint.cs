@@ -1,5 +1,5 @@
 ﻿
-namespace KNNonAir
+namespace KNNonAir.Domain.Entity
 {
     class InterestPoint : Vertex
     {

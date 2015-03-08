@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Entity
 {
     class BorderPoint : Vertex
     {
