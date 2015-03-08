@@ -27,7 +27,6 @@ namespace KNNonAir
             _roadNetwork = new RoadNetwork();
             _roadNetwork.LoadRoadsCompleted += DrawRoads;
             _roadNetwork.LoadPoIsCompleted += DrawMarkers;
-            _roadNetwork.GenerateNVDCompleted += DrawNVD;
 
             _presentationModel = new PresentationModel(_roadNetwork);
         }
@@ -102,14 +101,15 @@ namespace KNNonAir
         private void ClickNvdToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateNVD();
+            DrawNVD(_presentationModel.GetNVDEdges());
         }
 
-        private void DrawNVD()
+        private void DrawNVD(List<Tuple<Color, List<PointLatLng>>> nvdEdges)
         {
             gmap.Overlays.Remove(_polyOverlay);
             _polyOverlay = new GMapOverlay("polygons");
 
-            foreach (Tuple<Color, List<PointLatLng>> edge in _presentationModel.GetNVDEdges())
+            foreach (Tuple<Color, List<PointLatLng>> edge in nvdEdges)
             {
                 SetPolygon(edge.Item2, edge.Item1, 255);
             }
@@ -129,12 +129,13 @@ namespace KNNonAir
             List<NVCInfo> nvcList = FileIO.ReadNVDFile();
             _roadNetwork.NVD = Parser.ParseNVCInfo(nvcList);
             _roadNetwork.PoIs = Parser.ParsePoIInfo(nvcList);
-            DrawNVD();
+            DrawNVD(_presentationModel.GetNVDEdges());
         }
 
         private void ClickPartitionToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
+            DrawNVD(_presentationModel.GetRegionEdges());
         }
     }
 }

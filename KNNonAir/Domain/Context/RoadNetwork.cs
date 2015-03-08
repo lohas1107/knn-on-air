@@ -14,7 +14,6 @@ namespace KNNonAir
 
         public event Handler LoadRoadsCompleted;
         public event VertexListHandler LoadPoIsCompleted;
-        public event Handler GenerateNVDCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
         public List<Vertex> PoIs { get; set; }
@@ -228,8 +227,6 @@ namespace KNNonAir
             {
                 NVD.Add(poi, new PathTree(poi).GenerateNVC(Graph));
             }
-
-            GenerateNVDCompleted();
         }
 
         public void Partition(int frames)
