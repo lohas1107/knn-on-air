@@ -1,4 +1,6 @@
-﻿using QuickGraph;
+﻿using KNNonAir.Domain.Entity;
+using KNNonAir.Domain.Service;
+using QuickGraph;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,17 +14,18 @@ namespace KNNonAir
 
         public event Handler LoadRoadsCompleted;
         public event VertexListHandler LoadPoIsCompleted;
-        public event Handler GenerateNVDCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
         public List<Vertex> PoIs { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
+        public List<Region> Regions { get; set; }
 
         public RoadNetwork()
         {
             Graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
             PoIs = new List<Vertex>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
+            Regions = new List<Region>();
         }
 
         public void LoadRoads()
@@ -224,8 +227,12 @@ namespace KNNonAir
             {
                 NVD.Add(poi, new PathTree(poi).GenerateNVC(Graph));
             }
+        }
 
-            GenerateNVDCompleted();
+        public void Partition(int frames)
+        {
+            KdTree kdTree = new KdTree(NVD, frames);
+            Regions = kdTree.Regions;
         }
     }
 }
