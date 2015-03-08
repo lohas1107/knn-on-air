@@ -1,8 +1,11 @@
-﻿using QuickGraph;
+﻿using KNNonAir.Access;
+using KNNonAir.Domain.Entity;
+using KNNonAir.Domain.Service;
+using QuickGraph;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Context
 {
     class RoadNetwork
     {
@@ -12,17 +15,18 @@ namespace KNNonAir
 
         public event Handler LoadRoadsCompleted;
         public event VertexListHandler LoadPoIsCompleted;
-        public event Handler GenerateNVDCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
         public List<Vertex> PoIs { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
+        public List<Region> Regions { get; set; }
 
         public RoadNetwork()
         {
             Graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
             PoIs = new List<Vertex>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
+            Regions = new List<Region>();
         }
 
         public void LoadRoads()
@@ -42,7 +46,7 @@ namespace KNNonAir
                 if (sourceEdge != null) source = AdjustOverlap(sourceEdge, target);
                 if (targetEdge != null) target = AdjustOverlap(targetEdge, source);
                 if (sourceEdge != null && targetEdge != null && (sourceEdge == targetEdge)) continue;
-                if (IsEdgeContainsVertex(source) > 1 && IsEdgeContainsVertex(target) > 1) continue;
+                if (ConnectVertexCount(source) > 1 && ConnectVertexCount(target) > 1) continue;
 
                 Graph.AddVertex(source);
                 Graph.AddVertex(target);
@@ -149,13 +153,13 @@ namespace KNNonAir
 
             foreach(Vertex vertex in Graph.Vertices)
             {
-                if (IsEdgeContainsVertex(vertex) < 2) sideVertexs.Add(vertex);
+                if (ConnectVertexCount(vertex) < 2) sideVertexs.Add(vertex);
             }
 
             return sideVertexs;
         }
 
-        private int IsEdgeContainsVertex(Vertex vertex)
+        private int ConnectVertexCount(Vertex vertex)
         {
             int count = 0;
 
@@ -224,8 +228,19 @@ namespace KNNonAir
             {
                 NVD.Add(poi, new PathTree(poi).GenerateNVC(Graph));
             }
+        }
 
-            GenerateNVDCompleted();
+        public void AddNVD()
+        {
+            List<NVCInfo> nvcList = FileIO.ReadNVDFile();
+            NVD = Parser.ParseNVCInfo(nvcList);
+            PoIs = Parser.ParsePoIInfo(nvcList);
+        }
+
+        public void Partition(int frames)
+        {
+            KdTree kdTree = new KdTree(NVD, frames);
+            Regions = kdTree.Regions;
         }
     }
 }

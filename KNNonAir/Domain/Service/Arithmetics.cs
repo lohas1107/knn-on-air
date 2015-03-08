@@ -1,8 +1,9 @@
 ﻿using Geo;
+using KNNonAir.Domain.Entity;
 using QuickGraph;
 using System;
 
-namespace KNNonAir
+namespace KNNonAir.Domain.Service
 {
     class Arithmetics
     {
