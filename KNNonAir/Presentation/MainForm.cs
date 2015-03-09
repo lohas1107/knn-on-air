@@ -136,5 +136,10 @@ namespace KNNonAir.Presentation
             _roadNetwork.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
             DrawNVD(_presentationModel.GetRegionEdges());
         }
+
+        private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
+        {
+
+        }
     }
 }
