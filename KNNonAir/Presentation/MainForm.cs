@@ -139,7 +139,7 @@ namespace KNNonAir.Presentation
 
         private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
         {
-
+            _roadNetwork.GenerateVQTree();
         }
     }
 }

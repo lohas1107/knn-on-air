@@ -242,5 +242,25 @@ namespace KNNonAir.Domain.Context
             KdTree kdTree = new KdTree(NVD, frames);
             Regions = kdTree.Regions;
         }
+
+        public void GenerateVQTree()
+        {
+            List<Vertex> borderPoints = new List<Vertex>();
+
+            foreach(Region region in Regions)
+            {
+                foreach (Vertex borderPoint in region.BorderPoints) borderPoints.Add(borderPoint);
+            }
+
+            borderPoints = borderPoints.OrderBy(o => o.Coordinate.Longitude).ToList();
+            double x = borderPoints.First().Coordinate.Longitude;
+            double width = borderPoints.Last().Coordinate.Longitude - x;
+
+            borderPoints = borderPoints.OrderBy(o => o.Coordinate.Latitude).ToList();
+            double y = borderPoints.Last().Coordinate.Latitude;
+            double height = y - borderPoints.First().Coordinate.Latitude;
+
+            VQTree vqTree = new VQTree(borderPoints, new MBR(x, y, width, height));
+        }
     }
 }
