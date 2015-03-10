@@ -12,10 +12,11 @@ namespace KNNonAir.Domain.Service
 
         public void Partition(List<Vertex> borderPoints, MBR mbr, MBRHandler partitionMBRCompleted)
         {
+            partitionMBRCompleted(mbr);
+
             double halfWidth = mbr.Width / 2;
             double halfHeight = mbr.Height / 2;
-
-            partitionMBRCompleted(mbr);
+            //if (halfWidth < 0.0001 || halfHeight < 0.0001) return;
 
             foreach (Vertex borderPoint in borderPoints)
             {

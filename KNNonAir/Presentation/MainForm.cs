@@ -53,30 +53,28 @@ namespace KNNonAir.Presentation
         private void ClickAddRoadsToolStripMenuItem(object sender, EventArgs e)
         {
             _roadNetwork.LoadRoads();
-            DrawLines(_presentationModel.GetRoads());
+            DrawLines(_presentationModel.GetRoads(), 5);
+            DrawMarkers(_roadNetwork.GetSideVertexs()); // 標示孤點
         }
 
-        private void DrawLines(List<List<PointLatLng>> lines)
+        private void DrawLines(List<List<PointLatLng>> lines, int strokeWidth)
         {
             gmap.Overlays.Remove(_polyOverlay);
             _polyOverlay = new GMapOverlay("polygons");
 
             foreach (List<PointLatLng> points in lines)
             {
-                SetPolygon(points, Color.Red, 100);
+                SetPolygon(points, Color.Red, 100, strokeWidth);
             }
             
             gmap.Overlays.Add(_polyOverlay);
-
-            // 標示孤點
-            DrawMarkers(_roadNetwork.GetSideVertexs());
         }
 
-        private void SetPolygon(List<PointLatLng> points, Color color, int alpha)
+        private void SetPolygon(List<PointLatLng> points, Color color, int alpha, int strokeWidth)
         {
             GMapPolygon polygon = new GMapPolygon(points, "");
             polygon.Fill = new SolidBrush(Color.FromArgb(alpha, color));
-            polygon.Stroke = new Pen(Color.FromArgb(alpha, color), 1);
+            polygon.Stroke = new Pen(Color.FromArgb(alpha, color), strokeWidth);
             _polyOverlay.Polygons.Add(polygon);
         }
 
@@ -112,7 +110,7 @@ namespace KNNonAir.Presentation
 
             foreach (Tuple<Color, List<PointLatLng>> edge in nvdEdges)
             {
-                SetPolygon(edge.Item2, edge.Item1, 255);
+                SetPolygon(edge.Item2, edge.Item1, 255, 5);
             }
 
             gmap.Overlays.Add(_polyOverlay);
@@ -140,7 +138,7 @@ namespace KNNonAir.Presentation
         private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateVQTree();
-            DrawLines(_presentationModel.GetVQTree());
+            DrawLines(_presentationModel.GetVQTree(), 1);
         }
     }
 }
