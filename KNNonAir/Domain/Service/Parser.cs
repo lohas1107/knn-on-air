@@ -66,14 +66,14 @@ namespace KNNonAir.Domain.Service
                 {
                     Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
                     Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
-                    vc.Graph.AddVertex(source);
-                    vc.Graph.AddVertex(target);
+                    if (!vc.Graph.ContainsVertex(source)) vc.Graph.AddVertex(source);
+                    if (!vc.Graph.ContainsVertex(target)) vc.Graph.AddVertex(target);
                     vc.Graph.AddEdge(new Edge<Vertex>(source, target));
                 }
 
                 foreach (VertexInfo borderPoint in nvc.BPs)
                 {
-                    vc.BorderPoints.Add(new Vertex(borderPoint.Latitude, borderPoint.Longitude));
+                    vc.BorderPoints.Add(new BorderPoint(borderPoint.Latitude, borderPoint.Longitude));
                 }
 
                 nvd.Add(vc.PoI, vc);

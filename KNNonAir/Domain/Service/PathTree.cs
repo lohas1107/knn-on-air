@@ -7,45 +7,55 @@ namespace KNNonAir.Domain.Service
     class PathTree
     {
         private PathNode _root;
-        private List<PathNode> _leaves;
+        private Dictionary<Vertex, PathNode> _leaves;
         private List<Vertex> _pathVertexs;
+        public bool IsRepeat;
 
         private event PathNodeHandler FindPathCompleted;
+        public event BorderPointHandler FindBorderPointCompleted;
 
         public PathTree(Vertex root)
         {
             _root = new PathNode() { Vertex = root };
-            _leaves = new List<PathNode>();
+            _leaves = new Dictionary<Vertex, PathNode>();
             _pathVertexs = new List<Vertex>();
+            IsRepeat = true;
         }
 
-        public VoronoiCell GenerateNVC(AdjacencyGraph<Vertex, Edge<Vertex>> graph)
+        public void GenerateNVC(AdjacencyGraph<Vertex, Edge<Vertex>> graph)
         {
             FindPaths(graph);
             FindBorderPoint();
-            return FindNVC();
         }
 
         private void FindPaths(AdjacencyGraph<Vertex, Edge<Vertex>> graph)
         {
+            IsRepeat = false;
             FindPathCompleted += AddLeaf;
-            _root.FindPath(graph.Clone(), FindPathCompleted);
+            _leaves.Clear();
+            if (_root.Children.Count > 0) _root.Children.Clear();
+            _root.FindPath(graph, _root.Vertex, FindPathCompleted);
         }
 
         private void AddLeaf(PathNode node)
         {
-            _leaves.Add(node);
+            if (_leaves.ContainsKey(node.Vertex))
+            {
+                IsRepeat = true;
+                if (node.Distance < _leaves[node.Vertex].Distance) _leaves[node.Vertex] = node;
+            }
+            else _leaves.Add(node.Vertex, node);
         }
 
         private void FindBorderPoint()
         {
-            foreach (PathNode leaf in _leaves)
+            foreach (KeyValuePair<Vertex, PathNode> leaf in _leaves)
             {
-                leaf.InsertBorderPoint(leaf.Distance/2);
+                leaf.Value.InsertBorderPoint(leaf.Value.Distance / 2, _root.Vertex, leaf.Key, FindBorderPointCompleted);
             }
         }
 
-        private VoronoiCell FindNVC()
+        public VoronoiCell FindNVC()
         {
             VoronoiCell nvc = new VoronoiCell() { PoI = _root.Vertex };
             _root.LoadNVC(nvc);         
