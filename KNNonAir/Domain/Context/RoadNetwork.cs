@@ -13,13 +13,13 @@ namespace KNNonAir.Domain.Context
         private const double FIFTY_METER = 0.0005;
         private const double TEN_METER = 0.0001;
 
-        public event Handler LoadRoadsCompleted;
         public event VertexListHandler LoadPoIsCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
         public List<Vertex> PoIs { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
         public List<Region> Regions { get; set; }
+        public List<MBR> QuadMBRs { get; set; }
 
         public RoadNetwork()
         {
@@ -54,7 +54,6 @@ namespace KNNonAir.Domain.Context
             }
 
             ConnectBrokenEdge();
-            LoadRoadsCompleted();
         }
 
         /// <summary>
@@ -261,6 +260,7 @@ namespace KNNonAir.Domain.Context
             double height = y - borderPoints.First().Coordinate.Latitude;
 
             VQTree vqTree = new VQTree(borderPoints, new MBR(x, y, width, height));
+            QuadMBRs = vqTree.MBRs;
         }
     }
 }

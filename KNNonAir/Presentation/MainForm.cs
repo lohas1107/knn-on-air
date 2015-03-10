@@ -26,7 +26,6 @@ namespace KNNonAir.Presentation
             InitializeGMap(GUAM, 11);
 
             _roadNetwork = new RoadNetwork();
-            _roadNetwork.LoadRoadsCompleted += DrawRoads;
             _roadNetwork.LoadPoIsCompleted += DrawMarkers;
 
             _presentationModel = new PresentationModel(_roadNetwork);
@@ -54,14 +53,15 @@ namespace KNNonAir.Presentation
         private void ClickAddRoadsToolStripMenuItem(object sender, EventArgs e)
         {
             _roadNetwork.LoadRoads();
+            DrawLines(_presentationModel.GetRoads());
         }
 
-        private void DrawRoads()
+        private void DrawLines(List<List<PointLatLng>> lines)
         {
             gmap.Overlays.Remove(_polyOverlay);
             _polyOverlay = new GMapOverlay("polygons");
 
-            foreach (List<PointLatLng> points in _presentationModel.GetRoads())
+            foreach (List<PointLatLng> points in lines)
             {
                 SetPolygon(points, Color.Red, 100);
             }
@@ -76,7 +76,7 @@ namespace KNNonAir.Presentation
         {
             GMapPolygon polygon = new GMapPolygon(points, "");
             polygon.Fill = new SolidBrush(Color.FromArgb(alpha, color));
-            polygon.Stroke = new Pen(Color.FromArgb(alpha, color), 5);
+            polygon.Stroke = new Pen(Color.FromArgb(alpha, color), 1);
             _polyOverlay.Polygons.Add(polygon);
         }
 
@@ -102,10 +102,10 @@ namespace KNNonAir.Presentation
         private void ClickNvdToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateNVD();
-            DrawNVD(_presentationModel.GetNVDEdges());
+            DrawColorLines(_presentationModel.GetNVDEdges());
         }
 
-        private void DrawNVD(List<Tuple<Color, List<PointLatLng>>> nvdEdges)
+        private void DrawColorLines(List<Tuple<Color, List<PointLatLng>>> nvdEdges)
         {
             gmap.Overlays.Remove(_polyOverlay);
             _polyOverlay = new GMapOverlay("polygons");
@@ -128,18 +128,19 @@ namespace KNNonAir.Presentation
         private void ClickAddNVDToolStripMenuItem(object sender, EventArgs e)
         {
             _roadNetwork.AddNVD();
-            DrawNVD(_presentationModel.GetNVDEdges());
+            DrawColorLines(_presentationModel.GetNVDEdges());
         }
 
         private void ClickPartitionToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
-            DrawNVD(_presentationModel.GetRegionEdges());
+            DrawColorLines(_presentationModel.GetRegionEdges());
         }
 
         private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateVQTree();
+            DrawLines(_presentationModel.GetVQTree());
         }
     }
 }

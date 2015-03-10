@@ -11,6 +11,7 @@ namespace KNNonAir
     delegate void VertexListHandler(List<Vertex> vertexs);
     delegate void PathNodeHandler(PathNode node);
     delegate void RegionHandler(Region region);
+    delegate void MBRHandler(MBR mbr);
 
     static class Program
     {

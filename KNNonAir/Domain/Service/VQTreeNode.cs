@@ -10,10 +10,12 @@ namespace KNNonAir.Domain.Service
         public VQTreeNode SE { get; set; }
         public VQTreeNode SW { get; set; }
 
-        public void Partition(List<Vertex> borderPoints, MBR mbr)
+        public void Partition(List<Vertex> borderPoints, MBR mbr, MBRHandler partitionMBRCompleted)
         {
             double halfWidth = mbr.Width / 2;
             double halfHeight = mbr.Height / 2;
+
+            partitionMBRCompleted(mbr);
 
             foreach (Vertex borderPoint in borderPoints)
             {
@@ -21,19 +23,19 @@ namespace KNNonAir.Domain.Service
                 {
                     MBR neMBR = new MBR(mbr.X + halfWidth, mbr.Y, halfWidth, halfHeight);
                     NE = new VQTreeNode();
-                    NE.Partition(neMBR.GetVerticeInMBR(borderPoints), neMBR);
+                    NE.Partition(neMBR.GetVerticeInMBR(borderPoints), neMBR, partitionMBRCompleted);
 
                     MBR nwMBR = new MBR(mbr.X, mbr.Y, halfWidth, halfHeight);
                     NW = new VQTreeNode();
-                    NW.Partition(nwMBR.GetVerticeInMBR(borderPoints), nwMBR);
+                    NW.Partition(nwMBR.GetVerticeInMBR(borderPoints), nwMBR, partitionMBRCompleted);
 
                     MBR seMBR = new MBR(mbr.X + halfWidth, mbr.Y - halfHeight, halfWidth, halfHeight);
                     SE = new VQTreeNode();
-                    SE.Partition(seMBR.GetVerticeInMBR(borderPoints), seMBR);
+                    SE.Partition(seMBR.GetVerticeInMBR(borderPoints), seMBR, partitionMBRCompleted);
 
                     MBR swMBR = new MBR(mbr.X, mbr.Y - halfHeight, halfWidth, halfHeight);
                     SW = new VQTreeNode();
-                    SW.Partition(swMBR.GetVerticeInMBR(borderPoints), swMBR);
+                    SW.Partition(swMBR.GetVerticeInMBR(borderPoints), swMBR, partitionMBRCompleted);
 
                     break;
                 }

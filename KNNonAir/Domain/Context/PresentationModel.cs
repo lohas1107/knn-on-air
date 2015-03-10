@@ -18,7 +18,7 @@ namespace KNNonAir.Domain.Context
             _random = new Random(Guid.NewGuid().GetHashCode());
         }
 
-        private static List<PointLatLng> GetEdges(Edge<Vertex> edge)
+        private static List<PointLatLng> GetEdge(Edge<Vertex> edge)
         {
             List<PointLatLng> points = new List<PointLatLng>();
             points.Add(new PointLatLng(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude));
@@ -32,7 +32,7 @@ namespace KNNonAir.Domain.Context
 
             foreach (Edge<Vertex> edge in _roadNetwork.Graph.Edges)
             {
-                List<PointLatLng> points = GetEdges(edge);
+                List<PointLatLng> points = GetEdge(edge);
                 roads.Add(points);
             }
 
@@ -45,7 +45,7 @@ namespace KNNonAir.Domain.Context
 
             foreach (Edge<Vertex> edge in edges)
             {
-                List<PointLatLng> points = GetEdges(edge);
+                List<PointLatLng> points = GetEdge(edge);
                 colorEdges.Add(new Tuple<Color, List<PointLatLng>>(color, points));
             }
         }
@@ -72,6 +72,26 @@ namespace KNNonAir.Domain.Context
             }
 
             return regionEdges;
+        }
+
+        public List<List<PointLatLng>> GetVQTree()
+        {
+            List<List<PointLatLng>> mbrs = new List<List<PointLatLng>>();
+
+            foreach (MBR mbr in _roadNetwork.QuadMBRs)
+            {
+                Vertex topLeft = new Vertex(mbr.Y, mbr.X);
+                Vertex topRight = new Vertex(mbr.Y, mbr.X + mbr.Width);
+                Vertex bottomLeft = new Vertex(mbr.Y - mbr.Height, mbr.X);
+                Vertex bottomRight = new Vertex(mbr.Y - mbr.Height, mbr.X + mbr.Width);
+
+                mbrs.Add(GetEdge(new Edge<Vertex>(topLeft, topRight)));
+                mbrs.Add(GetEdge(new Edge<Vertex>(bottomLeft, bottomRight)));
+                mbrs.Add(GetEdge(new Edge<Vertex>(topLeft, bottomLeft)));
+                mbrs.Add(GetEdge(new Edge<Vertex>(topRight, bottomRight)));
+            }
+
+            return mbrs;
         }
     }
 }
