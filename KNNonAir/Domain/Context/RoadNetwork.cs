@@ -232,7 +232,8 @@ namespace KNNonAir.Domain.Context
         public void AddNVD()
         {
             List<NVCInfo> nvcList = FileIO.ReadNVDFile();
-            NVD = Parser.ParseNVCInfo(nvcList);
+            Graph = Parser.ParseNVCInfoToGraph(nvcList);
+            NVD = Parser.ParseNVCInfoToNVD(nvcList);
             PoIs = Parser.ParsePoIInfo(nvcList);
         }
 
@@ -245,19 +246,20 @@ namespace KNNonAir.Domain.Context
         public void GenerateVQTree()
         {
             List<Vertex> borderPoints = new List<Vertex>();
+            List<Vertex> vertices = Graph.Vertices.ToList();
 
             foreach(Region region in Regions)
             {
                 foreach (Vertex borderPoint in region.BorderPoints) borderPoints.Add(borderPoint);
             }
 
-            borderPoints = borderPoints.OrderBy(o => o.Coordinate.Longitude).ToList();
-            double x = borderPoints.First().Coordinate.Longitude;
-            double width = borderPoints.Last().Coordinate.Longitude - x;
+            vertices = vertices.OrderBy(o => o.Coordinate.Longitude).ToList();
+            double x = vertices.First().Coordinate.Longitude;
+            double width = vertices.Last().Coordinate.Longitude - x;
 
-            borderPoints = borderPoints.OrderBy(o => o.Coordinate.Latitude).ToList();
-            double y = borderPoints.Last().Coordinate.Latitude;
-            double height = y - borderPoints.First().Coordinate.Latitude;
+            vertices = vertices.OrderBy(o => o.Coordinate.Latitude).ToList();
+            double y = vertices.Last().Coordinate.Latitude;
+            double height = y - vertices.First().Coordinate.Latitude;
 
             VQTree vqTree = new VQTree(borderPoints, new MBR(x, y, width, height));
             QuadMBRs = vqTree.MBRs;

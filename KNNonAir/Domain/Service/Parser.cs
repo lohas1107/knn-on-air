@@ -34,7 +34,26 @@ namespace KNNonAir.Domain.Service
             return nvcList;
         }
 
-        public static Dictionary<Vertex, VoronoiCell> ParseNVCInfo(List<NVCInfo> nvcList)
+        public static AdjacencyGraph<Vertex, Edge<Vertex>> ParseNVCInfoToGraph(List<NVCInfo> nvcList)
+        {
+            AdjacencyGraph<Vertex, Edge<Vertex>> graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
+
+            foreach (NVCInfo nvc in nvcList)
+            {
+                foreach (EdgeInfo edge in nvc.Graph)
+                {
+                    Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
+                    Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
+                    graph.AddVertex(source);
+                    graph.AddVertex(target);
+                    graph.AddEdge(new Edge<Vertex>(source, target));
+                }
+            }
+
+            return graph;
+        }
+
+        public static Dictionary<Vertex, VoronoiCell> ParseNVCInfoToNVD(List<NVCInfo> nvcList)
         {
             Dictionary<Vertex, VoronoiCell> nvd = new Dictionary<Vertex, VoronoiCell>();
 

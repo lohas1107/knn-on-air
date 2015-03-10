@@ -7,6 +7,8 @@ namespace KNNonAir.Domain.Entity
 {
     class BorderPoint : Vertex
     {
+        public BorderPoint() { }
+
         public BorderPoint(double latitude, double longitude) : base(latitude, longitude) { }
     }
 }
