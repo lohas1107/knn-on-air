@@ -1,6 +1,7 @@
 ﻿using KNNonAir.Domain.Entity;
 using KNNonAir.Domain.Service;
 using KNNonAir.Presentation;
+using QuickGraph;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -10,6 +11,7 @@ namespace KNNonAir
     delegate void Handler();
     delegate void VertexListHandler(List<Vertex> vertexs);
     delegate void PathNodeHandler(PathNode node);
+    delegate void BorderPointHandler(Vertex borderPoint, Edge<Vertex> edge);
     delegate void RegionHandler(Region region);
     delegate void MBRHandler(MBR mbr);
 

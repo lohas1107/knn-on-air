@@ -17,6 +17,8 @@ namespace KNNonAir.Presentation
         private PresentationModel _presentationModel;
         private GMapOverlay _polyOverlay;
         private GMapOverlay _markersOverlay;
+        private GMapOverlay _mbrOverlay;
+
 
         public MainForm()
         {
@@ -138,7 +140,16 @@ namespace KNNonAir.Presentation
         private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateVQTree();
-            DrawLines(_presentationModel.GetVQTree(), 1);
+
+            gmap.Overlays.Remove(_mbrOverlay);
+            _mbrOverlay = new GMapOverlay("mbrs");
+
+            foreach (List<PointLatLng> points in _presentationModel.GetVQTree())
+            {
+                SetPolygon(points, Color.Red, 100, 1);
+            }
+
+            gmap.Overlays.Add(_mbrOverlay);
         }
     }
 }
