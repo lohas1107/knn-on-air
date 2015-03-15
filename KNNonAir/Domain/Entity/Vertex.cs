@@ -15,5 +15,15 @@ namespace KNNonAir.Domain.Entity
             _point = new Point(latitude, longitude);
             Coordinate = _point.Coordinate;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Vertex)
+            {
+                var vertex = (Vertex)obj;
+                return (vertex.Coordinate == Coordinate);
+            }
+            return false;
+        }
     }
 }

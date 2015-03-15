@@ -9,13 +9,13 @@ namespace KNNonAir.Access
     {
         public VertexInfo PoI { get; set; }
         public List<EdgeInfo> Graph { get; set; }
-        public List<VertexInfo> BPs { get; set; }
+        public List<BorderInfo> BPs { get; set; }
 
         public NVCInfo()
         {
             PoI = new VertexInfo();
             Graph = new List<EdgeInfo>();
-            BPs = new List<VertexInfo>();
+            BPs = new List<BorderInfo>();
         }
 
         // Deserialization constructor
@@ -23,7 +23,7 @@ namespace KNNonAir.Access
         {
             PoI = (VertexInfo)info.GetValue("PoI", typeof(VertexInfo));
             Graph = (List<EdgeInfo>)info.GetValue("Graph", typeof(List<EdgeInfo>));
-            BPs = (List<VertexInfo>)info.GetValue("BPs", typeof(List<VertexInfo>));
+            BPs = (List<BorderInfo>)info.GetValue("BPs", typeof(List<BorderInfo>));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
