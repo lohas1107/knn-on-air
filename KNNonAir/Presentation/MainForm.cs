@@ -17,6 +17,8 @@ namespace KNNonAir.Presentation
         private PresentationModel _presentationModel;
         private GMapOverlay _polyOverlay;
         private GMapOverlay _markersOverlay;
+        private GMapOverlay _mbrOverlay;
+
 
         public MainForm()
         {
@@ -26,7 +28,6 @@ namespace KNNonAir.Presentation
             InitializeGMap(GUAM, 11);
 
             _roadNetwork = new RoadNetwork();
-            _roadNetwork.LoadRoadsCompleted += DrawRoads;
             _roadNetwork.LoadPoIsCompleted += DrawMarkers;
 
             _presentationModel = new PresentationModel(_roadNetwork);
@@ -54,29 +55,28 @@ namespace KNNonAir.Presentation
         private void ClickAddRoadsToolStripMenuItem(object sender, EventArgs e)
         {
             _roadNetwork.LoadRoads();
+            DrawLines(_presentationModel.GetRoads(), 5);
+            DrawMarkers(_roadNetwork.GetSideVertexs()); // 標示孤點
         }
 
-        private void DrawRoads()
+        private void DrawLines(List<List<PointLatLng>> lines, int strokeWidth)
         {
             gmap.Overlays.Remove(_polyOverlay);
             _polyOverlay = new GMapOverlay("polygons");
 
-            foreach (List<PointLatLng> points in _presentationModel.GetRoads())
+            foreach (List<PointLatLng> points in lines)
             {
-                SetPolygon(points, Color.Red, 100);
+                SetPolygon(points, Color.Red, 100, strokeWidth);
             }
             
             gmap.Overlays.Add(_polyOverlay);
-
-            // 標示孤點
-            DrawMarkers(_roadNetwork.GetSideVertexs());
         }
 
-        private void SetPolygon(List<PointLatLng> points, Color color, int alpha)
+        private void SetPolygon(List<PointLatLng> points, Color color, int alpha, int strokeWidth)
         {
             GMapPolygon polygon = new GMapPolygon(points, "");
             polygon.Fill = new SolidBrush(Color.FromArgb(alpha, color));
-            polygon.Stroke = new Pen(Color.FromArgb(alpha, color), 5);
+            polygon.Stroke = new Pen(Color.FromArgb(alpha, color), strokeWidth);
             _polyOverlay.Polygons.Add(polygon);
         }
 
@@ -102,17 +102,17 @@ namespace KNNonAir.Presentation
         private void ClickNvdToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateNVD();
-            DrawNVD(_presentationModel.GetNVDEdges());
+            DrawColorLines(_presentationModel.GetNVDEdges());
         }
 
-        private void DrawNVD(List<Tuple<Color, List<PointLatLng>>> nvdEdges)
+        private void DrawColorLines(List<Tuple<Color, List<PointLatLng>>> nvdEdges)
         {
             gmap.Overlays.Remove(_polyOverlay);
             _polyOverlay = new GMapOverlay("polygons");
 
             foreach (Tuple<Color, List<PointLatLng>> edge in nvdEdges)
             {
-                SetPolygon(edge.Item2, edge.Item1, 255);
+                SetPolygon(edge.Item2, edge.Item1, 255, 5);
             }
 
             gmap.Overlays.Add(_polyOverlay);
@@ -128,13 +128,28 @@ namespace KNNonAir.Presentation
         private void ClickAddNVDToolStripMenuItem(object sender, EventArgs e)
         {
             _roadNetwork.AddNVD();
-            DrawNVD(_presentationModel.GetNVDEdges());
+            DrawColorLines(_presentationModel.GetNVDEdges());
         }
 
         private void ClickPartitionToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
-            DrawNVD(_presentationModel.GetRegionEdges());
+            DrawColorLines(_presentationModel.GetRegionEdges());
+        }
+
+        private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.GenerateVQTree();
+
+            gmap.Overlays.Remove(_mbrOverlay);
+            _mbrOverlay = new GMapOverlay("mbrs");
+
+            foreach (List<PointLatLng> points in _presentationModel.GetVQTree())
+            {
+                SetPolygon(points, Color.Red, 100, 1);
+            }
+
+            gmap.Overlays.Add(_mbrOverlay);
         }
     }
 }

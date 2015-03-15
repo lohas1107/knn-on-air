@@ -13,18 +13,20 @@ namespace KNNonAir.Domain.Context
         private const double FIFTY_METER = 0.0005;
         private const double TEN_METER = 0.0001;
 
-        public event Handler LoadRoadsCompleted;
         public event VertexListHandler LoadPoIsCompleted;
 
         public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
         public List<Vertex> PoIs { get; set; }
+        public Dictionary<Vertex, Edge<Vertex>> BorderPoints { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
         public List<Region> Regions { get; set; }
+        public List<MBR> QuadMBRs { get; set; }
 
         public RoadNetwork()
         {
             Graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
             PoIs = new List<Vertex>();
+            BorderPoints = new Dictionary<Vertex, Edge<Vertex>>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
             Regions = new List<Region>();
         }
@@ -48,13 +50,12 @@ namespace KNNonAir.Domain.Context
                 if (sourceEdge != null && targetEdge != null && (sourceEdge == targetEdge)) continue;
                 if (ConnectVertexCount(source) > 1 && ConnectVertexCount(target) > 1) continue;
 
-                Graph.AddVertex(source);
-                Graph.AddVertex(target);
+                if (!Graph.ContainsVertex(source)) Graph.AddVertex(source);
+                if (!Graph.ContainsVertex(target)) Graph.AddVertex(target);
                 Graph.AddEdge(new Edge<Vertex>(source, target));
             }
 
             ConnectBrokenEdge();
-            LoadRoadsCompleted();
         }
 
         /// <summary>
@@ -206,34 +207,71 @@ namespace KNNonAir.Domain.Context
                 toEdge = edge;
             }
 
-            InsertVertex(adjustedPoI, toEdge);
+            InsertVertex(adjustedPoI, toEdge, Graph);
 
             return adjustedPoI;
         }
 
-        private void InsertVertex(Vertex vertex, Edge<Vertex> edge)
+        private void InsertVertex(Vertex vertex, Edge<Vertex> edge, AdjacencyGraph<Vertex, Edge<Vertex>> graph)
         {
             if (vertex == null || edge == null) return;
 
-            Graph.RemoveEdge(edge);
+            graph.RemoveEdge(edge);
 
-            Graph.AddVertex(vertex);
-            Graph.AddEdge(new Edge<Vertex>(edge.Source, vertex));
-            Graph.AddEdge(new Edge<Vertex>(vertex, edge.Target));
+            graph.AddVertex(vertex);
+            graph.AddEdge(new Edge<Vertex>(edge.Source, vertex));
+            graph.AddEdge(new Edge<Vertex>(vertex, edge.Target));
         }
 
         public void GenerateNVD()
         {
-            foreach (Vertex poi in PoIs)
+            GenerateNVC(0, PoIs.Count, Graph);
+        }
+
+        private void AddBorderPoint(Vertex borderPoint, Edge<Vertex> edge)
+        {
+            BorderPoints.Add(borderPoint, edge);
+        }
+
+        private void GenerateNVC(int index, int count, AdjacencyGraph<Vertex, Edge<Vertex>> graph)
+        {
+            if (index >= count) return;
+
+            PathTree pathTree = new PathTree(PoIs[index]);
+            pathTree.FindBorderPointCompleted += AddBorderPoint;
+
+            while (pathTree.IsRepeat)
             {
-                NVD.Add(poi, new PathTree(poi).GenerateNVC(Graph));
+                pathTree.GenerateNVC(graph);
+
+                foreach (KeyValuePair<Vertex, Edge<Vertex>> kvp in BorderPoints)
+                {
+                    Edge<Vertex> brokenEdge = null;
+                    if (graph.TryGetEdge(kvp.Value.Source, kvp.Value.Target, out brokenEdge)) InsertVertex(kvp.Key, brokenEdge, graph);
+                    else if (graph.TryGetEdge(kvp.Value.Target, kvp.Value.Source, out brokenEdge)) InsertVertex(kvp.Key, brokenEdge, graph);
+                    else pathTree.IsRepeat = true;
+                }
+                BorderPoints.Clear();
             }
+
+            VoronoiCell nvc = pathTree.FindNVC();
+            NVD.Add(PoIs[index], nvc);
+
+            foreach (Edge<Vertex> pathEdge in nvc.Graph.Edges)
+            {
+                Edge<Vertex> removeEdge = null;
+                if (graph.TryGetEdge(pathEdge.Source, pathEdge.Target, out removeEdge)) graph.RemoveEdge(removeEdge);
+                else if (graph.TryGetEdge(pathEdge.Target, pathEdge.Source, out removeEdge)) graph.RemoveEdge(removeEdge);
+            }
+
+            GenerateNVC(index + 1, count, graph);
         }
 
         public void AddNVD()
         {
             List<NVCInfo> nvcList = FileIO.ReadNVDFile();
-            NVD = Parser.ParseNVCInfo(nvcList);
+            Graph = Parser.ParseNVCInfoToGraph(nvcList);
+            NVD = Parser.ParseNVCInfoToNVD(nvcList);
             PoIs = Parser.ParsePoIInfo(nvcList);
         }
 
@@ -241,6 +279,28 @@ namespace KNNonAir.Domain.Context
         {
             KdTree kdTree = new KdTree(NVD, frames);
             Regions = kdTree.Regions;
+        }
+
+        public void GenerateVQTree()
+        {
+            List<Vertex> borderPoints = new List<Vertex>();
+            List<Vertex> vertices = Graph.Vertices.ToList();
+
+            foreach(Region region in Regions)
+            {
+                foreach (Vertex borderPoint in region.BorderPoints) borderPoints.Add(borderPoint);
+            }
+
+            vertices = vertices.OrderBy(o => o.Coordinate.Longitude).ToList();
+            double x = vertices.First().Coordinate.Longitude;
+            double width = vertices.Last().Coordinate.Longitude - x;
+
+            vertices = vertices.OrderBy(o => o.Coordinate.Latitude).ToList();
+            double y = vertices.Last().Coordinate.Latitude;
+            double height = y - vertices.First().Coordinate.Latitude;
+
+            VQTree vqTree = new VQTree(borderPoints, new MBR(x, y, width, height));
+            QuadMBRs = vqTree.MBRs;
         }
     }
 }

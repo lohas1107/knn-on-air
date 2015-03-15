@@ -34,7 +34,26 @@ namespace KNNonAir.Domain.Service
             return nvcList;
         }
 
-        public static Dictionary<Vertex, VoronoiCell> ParseNVCInfo(List<NVCInfo> nvcList)
+        public static AdjacencyGraph<Vertex, Edge<Vertex>> ParseNVCInfoToGraph(List<NVCInfo> nvcList)
+        {
+            AdjacencyGraph<Vertex, Edge<Vertex>> graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
+
+            foreach (NVCInfo nvc in nvcList)
+            {
+                foreach (EdgeInfo edge in nvc.Graph)
+                {
+                    Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
+                    Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
+                    graph.AddVertex(source);
+                    graph.AddVertex(target);
+                    graph.AddEdge(new Edge<Vertex>(source, target));
+                }
+            }
+
+            return graph;
+        }
+
+        public static Dictionary<Vertex, VoronoiCell> ParseNVCInfoToNVD(List<NVCInfo> nvcList)
         {
             Dictionary<Vertex, VoronoiCell> nvd = new Dictionary<Vertex, VoronoiCell>();
 
@@ -47,14 +66,14 @@ namespace KNNonAir.Domain.Service
                 {
                     Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
                     Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
-                    vc.Graph.AddVertex(source);
-                    vc.Graph.AddVertex(target);
+                    if (!vc.Graph.ContainsVertex(source)) vc.Graph.AddVertex(source);
+                    if (!vc.Graph.ContainsVertex(target)) vc.Graph.AddVertex(target);
                     vc.Graph.AddEdge(new Edge<Vertex>(source, target));
                 }
 
                 foreach (VertexInfo borderPoint in nvc.BPs)
                 {
-                    vc.BorderPoints.Add(new Vertex(borderPoint.Latitude, borderPoint.Longitude));
+                    vc.BorderPoints.Add(new BorderPoint(borderPoint.Latitude, borderPoint.Longitude));
                 }
 
                 nvd.Add(vc.PoI, vc);

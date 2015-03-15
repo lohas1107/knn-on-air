@@ -88,6 +88,7 @@
     <Compile Include="Access\EdgeInfo.cs" />
     <Compile Include="Access\NVCInfo.cs" />
     <Compile Include="Access\VertexInfo.cs" />
+    <Compile Include="Domain\Entity\MBR.cs" />
     <Compile Include="Domain\Service\KdTree.cs" />
     <Compile Include="Domain\Entity\Region.cs" />
     <Compile Include="Domain\Service\Arithmetics.cs" />
@@ -96,6 +97,8 @@
     <Compile Include="Domain\Entity\InterestPoint.cs" />
     <Compile Include="Domain\Service\KdTreeNode.cs" />
     <Compile Include="Domain\Service\Parser.cs" />
+    <Compile Include="Domain\Service\VQTree.cs" />
+    <Compile Include="Domain\Service\VQTreeNode.cs" />
     <Compile Include="Presentation\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
