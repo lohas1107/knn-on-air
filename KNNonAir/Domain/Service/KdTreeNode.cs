@@ -17,7 +17,7 @@ namespace KNNonAir.Domain.Service
 
         public void Partition(Dictionary<Vertex, VoronoiCell> nvd, int depth, int frames, RegionHandler partitionCompleted)
         {
-            if (canPartition(nvd, depth, frames, partitionCompleted)) return;
+            if (!canPartition(nvd, depth, frames, partitionCompleted)) return;
 
             Axis axis = (Axis)Enum.Parse(typeof(Axis), (depth % DIMENSION).ToString());
             if (axis == Axis.Latitude) nvd = nvd.OrderBy(o => o.Key.Coordinate.Latitude).ToDictionary(i => i.Key, i => i.Value);
@@ -33,15 +33,16 @@ namespace KNNonAir.Domain.Service
 
         private bool canPartition(Dictionary<Vertex, VoronoiCell> nvd, int depth, int frames, RegionHandler partitionCompleted)
         {
-            if (nvd.Count == 0) return true;
+            if (nvd.Count == 0) return false;
             if (depth == Math.Log(frames, 2))
             {
                 Region region = new Region();
-                foreach (KeyValuePair<Vertex, VoronoiCell> nvc in nvd) region.AddNVC(nvc);
+                foreach (KeyValuePair<Vertex, VoronoiCell> nvc in nvd) region.AddNVC(nvc.Value);
+                region.RemoveSameBorder();
                 partitionCompleted(region);
-                return true;
+                return false;
             }
-            else return false;
+            else return true;
         }
     }
 }
