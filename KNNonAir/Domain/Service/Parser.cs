@@ -23,9 +23,11 @@ namespace KNNonAir.Domain.Service
                     nvcInfo.Graph.Add(new EdgeInfo(source, target));
                 }
 
-                foreach (Vertex borderPoint in nvc.Value.BorderPoints)
+                foreach (BorderPoint borderPoint in nvc.Value.BorderPoints)
                 {
-                    nvcInfo.BPs.Add(new VertexInfo(borderPoint.Coordinate.Latitude, borderPoint.Coordinate.Longitude));
+                    BorderInfo bp = new BorderInfo(borderPoint.Coordinate.Latitude, borderPoint.Coordinate.Longitude);
+                    foreach (Vertex poi in borderPoint.PoIs) bp.PoIs.Add(new VertexInfo(poi.Coordinate.Latitude, poi.Coordinate.Longitude));
+                    nvcInfo.BPs.Add(bp);
                 }
 
                 nvcList.Add(nvcInfo);
@@ -71,9 +73,11 @@ namespace KNNonAir.Domain.Service
                     vc.Graph.AddEdge(new Edge<Vertex>(source, target));
                 }
 
-                foreach (VertexInfo borderPoint in nvc.BPs)
+                foreach (BorderInfo borderPoint in nvc.BPs)
                 {
-                    vc.BorderPoints.Add(new BorderPoint(borderPoint.Latitude, borderPoint.Longitude));
+                    BorderPoint bp = new BorderPoint(borderPoint.Vertex.Latitude, borderPoint.Vertex.Longitude);
+                    foreach (VertexInfo poi in borderPoint.PoIs) bp.PoIs.Add(new Vertex(poi.Latitude, poi.Longitude));
+                    vc.BorderPoints.Add(bp);
                 }
 
                 nvd.Add(vc.PoI, vc);

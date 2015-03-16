@@ -16,34 +16,37 @@ namespace KNNonAir.Domain.Entity
             BorderPoints = new List<Vertex>();
         }
 
-        public void AddNVC(KeyValuePair<Vertex, VoronoiCell> nvc)
+        public void AddNVC(VoronoiCell nvc)
         {
-            PoIs.Add(nvc.Key);
+            PoIs.Add(nvc.PoI);
 
-            foreach(Edge<Vertex> edge in nvc.Value.Graph.Edges)
+            foreach(Edge<Vertex> edge in nvc.Graph.Edges)
             {
                 if (!Graph.ContainsVertex(edge.Source)) Graph.AddVertex(edge.Source);
                 if (!Graph.ContainsVertex(edge.Target)) Graph.AddVertex(edge.Target);
                 Graph.AddEdge(edge);
             }
 
-            foreach(Vertex borderPoint in nvc.Value.BorderPoints)
-            {
-                Vertex sameVertex = ContainsBorderPoint(borderPoint);
-                if (sameVertex != null) BorderPoints.Remove(sameVertex);
-                else BorderPoints.Add(borderPoint);
-            }
+            foreach(Vertex borderPoint in nvc.BorderPoints) BorderPoints.Add(borderPoint);
         }
 
-        private Vertex ContainsBorderPoint(Vertex vertex)
+        public void RemoveSameBorder()
         {
-            foreach (Vertex borderPoint in BorderPoints)
+            List<Vertex> tempBorders = new List<Vertex>();
+            foreach (BorderPoint borderPoint in BorderPoints)
             {
-                if (borderPoint.Coordinate.Latitude == vertex.Coordinate.Latitude &&
-                    borderPoint.Coordinate.Longitude == vertex.Coordinate.Longitude) return borderPoint;
+                foreach(Vertex poi in borderPoint.PoIs)
+                {
+                    if (!PoIs.Contains(poi))
+                    {
+                        tempBorders.Add(borderPoint);
+                        break;
+                    }
+                }
             }
 
-            return null;
+            BorderPoints.Clear();
+            foreach (Vertex border in tempBorders) BorderPoints.Add(border);
         }
     }
 }
