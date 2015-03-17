@@ -5,14 +5,16 @@ namespace KNNonAir.Domain.Entity
 {
     class Region
     {
+        public int Id { get; set; }
         public List<Vertex> PoIs { get; set; }
-        public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
+        public RoadGraph<Vertex, Edge<Vertex>> Graph { get; set; }
         public List<Vertex> BorderPoints { get; set; }
 
         public Region()
         {
+            Id = -1;
             PoIs = new List<Vertex>();
-            Graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
+            Graph = new RoadGraph<Vertex, Edge<Vertex>>(false);
             BorderPoints = new List<Vertex>();
         }
 

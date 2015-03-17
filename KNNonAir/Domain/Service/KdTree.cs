@@ -7,13 +7,16 @@ namespace KNNonAir.Domain.Service
     {
         private event RegionHandler PartitionCompleted;
 
+        private int _id;
         private KdTreeNode _root;
-        public List<Region> Regions { get; set; }
+
+        public Dictionary<int, Region> Regions { get; set; }
 
         public KdTree(Dictionary<Vertex, VoronoiCell> nvd, int frames)
         {
+            _id = 0;
             _root = new KdTreeNode();
-            Regions = new List<Region>();
+            Regions = new Dictionary<int, Region>();
 
             PartitionCompleted += AddRegion;
             _root.Partition(nvd, 0, frames, PartitionCompleted);
@@ -21,7 +24,8 @@ namespace KNNonAir.Domain.Service
 
         private void AddRegion(Region region)
         {
-            Regions.Add(region);
+            region.Id = _id++;
+            Regions.Add(region.Id, region);
         }
     }
 }

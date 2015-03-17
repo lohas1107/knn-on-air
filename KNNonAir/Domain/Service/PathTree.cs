@@ -22,13 +22,13 @@ namespace KNNonAir.Domain.Service
             IsRepeat = true;
         }
 
-        public void GenerateNVC(AdjacencyGraph<Vertex, Edge<Vertex>> graph)
+        public void GenerateNVC(RoadGraph<Vertex, Edge<Vertex>> graph)
         {
             FindPaths(graph);
             FindBorderPoint();
         }
 
-        private void FindPaths(AdjacencyGraph<Vertex, Edge<Vertex>> graph)
+        private void FindPaths(RoadGraph<Vertex, Edge<Vertex>> graph)
         {
             IsRepeat = false;
             FindPathCompleted += AddLeaf;
@@ -62,7 +62,7 @@ namespace KNNonAir.Domain.Service
             return nvc;
         }
 
-        public List<Vertex> FindPathsByRange(AdjacencyGraph<Vertex, Edge<Vertex>> graph, double range)
+        public List<Vertex> FindPathsByRange(RoadGraph<Vertex, Edge<Vertex>> graph, double range)
         {
             FindPathCompleted += AddPathVertex;
             _root.FindPathsByRange(graph.Clone(), range, FindPathCompleted);

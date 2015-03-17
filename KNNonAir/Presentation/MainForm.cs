@@ -154,7 +154,7 @@ namespace KNNonAir.Presentation
 
         private void ClickTableToolStripButton(object sender, EventArgs e)
         {
-
+            _roadNetwork.ComputeTable();
         }
     }
 }

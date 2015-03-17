@@ -27,7 +27,7 @@ namespace KNNonAir.Domain.Service
             Children = new List<PathNode>();
         }
 
-        public void FindPathsByRange(AdjacencyGraph<Vertex, Edge<Vertex>> graph, double range, PathNodeHandler findPathCompleted)
+        public void FindPathsByRange(RoadGraph<Vertex, Edge<Vertex>> graph, double range, PathNodeHandler findPathCompleted)
         {
             findPathCompleted(this);
             AddChild(graph);
@@ -39,7 +39,7 @@ namespace KNNonAir.Domain.Service
             }
         }
 
-        public void FindPath(AdjacencyGraph<Vertex, Edge<Vertex>> graph, Vertex poi, PathNodeHandler findPathCompleted)
+        public void FindPath(RoadGraph<Vertex, Edge<Vertex>> graph, Vertex poi, PathNodeHandler findPathCompleted)
         {
             AddChild(graph);
 
@@ -52,7 +52,7 @@ namespace KNNonAir.Domain.Service
             }
         }
 
-        private void AddChild(AdjacencyGraph<Vertex, Edge<Vertex>> graph)
+        private void AddChild(RoadGraph<Vertex, Edge<Vertex>> graph)
         {
             Edge<Vertex> myEdge = null;
             if (Edge != null && graph.TryGetEdge(Edge.Source, Edge.Target, out myEdge)) graph.RemoveEdge(myEdge);

@@ -66,9 +66,9 @@ namespace KNNonAir.Domain.Context
         {
             List<Tuple<Color, List<PointLatLng>>> regionEdges = new List<Tuple<Color, List<PointLatLng>>>();
 
-            foreach (KNNonAir.Domain.Entity.Region region in _roadNetwork.Regions)
+            foreach (KeyValuePair<int, KNNonAir.Domain.Entity.Region> region in _roadNetwork.Regions)
             {
-                GetColorEdges(regionEdges, region.Graph.Edges);
+                GetColorEdges(regionEdges, region.Value.Graph.Edges);
             }
 
             return regionEdges;

@@ -36,18 +36,26 @@ namespace KNNonAir.Domain.Service
             return nvcList;
         }
 
-        public static AdjacencyGraph<Vertex, Edge<Vertex>> ParseNVCInfoToGraph(List<NVCInfo> nvcList)
+        public static RoadGraph<Vertex, Edge<Vertex>> ParseNVCInfoToGraph(List<NVCInfo> nvcList)
         {
-            AdjacencyGraph<Vertex, Edge<Vertex>> graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
+            RoadGraph<Vertex, Edge<Vertex>> graph = new RoadGraph<Vertex, Edge<Vertex>>(false);
 
             foreach (NVCInfo nvc in nvcList)
             {
+                graph.AddVertex(new InterestPoint(nvc.PoI.Latitude, nvc.PoI.Longitude));
+
+                foreach (BorderInfo borderInfo in nvc.BPs)
+                {
+                    Vertex borderPoint = new BorderPoint(borderInfo.Vertex.Latitude, borderInfo.Vertex.Longitude);
+                    graph.AddVertex(borderPoint);
+                }
+
                 foreach (EdgeInfo edge in nvc.Graph)
                 {
                     Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
                     Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
-                    graph.AddVertex(source);
-                    graph.AddVertex(target);
+                    if (!graph.ContainsVertex(source)) graph.AddVertex(source);
+                    if (!graph.ContainsVertex(target)) graph.AddVertex(target);
                     graph.AddEdge(new Edge<Vertex>(source, target));
                 }
             }
