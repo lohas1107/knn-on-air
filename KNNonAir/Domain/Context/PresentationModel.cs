@@ -30,7 +30,7 @@ namespace KNNonAir.Domain.Context
         {
             List<List<PointLatLng>> roads = new List<List<PointLatLng>>();
 
-            foreach (Edge<Vertex> edge in _roadNetwork.Graph.Edges)
+            foreach (Edge<Vertex> edge in _roadNetwork.RaodNetwork.Graph.Edges)
             {
                 List<PointLatLng> points = GetEdge(edge);
                 roads.Add(points);
@@ -56,7 +56,7 @@ namespace KNNonAir.Domain.Context
 
             foreach (KeyValuePair<Vertex, VoronoiCell> nvc in _roadNetwork.NVD)
             {
-                GetColorEdges(nvdEdges, nvc.Value.Graph.Edges);
+                GetColorEdges(nvdEdges, nvc.Value.Road.Graph.Edges);
             }
 
             return nvdEdges;
@@ -68,7 +68,7 @@ namespace KNNonAir.Domain.Context
 
             foreach (KeyValuePair<int, KNNonAir.Domain.Entity.Region> region in _roadNetwork.Regions)
             {
-                GetColorEdges(regionEdges, region.Value.Graph.Edges);
+                GetColorEdges(regionEdges, region.Value.Road.Graph.Edges);
             }
 
             return regionEdges;

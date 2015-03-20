@@ -6,38 +6,40 @@ namespace KNNonAir.Domain.Service
 {
     class PathTree
     {
-        private PathNode _root;
-        private Dictionary<Vertex, PathNode> _leaves;
+        private PathTreeNode _root;
+        private Dictionary<Vertex, PathTreeNode> _leaves;
         private List<Vertex> _pathVertexs;
-        public bool IsRepeat;
+
+        public bool IsRepeat { get; set; }
 
         private event PathNodeHandler FindPathCompleted;
         public event BorderPointHandler FindBorderPointCompleted;
 
         public PathTree(Vertex root)
         {
-            _root = new PathNode() { Vertex = root };
-            _leaves = new Dictionary<Vertex, PathNode>();
+            _root = new PathTreeNode() { Vertex = root };
+            _leaves = new Dictionary<Vertex, PathTreeNode>();
             _pathVertexs = new List<Vertex>();
             IsRepeat = true;
+            FindPathCompleted += AddLeaf;
         }
 
-        public void GenerateNVC(RoadGraph<Vertex, Edge<Vertex>> graph)
+        public void GenerateNVC(RoadGraph graph)
         {
             FindPaths(graph);
             FindBorderPoint();
         }
 
-        private void FindPaths(RoadGraph<Vertex, Edge<Vertex>> graph)
+        private void FindPaths(RoadGraph graph)
         {
             IsRepeat = false;
-            FindPathCompleted += AddLeaf;
             _leaves.Clear();
+
             if (_root.Children.Count > 0) _root.Children.Clear();
             _root.FindPath(graph, _root.Vertex, FindPathCompleted);
         }
 
-        private void AddLeaf(PathNode node)
+        private void AddLeaf(PathTreeNode node)
         {
             if (_leaves.ContainsKey(node.Vertex))
             {
@@ -49,7 +51,7 @@ namespace KNNonAir.Domain.Service
 
         private void FindBorderPoint()
         {
-            foreach (KeyValuePair<Vertex, PathNode> leaf in _leaves)
+            foreach (KeyValuePair<Vertex, PathTreeNode> leaf in _leaves)
             {
                 leaf.Value.InsertBorderPoint(leaf.Value.Distance / 2, _root.Vertex, leaf.Key, FindBorderPointCompleted);
             }
@@ -62,7 +64,7 @@ namespace KNNonAir.Domain.Service
             return nvc;
         }
 
-        public List<Vertex> FindPathsByRange(RoadGraph<Vertex, Edge<Vertex>> graph, double range)
+        public List<Vertex> FindPathsByRange(RoadGraph graph, double range)
         {
             FindPathCompleted += AddPathVertex;
             _root.FindPathsByRange(graph.Clone(), range, FindPathCompleted);
@@ -70,7 +72,7 @@ namespace KNNonAir.Domain.Service
             return _pathVertexs;
         }
 
-        private void AddPathVertex(PathNode node)
+        private void AddPathVertex(PathTreeNode node)
         {
             _pathVertexs.Add(node.Vertex);
         }

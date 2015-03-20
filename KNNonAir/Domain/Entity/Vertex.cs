@@ -34,17 +34,6 @@ namespace KNNonAir.Domain.Entity
             return false;
         }
 
-        //public static bool operator ==(Vertex vertex1, Vertex vertex2)
-        //{
-        //    if (vertex1 == null && vertex2 == null) return true;
-        //    return vertex1.Equals(vertex2);
-        //}
-
-        //public static bool operator !=(Vertex vertex1, Vertex vertex2)
-        //{
-        //    return !vertex1.Equals(vertex2);
-
-
         public int CompareTo(Vertex other)
         {
             return 0;

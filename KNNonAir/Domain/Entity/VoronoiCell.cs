@@ -6,13 +6,13 @@ namespace KNNonAir.Domain.Entity
     class VoronoiCell
     {
         public Vertex PoI { get; set; }
-        public RoadGraph<Vertex, Edge<Vertex>> Graph { get; set; }
+        public RoadGraph Road { get; set; }
         public List<Vertex> BorderPoints { get; set; }
 
         public VoronoiCell()
         {
             PoI = null;
-            Graph = new RoadGraph<Vertex, Edge<Vertex>>(false);
+            Road = new RoadGraph(false);
             BorderPoints = new List<Vertex>();
         }
     }
