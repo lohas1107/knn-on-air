@@ -151,5 +151,10 @@ namespace KNNonAir.Presentation
 
             gmap.Overlays.Add(_mbrOverlay);
         }
+
+        private void ClickTableToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.ComputeTable();
+        }
     }
 }

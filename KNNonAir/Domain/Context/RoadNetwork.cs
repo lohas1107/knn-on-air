@@ -4,6 +4,10 @@ using KNNonAir.Domain.Service;
 using QuickGraph;
 using System.Collections.Generic;
 using System.Linq;
+using QuickGraph.Algorithms.ShortestPath;
+using QuickGraph.Algorithms;
+using QuickGraph.Algorithms.Observers;
+using System;
 
 namespace KNNonAir.Domain.Context
 {
@@ -15,20 +19,22 @@ namespace KNNonAir.Domain.Context
 
         public event VertexListHandler LoadPoIsCompleted;
 
-        public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
+        public RoadGraph<Vertex, Edge<Vertex>> Graph { get; set; }
         public List<Vertex> PoIs { get; set; }
         public Dictionary<Vertex, Edge<Vertex>> BorderPoints { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
-        public List<Region> Regions { get; set; }
+        public Dictionary<int, Region> Regions { get; set; }
         public List<MBR> QuadMBRs { get; set; }
+        public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
+        public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
 
         public RoadNetwork()
         {
-            Graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
+            Graph = new RoadGraph<Vertex, Edge<Vertex>>(false);
             PoIs = new List<Vertex>();
             BorderPoints = new Dictionary<Vertex, Edge<Vertex>>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
-            Regions = new List<Region>();
+            Regions = new Dictionary<int, Region>();
         }
 
         public void LoadRoads()
@@ -212,7 +218,7 @@ namespace KNNonAir.Domain.Context
             return adjustedPoI;
         }
 
-        private void InsertVertex(Vertex vertex, Edge<Vertex> edge, AdjacencyGraph<Vertex, Edge<Vertex>> graph)
+        private void InsertVertex(Vertex vertex, Edge<Vertex> edge, RoadGraph<Vertex, Edge<Vertex>> graph)
         {
             if (vertex == null || edge == null) return;
 
@@ -233,7 +239,7 @@ namespace KNNonAir.Domain.Context
             BorderPoints.Add(borderPoint, edge);
         }
 
-        private void GenerateNVC(int index, int count, AdjacencyGraph<Vertex, Edge<Vertex>> graph)
+        private void GenerateNVC(int index, int count, RoadGraph<Vertex, Edge<Vertex>> graph)
         {
             if (index >= count) return;
 
@@ -286,9 +292,9 @@ namespace KNNonAir.Domain.Context
             List<Vertex> borderPoints = new List<Vertex>();
             List<Vertex> vertices = Graph.Vertices.ToList();
 
-            foreach(Region region in Regions)
+            foreach (KeyValuePair<int, Region> region in Regions)
             {
-                foreach (Vertex borderPoint in region.BorderPoints) borderPoints.Add(borderPoint);
+                foreach (Vertex borderPoint in region.Value.BorderPoints) borderPoints.Add(borderPoint);
             }
 
             vertices = vertices.OrderBy(o => o.Coordinate.Longitude).ToList();
@@ -301,6 +307,13 @@ namespace KNNonAir.Domain.Context
 
             VQTree vqTree = new VQTree(borderPoints, new MBR(x, y, width, height));
             QuadMBRs = vqTree.MBRs;
+        }
+
+        public void ComputeTable()
+        {
+            CountingTable table = new CountingTable(Graph, Regions);
+            MinTable = table.MinTable;
+            MaxCountTable = table.MaxCountTable;
         }
     }
 }
