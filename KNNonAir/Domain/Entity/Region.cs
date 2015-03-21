@@ -21,14 +21,7 @@ namespace KNNonAir.Domain.Entity
         public void AddNVC(VoronoiCell nvc)
         {
             PoIs.Add(nvc.PoI);
-
-            foreach(Edge<Vertex> edge in nvc.Road.Graph.Edges)
-            {
-                if (!Road.Graph.ContainsVertex(edge.Source)) Road.Graph.AddVertex(edge.Source);
-                if (!Road.Graph.ContainsVertex(edge.Target)) Road.Graph.AddVertex(edge.Target);
-                Road.Graph.AddEdge(edge);
-            }
-
+            foreach (Edge<Vertex> edge in nvc.Road.Graph.Edges) Road.Graph.AddVerticesAndEdge(edge);
             foreach(Vertex borderPoint in nvc.BorderPoints) BorderPoints.Add(borderPoint);
         }
 
