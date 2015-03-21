@@ -5,28 +5,23 @@ namespace KNNonAir.Domain.Entity
 {
     class Region
     {
+        public int Id { get; set; }
         public List<Vertex> PoIs { get; set; }
-        public AdjacencyGraph<Vertex, Edge<Vertex>> Graph { get; set; }
+        public RoadGraph Road { get; set; }
         public List<Vertex> BorderPoints { get; set; }
 
         public Region()
         {
+            Id = -1;
             PoIs = new List<Vertex>();
-            Graph = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
+            Road = new RoadGraph(false);
             BorderPoints = new List<Vertex>();
         }
 
         public void AddNVC(VoronoiCell nvc)
         {
             PoIs.Add(nvc.PoI);
-
-            foreach(Edge<Vertex> edge in nvc.Graph.Edges)
-            {
-                if (!Graph.ContainsVertex(edge.Source)) Graph.AddVertex(edge.Source);
-                if (!Graph.ContainsVertex(edge.Target)) Graph.AddVertex(edge.Target);
-                Graph.AddEdge(edge);
-            }
-
+            foreach (Edge<Vertex> edge in nvc.Road.Graph.Edges) Road.Graph.AddVerticesAndEdge(edge);
             foreach(Vertex borderPoint in nvc.BorderPoints) BorderPoints.Add(borderPoint);
         }
 

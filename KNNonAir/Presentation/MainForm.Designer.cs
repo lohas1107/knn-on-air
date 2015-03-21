@@ -47,6 +47,7 @@
             this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.quadTreeToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -147,21 +148,21 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
             // addNVDToolStripMenuItem
             // 
             this.addNVDToolStripMenuItem.Name = "addNVDToolStripMenuItem";
-            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addNVDToolStripMenuItem.Text = "Add NVD";
             this.addNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNVDToolStripMenuItem);
             // 
@@ -179,7 +180,7 @@
             // saveNVDToolStripMenuItem
             // 
             this.saveNVDToolStripMenuItem.Name = "saveNVDToolStripMenuItem";
-            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.saveNVDToolStripMenuItem.Text = "Save NVD";
             this.saveNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNVDToolStripMenuItem);
             // 
@@ -192,10 +193,11 @@
             this.partitionToolStripButton,
             this.partitionToolStripComboBox,
             this.toolStripSeparator2,
-            this.quadTreeToolStripButton});
+            this.quadTreeToolStripButton,
+            this.tableToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(169, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(192, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -233,7 +235,7 @@
             "128"});
             this.partitionToolStripComboBox.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
-            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 24);
+            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 23);
             this.partitionToolStripComboBox.Text = "16";
             // 
             // toolStripSeparator2
@@ -250,6 +252,16 @@
             this.quadTreeToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.quadTreeToolStripButton.Text = "Quad Tree Index";
             this.quadTreeToolStripButton.Click += new System.EventHandler(this.ClickQuadTreeToolStripButton);
+            // 
+            // tableToolStripButton
+            // 
+            this.tableToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tableToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("tableToolStripButton.Image")));
+            this.tableToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tableToolStripButton.Name = "tableToolStripButton";
+            this.tableToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.tableToolStripButton.Text = " Pre-computation Table";
+            this.tableToolStripButton.Click += new System.EventHandler(this.ClickTableToolStripButton);
             // 
             // MainForm
             // 
@@ -296,6 +308,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton quadTreeToolStripButton;
+        private System.Windows.Forms.ToolStripButton tableToolStripButton;
     }
 }
 

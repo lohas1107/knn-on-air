@@ -90,6 +90,8 @@
     <Compile Include="Access\NVCInfo.cs" />
     <Compile Include="Access\VertexInfo.cs" />
     <Compile Include="Domain\Entity\MBR.cs" />
+    <Compile Include="Domain\Entity\RoadGraph.cs" />
+    <Compile Include="Domain\Service\CountingTable.cs" />
     <Compile Include="Domain\Service\KdTree.cs" />
     <Compile Include="Domain\Entity\Region.cs" />
     <Compile Include="Domain\Service\Arithmetics.cs" />
@@ -106,7 +108,7 @@
     <Compile Include="Presentation\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Domain\Service\PathNode.cs" />
+    <Compile Include="Domain\Service\PathTreeNode.cs" />
     <Compile Include="Domain\Service\PathTree.cs" />
     <Compile Include="Domain\Context\PresentationModel.cs" />
     <Compile Include="Program.cs" />

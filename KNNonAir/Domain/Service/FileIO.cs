@@ -1,9 +1,4 @@
-﻿using Geo;
-using Geo.Geometries;
-using Geo.IO.GeoJson;
-using KNNonAir.Access;
-using KNNonAir.Domain.Entity;
-using QuickGraph;
+﻿using KNNonAir.Access;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -43,72 +38,15 @@ namespace KNNonAir.Domain.Service
             return result;
         }
 
-        public static List<Edge<Vertex>> ReadRoadFile()
+        public static string ReadGeoJsonFile()
         {
-            if (OpenFile(GEOJSON_FILE_FILTER) == DialogResult.Cancel) return null;
-
-            List<Edge<Vertex>> edgeList = new List<Edge<Vertex>>();
-
-            FeatureCollection geoObject = (FeatureCollection)GeoJson.DeSerialize(File.ReadAllText(_fileName));
-            foreach (Feature feature in geoObject.Features)
-            {
-                if (feature.Geometry.GetType() == new MultiLineString().GetType())
-                {
-                    MultiLineString multiLingString = feature.Geometry as MultiLineString;
-                    foreach (LineString lineString in multiLingString.Geometries)
-                    {
-                        LoadLineString(edgeList, lineString);
-                    }
-                }
-                else
-                {
-                    LineString lineString = feature.Geometry as LineString;
-                    LoadLineString(edgeList, lineString);
-                }
-            }
-
-            return edgeList;
-        }
-
-        private static void LoadLineString(List<Edge<Vertex>> edgeList, LineString lineString)
-        {
-            Vertex source = null;
-            Vertex target = null;
-
-            foreach (Coordinate coordinate in lineString.Coordinates)
-            {
-                if (source == null)
-                {
-                    source = new Vertex(coordinate.Latitude, coordinate.Longitude);
-                }
-                else
-                {
-                    target = new Vertex(coordinate.Latitude, coordinate.Longitude);
-                    edgeList.Add(new Edge<Vertex>(source, target));
-                    source = target;
-                }
-            }
-        }
-
-        public static List<Vertex> ReadPoIFile()
-        {
-            if (OpenFile(GEOJSON_FILE_FILTER) == DialogResult.Cancel) return null;
-
-            List<Vertex> poiList = new List<Vertex>();
-
-            FeatureCollection geoObject = (FeatureCollection)GeoJson.DeSerialize(File.ReadAllText(_fileName));
-            foreach (Feature feature in geoObject.Features)
-            {
-                Point point = feature.Geometry as Point;
-                poiList.Add(new Vertex(point.Coordinate.Latitude, point.Coordinate.Longitude));
-            }
-
-            return poiList;
+            if (OpenFile(GEOJSON_FILE_FILTER) != DialogResult.OK) return null;
+            else return File.ReadAllText(_fileName);
         }
 
         public static void SaveNVDFile(List<NVCInfo> nvd)
         {
-            if (SaveFile(XML_FILE_FILTER) == DialogResult.Cancel) return;
+            if (SaveFile(XML_FILE_FILTER) != DialogResult.OK) return;
 
             StringWriter writer = new StringWriter(new StringBuilder());
             XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
@@ -118,7 +56,7 @@ namespace KNNonAir.Domain.Service
 
         public static List<NVCInfo> ReadNVDFile()
         {
-            if (OpenFile(XML_FILE_FILTER) == DialogResult.Cancel) return null;
+            if (OpenFile(XML_FILE_FILTER) != DialogResult.OK) return null;
             
             XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
             List<NVCInfo> nvdList = (List<NVCInfo>)serializer.Deserialize(File.OpenText(_fileName));

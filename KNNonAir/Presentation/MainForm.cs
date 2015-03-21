@@ -19,7 +19,6 @@ namespace KNNonAir.Presentation
         private GMapOverlay _markersOverlay;
         private GMapOverlay _mbrOverlay;
 
-
         public MainForm()
         {
             InitializeComponent();
@@ -28,8 +27,6 @@ namespace KNNonAir.Presentation
             InitializeGMap(GUAM, 11);
 
             _roadNetwork = new RoadNetwork();
-            _roadNetwork.LoadPoIsCompleted += DrawMarkers;
-
             _presentationModel = new PresentationModel(_roadNetwork);
         }
 
@@ -52,26 +49,7 @@ namespace KNNonAir.Presentation
             gmapToolStripStatusLabel.Text = string.Empty;
         }
 
-        private void ClickAddRoadsToolStripMenuItem(object sender, EventArgs e)
-        {
-            _roadNetwork.LoadRoads();
-            DrawLines(_presentationModel.GetRoads(), 5);
-            DrawMarkers(_roadNetwork.GetSideVertexs()); // 標示孤點
-        }
-
-        private void DrawLines(List<List<PointLatLng>> lines, int strokeWidth)
-        {
-            gmap.Overlays.Remove(_polyOverlay);
-            _polyOverlay = new GMapOverlay("polygons");
-
-            foreach (List<PointLatLng> points in lines)
-            {
-                SetPolygon(points, Color.Red, 100, strokeWidth);
-            }
-            
-            gmap.Overlays.Add(_polyOverlay);
-        }
-
+        #region settings of drawing component
         private void SetPolygon(List<PointLatLng> points, Color color, int alpha, int strokeWidth)
         {
             GMapPolygon polygon = new GMapPolygon(points, "");
@@ -80,29 +58,17 @@ namespace KNNonAir.Presentation
             _polyOverlay.Polygons.Add(polygon);
         }
 
-        private void ClickAddLandMarkToolStripMenuItem(object sender, EventArgs e)
+        private void DrawLines(List<List<PointLatLng>> lines)
         {
-            _roadNetwork.LoadPoIs();
-        }
+            gmap.Overlays.Remove(_polyOverlay);
+            _polyOverlay = new GMapOverlay("polygons");
 
-        private void DrawMarkers(List<Vertex> vertexs)
-        {
-            gmap.Overlays.Remove(_markersOverlay);
-            _markersOverlay = new GMapOverlay("marker");
-
-            foreach (Vertex site in vertexs)
+            foreach (List<PointLatLng> points in lines)
             {
-                GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.red_dot);
-                _markersOverlay.Markers.Add(marker);
+                SetPolygon(points, Color.Red, 100, 5);
             }
 
-            gmap.Overlays.Add(_markersOverlay);            
-        }
-
-        private void ClickNvdToolStripButton(object sender, EventArgs e)
-        {
-            _roadNetwork.GenerateNVD();
-            DrawColorLines(_presentationModel.GetNVDEdges());
+            gmap.Overlays.Add(_polyOverlay);
         }
 
         private void DrawColorLines(List<Tuple<Color, List<PointLatLng>>> nvdEdges)
@@ -116,7 +82,53 @@ namespace KNNonAir.Presentation
             }
 
             gmap.Overlays.Add(_polyOverlay);
+        }
 
+        private void DrawMarkers(List<Vertex> vertexs)
+        {
+            gmap.Overlays.Remove(_markersOverlay);
+            _markersOverlay = new GMapOverlay("marker");
+
+            foreach (Vertex site in vertexs)
+            {
+                GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.red_dot);
+                _markersOverlay.Markers.Add(marker);
+            }
+
+            gmap.Overlays.Add(_markersOverlay);
+        }
+
+        private void DrawMBRs()
+        {
+            gmap.Overlays.Remove(_mbrOverlay);
+            _mbrOverlay = new GMapOverlay("mbr");
+
+            foreach (List<PointLatLng> points in _presentationModel.GetVQTree())
+            {
+                SetPolygon(points, Color.Red, 100, 1);
+            }
+
+            gmap.Overlays.Add(_mbrOverlay);
+        }
+        #endregion
+
+        private void ClickAddRoadsToolStripMenuItem(object sender, EventArgs e)
+        {
+            _roadNetwork.LoadRoads();
+            DrawLines(_presentationModel.GetRoads());
+            DrawMarkers(_roadNetwork.RaodNetwork.GetSideVertexs()); // 標示孤點
+        }
+
+        private void ClickAddLandMarkToolStripMenuItem(object sender, EventArgs e)
+        {
+            _roadNetwork.LoadPoIs();
+            DrawMarkers(_roadNetwork.PoIs);
+        }
+
+        private void ClickNvdToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.GenerateNVD();
+            DrawColorLines(_presentationModel.GetNVDEdges());
             DrawMarkers(_roadNetwork.PoIs);
         }
 
@@ -140,16 +152,12 @@ namespace KNNonAir.Presentation
         private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateVQTree();
+            DrawMBRs();
+        }
 
-            gmap.Overlays.Remove(_mbrOverlay);
-            _mbrOverlay = new GMapOverlay("mbrs");
-
-            foreach (List<PointLatLng> points in _presentationModel.GetVQTree())
-            {
-                SetPolygon(points, Color.Red, 100, 1);
-            }
-
-            gmap.Overlays.Add(_mbrOverlay);
+        private void ClickTableToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.ComputeTable();
         }
     }
 }

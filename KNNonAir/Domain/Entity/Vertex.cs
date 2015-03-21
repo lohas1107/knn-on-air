@@ -1,9 +1,10 @@
-﻿using Geo;
+﻿using System;
+using Geo;
 using Geo.Geometries;
 
 namespace KNNonAir.Domain.Entity
 {
-    class Vertex
+    class Vertex : IComparable<Vertex>
     {
         private Point _point;
         public Coordinate Coordinate { get; set; }
@@ -16,14 +17,26 @@ namespace KNNonAir.Domain.Entity
             Coordinate = _point.Coordinate;
         }
 
+        public override int GetHashCode()
+        {
+            return Coordinate.GetHashCode();
+        } 
+
         public override bool Equals(object obj)
         {
-            if (obj is Vertex)
+            if (obj == null) return false;
+            
+            if (obj is Vertex || obj is InterestPoint || obj is BorderPoint)
             {
                 var vertex = (Vertex)obj;
                 return (vertex.Coordinate == Coordinate);
             }
             return false;
+        }
+
+        public int CompareTo(Vertex other)
+        {
+            return 0;
         }
     }
 }
