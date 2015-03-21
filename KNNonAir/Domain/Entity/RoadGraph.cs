@@ -1,10 +1,7 @@
-﻿using System;
+﻿using KNNonAir.Domain.Service;
+using QuickGraph;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QuickGraph;
-using KNNonAir.Domain.Service;
 
 namespace KNNonAir.Domain.Entity
 {
@@ -196,9 +193,7 @@ namespace KNNonAir.Domain.Entity
 
             foreach (IEdge<Vertex> edge in Graph.Edges)
             {
-                if (!roadGraph.Graph.ContainsVertex(edge.Source)) roadGraph.Graph.AddVertex(edge.Source);
-                if (!roadGraph.Graph.ContainsVertex(edge.Target)) roadGraph.Graph.AddVertex(edge.Target);
-                roadGraph.Graph.AddEdge((Edge<Vertex>)edge);
+                roadGraph.Graph.AddVerticesAndEdge((Edge<Vertex>)edge);
             }
 
             return roadGraph;
