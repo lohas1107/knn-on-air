@@ -159,5 +159,10 @@ namespace KNNonAir.Presentation
         {
             _roadNetwork.ComputeTable();
         }
+
+        private void ClickSearchToolStripButton(object sender, EventArgs e)
+        {
+
+        }
     }
 }
