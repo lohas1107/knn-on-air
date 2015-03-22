@@ -84,6 +84,17 @@ namespace KNNonAir.Presentation
             gmap.Overlays.Add(_polyOverlay);
         }
 
+        private void DrawMarker(Vertex site)
+        {
+            gmap.Overlays.Remove(_markersOverlay);
+            _markersOverlay = new GMapOverlay("marker");
+
+            GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.red_dot);
+            _markersOverlay.Markers.Add(marker);
+
+            gmap.Overlays.Add(_markersOverlay);
+        }
+
         private void DrawMarkers(List<Vertex> vertexs)
         {
             gmap.Overlays.Remove(_markersOverlay);
@@ -91,7 +102,7 @@ namespace KNNonAir.Presentation
 
             foreach (Vertex site in vertexs)
             {
-                GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.red_dot);
+                GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.green_small);
                 _markersOverlay.Markers.Add(marker);
             }
 
@@ -116,7 +127,7 @@ namespace KNNonAir.Presentation
         {
             _roadNetwork.LoadRoads();
             DrawLines(_presentationModel.GetRoads());
-            DrawMarkers(_roadNetwork.RaodNetwork.GetSideVertexs()); // 標示孤點
+            DrawMarkers(_roadNetwork.Road.GetSideVertexs()); // 標示孤點
         }
 
         private void ClickAddLandMarkToolStripMenuItem(object sender, EventArgs e)
@@ -162,7 +173,8 @@ namespace KNNonAir.Presentation
 
         private void ClickSearchToolStripButton(object sender, EventArgs e)
         {
-
+            _roadNetwork.SearchKNN();
+            DrawMarker(_roadNetwork.QueryPoint);
         }
     }
 }

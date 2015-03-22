@@ -30,7 +30,7 @@ namespace KNNonAir.Domain.Context
         {
             List<List<PointLatLng>> roads = new List<List<PointLatLng>>();
 
-            foreach (Edge<Vertex> edge in _roadNetwork.RaodNetwork.Graph.Edges)
+            foreach (Edge<Vertex> edge in _roadNetwork.Road.Graph.Edges)
             {
                 List<PointLatLng> points = GetEdge(edge);
                 roads.Add(points);

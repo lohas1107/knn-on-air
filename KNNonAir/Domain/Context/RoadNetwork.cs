@@ -10,7 +10,7 @@ namespace KNNonAir.Domain.Context
 {
     class RoadNetwork
     {
-        public RoadGraph RaodNetwork { get; set; }
+        public RoadGraph Road { get; set; }
         public List<Vertex> PoIs { get; set; }
         public Dictionary<Vertex, Edge<Vertex>> BorderPoints { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
@@ -18,10 +18,11 @@ namespace KNNonAir.Domain.Context
         public List<MBR> QuadMBRs { get; set; }
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
+        public Vertex QueryPoint { get; set; }
 
         public RoadNetwork()
         {
-            RaodNetwork = new RoadGraph(false);
+            Road = new RoadGraph(false);
             PoIs = new List<Vertex>();
             BorderPoints = new Dictionary<Vertex, Edge<Vertex>>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
@@ -32,7 +33,7 @@ namespace KNNonAir.Domain.Context
             List<Edge<Vertex>> edgeList = Parser.ParseRoadData(FileIO.ReadGeoJsonFile());
             if (edgeList == null) return;
 
-            RaodNetwork.LoadRoads(edgeList);
+            Road.LoadRoads(edgeList);
         }
 
         public void LoadPoIs()
@@ -42,7 +43,7 @@ namespace KNNonAir.Domain.Context
 
             foreach (Vertex poi in poiList)
             {
-                Vertex adjustedPoI = RaodNetwork.AdjustPoIToEdge(poi);
+                Vertex adjustedPoI = Road.AdjustPoIToEdge(poi);
                 if (adjustedPoI == null) continue;
 
                 PoIs.Add(adjustedPoI);
@@ -51,7 +52,7 @@ namespace KNNonAir.Domain.Context
 
         public void GenerateNVD()
         {
-            GenerateNVC(0, PoIs.Count, RaodNetwork);
+            GenerateNVC(0, PoIs.Count, Road);
         }
 
         private void AddBorderPoint(Vertex borderPoint, Edge<Vertex> edge)
@@ -98,7 +99,7 @@ namespace KNNonAir.Domain.Context
             List<NVCInfo> nvcList = FileIO.ReadNVDFile();
             if (nvcList == null) return;
 
-            RaodNetwork = Parser.ParseNVCInfoToGraph(nvcList);
+            Road = Parser.ParseNVCInfoToGraph(nvcList);
             NVD = Parser.ParseNVCInfoToNVD(nvcList);
             PoIs = Parser.ParsePoIInfo(nvcList);
         }
@@ -112,7 +113,7 @@ namespace KNNonAir.Domain.Context
         public void GenerateVQTree()
         {
             List<Vertex> borderPoints = new List<Vertex>();
-            List<Vertex> vertices = RaodNetwork.Graph.Vertices.ToList();
+            List<Vertex> vertices = Road.Graph.Vertices.ToList();
 
             foreach (KeyValuePair<int, Region> region in Regions)
             {
@@ -133,9 +134,14 @@ namespace KNNonAir.Domain.Context
 
         public void ComputeTable()
         {
-            CountingTable table = new CountingTable(RaodNetwork, Regions);
+            CountingTable table = new CountingTable(Road, Regions);
             MinTable = table.MinTable;
             MaxCountTable = table.MaxCountTable;
+        }
+
+        public void SearchKNN()
+        {
+            QueryPoint = Road.PickQueryPoint();
         }
     }
 }
