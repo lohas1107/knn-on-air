@@ -15,6 +15,7 @@ namespace KNNonAir.Domain.Context
         public Dictionary<Vertex, Edge<Vertex>> BorderPoints { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
         public Dictionary<int, Region> Regions { get; set; }
+        public VQTree VQTree { get; set; }
         public List<MBR> QuadMBRs { get; set; }
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
@@ -115,11 +116,6 @@ namespace KNNonAir.Domain.Context
             List<Vertex> borderPoints = new List<Vertex>();
             List<Vertex> vertices = Road.Graph.Vertices.ToList();
 
-            foreach (KeyValuePair<int, Region> region in Regions)
-            {
-                foreach (Vertex borderPoint in region.Value.BorderPoints) borderPoints.Add(borderPoint);
-            }
-
             vertices = vertices.OrderBy(o => o.Coordinate.Longitude).ToList();
             double x = vertices.First().Coordinate.Longitude;
             double width = vertices.Last().Coordinate.Longitude - x;
@@ -128,8 +124,15 @@ namespace KNNonAir.Domain.Context
             double y = vertices.Last().Coordinate.Latitude;
             double height = y - vertices.First().Coordinate.Latitude;
 
-            VQTree vqTree = new VQTree(borderPoints, new MBR(x, y, width, height));
-            QuadMBRs = vqTree.MBRs;
+            MBR mbr = new MBR(x, y, width, height);
+            foreach (KeyValuePair<int, Region> region in Regions)
+            {
+                foreach (Vertex borderPoint in region.Value.BorderPoints) borderPoints.Add(borderPoint);
+                mbr.AddVertices(region.Value.Road.Graph.Vertices);
+            }
+
+            VQTree = new VQTree(borderPoints, mbr);
+            QuadMBRs = VQTree.MBRs;
         }
 
         public void ComputeTable()
@@ -142,6 +145,8 @@ namespace KNNonAir.Domain.Context
         public void SearchKNN()
         {
             QueryPoint = Road.PickQueryPoint();
+            int regionId = VQTree.searchRegion(QueryPoint);
+            regionId = regionId;
         }
     }
 }

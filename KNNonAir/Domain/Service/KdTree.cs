@@ -25,6 +25,7 @@ namespace KNNonAir.Domain.Service
         private void AddRegion(Region region)
         {
             region.Id = _id++;
+            region.SetVerticesId();
             Regions.Add(region.Id, region);
         }
     }

@@ -43,5 +43,13 @@ namespace KNNonAir.Domain.Entity
             BorderPoints.Clear();
             foreach (Vertex border in tempBorders) BorderPoints.Add(border);
         }
+
+        public void SetVerticesId()
+        {
+            foreach (Vertex vertex in Road.Graph.Vertices)
+            {
+                if (!(vertex is BorderPoint)) vertex.RegionId = Id;
+            }            
+        }
     }
 }

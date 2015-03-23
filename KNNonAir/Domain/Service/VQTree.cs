@@ -24,5 +24,10 @@ namespace KNNonAir.Domain.Service
         {
             MBRs.Add(mbr);
         }
+
+        public int searchRegion(Vertex queryPoint)
+        {
+            return _root.searchRegion(queryPoint);
+        }
     }
 }

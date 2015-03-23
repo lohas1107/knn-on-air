@@ -202,7 +202,7 @@ namespace KNNonAir.Domain.Entity
 
         public Vertex PickQueryPoint()
         {
-            Random random = new Random();
+            Random random = new Random(Guid.NewGuid().GetHashCode());
             int count = Graph.Vertices.Count();
             return Graph.Vertices.ElementAt(random.Next(0, count-1));
         }
