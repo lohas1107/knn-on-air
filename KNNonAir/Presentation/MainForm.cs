@@ -18,6 +18,7 @@ namespace KNNonAir.Presentation
         private GMapOverlay _polyOverlay;
         private GMapOverlay _markersOverlay;
         private GMapOverlay _mbrOverlay;
+        private GMapOverlay _answerOverlay;
 
         public MainForm()
         {
@@ -84,15 +85,15 @@ namespace KNNonAir.Presentation
             gmap.Overlays.Add(_polyOverlay);
         }
 
-        private void DrawMarker(Vertex site)
+        private void DrawAnswer(Vertex site)
         {
-            gmap.Overlays.Remove(_markersOverlay);
-            _markersOverlay = new GMapOverlay("marker");
+            gmap.Overlays.Remove(_answerOverlay);
+            _answerOverlay = new GMapOverlay("marker");
 
             GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(site.Coordinate.Latitude, site.Coordinate.Longitude), GMarkerGoogleType.red_dot);
-            _markersOverlay.Markers.Add(marker);
+            _answerOverlay.Markers.Add(marker);
 
-            gmap.Overlays.Add(_markersOverlay);
+            gmap.Overlays.Add(_answerOverlay);
         }
 
         private void DrawMarkers(List<Vertex> vertexs)
@@ -174,7 +175,7 @@ namespace KNNonAir.Presentation
         private void ClickSearchToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.SearchKNN();
-            DrawMarker(_roadNetwork.QueryPoint);
+            DrawAnswer(_roadNetwork.QueryPoint);
         }
     }
 }
