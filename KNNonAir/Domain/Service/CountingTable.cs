@@ -11,33 +11,36 @@ namespace KNNonAir.Domain.Service
 {
     class CountingTable
     {
+        private Dictionary<Edge<Vertex>, double> _distances;
         private UndirectedDijkstraShortestPathAlgorithm<Vertex, Edge<Vertex>> _dijkstra;
         private UndirectedVertexDistanceRecorderObserver<Vertex, Edge<Vertex>> _distObserver;
 
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
 
-        public CountingTable(RoadGraph road, Dictionary<int, Region> regions)
+        public CountingTable(RoadGraph road)
         {
-            Dictionary<Edge<Vertex>, double> distances = new Dictionary<Edge<Vertex>, double>();
+            _distances = new Dictionary<Edge<Vertex>, double>();
 
             foreach (Edge<Vertex> edge in road.Graph.Edges)
             {
-                distances.Add(edge, Arithmetics.GetDistance(edge.Source, edge.Target));
+                _distances.Add(edge, Arithmetics.GetDistance(edge.Source, edge.Target));
             }
 
-            _dijkstra = new UndirectedDijkstraShortestPathAlgorithm<Vertex, Edge<Vertex>>(road.Graph, AlgorithmExtensions.GetIndexer<Edge<Vertex>, double>(distances));
-            _distObserver = new UndirectedVertexDistanceRecorderObserver<Vertex, Edge<Vertex>>(AlgorithmExtensions.GetIndexer<Edge<Vertex>, double>(distances));
+            _dijkstra = new UndirectedDijkstraShortestPathAlgorithm<Vertex, Edge<Vertex>>(road.Graph, AlgorithmExtensions.GetIndexer<Edge<Vertex>, double>(_distances));
+            _distObserver = new UndirectedVertexDistanceRecorderObserver<Vertex, Edge<Vertex>>(AlgorithmExtensions.GetIndexer<Edge<Vertex>, double>(_distances));
             _distObserver.Attach(_dijkstra);
-
-            MinTable = new Dictionary<int, Dictionary<int, double>>();
-            MaxCountTable = new Dictionary<int, Tuple<int, double>>();
-
-            ComputeTables(regions);
         }
 
-        private void ComputeTables(Dictionary<int, Region> regions)
+        private void Reset()
         {
+            _distObserver.Distances.Clear();
+        }
+
+        public void ComputeTables(Dictionary<int, Region> regions)
+        {
+            MinTable = new Dictionary<int, Dictionary<int, double>>();
+            MaxCountTable = new Dictionary<int, Tuple<int, double>>();
             int from = 0;
 
             while (from < regions.Count())
@@ -65,19 +68,21 @@ namespace KNNonAir.Domain.Service
 
             foreach (Vertex fromBorder in formRegion.BorderPoints)
             {
+                Reset();
                 _dijkstra.Compute(fromBorder);
+                Dictionary<Vertex, double> distances = new Dictionary<Vertex, double>(_distObserver.Distances);
 
                 foreach (Vertex toBorder in toRegion.BorderPoints)
                 {
-                    double distance = _distObserver.Distances[toBorder];
+                    Reset();
                     _dijkstra.Compute(toBorder);
 
                     foreach (Vertex poi in toRegion.PoIs)
                     {
                         if (!_distObserver.Distances.ContainsKey(poi)) continue;
-                        if (distance + _distObserver.Distances[poi] < minDistance)
+                        if (distances[toBorder] + _distObserver.Distances[poi] < minDistance)
                         {
-                            minDistance = _distObserver.Distances[toBorder];
+                            minDistance = distances[toBorder] + _distObserver.Distances[poi];
                         }
                     }
                 }
@@ -92,6 +97,7 @@ namespace KNNonAir.Domain.Service
 
             foreach (Vertex fromBorder in formRegion.BorderPoints)
             {
+                Reset();
                 _dijkstra.Compute(fromBorder);
 
                 foreach (Vertex poi in formRegion.PoIs)
@@ -105,6 +111,36 @@ namespace KNNonAir.Domain.Service
             }
 
             return maxDistance;
+        }
+
+        public RoadGraph Prune(Region region, Vertex queryPoint, double upperBound, int k)
+        {
+            List<Vertex> savedVertex = new List<Vertex>();
+            foreach (Vertex border in region.BorderPoints)
+            {
+                Reset();
+                _dijkstra.Compute(border);
+                int count = 0;
+
+                foreach (Vertex vertex in region.Road.Graph.Vertices)
+                {
+                    if (!_distObserver.Distances.ContainsKey(vertex)) continue;
+                    if (count < k && _distObserver.Distances[vertex] <= upperBound - Arithmetics.GetDistance(queryPoint, border))
+                    {
+                        if (vertex is InterestPoint) count++;
+                        savedVertex.Add(vertex);
+                    }
+                }
+            }
+
+            RoadGraph road = new RoadGraph(false);
+
+            foreach (Edge<Vertex> edge in region.Road.Graph.Edges)
+            {
+                if (savedVertex.Contains(edge.Source) && savedVertex.Contains(edge.Target)) road.Graph.AddVerticesAndEdge(edge);
+            }
+
+            return road;
         }
     }
 }

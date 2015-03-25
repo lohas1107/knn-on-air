@@ -137,7 +137,8 @@ namespace KNNonAir.Domain.Context
 
         public void ComputeTable()
         {
-            CountingTable table = new CountingTable(Road, Regions);
+            CountingTable table = new CountingTable(Road);
+            table.ComputeTables(Regions);
             MinTable = table.MinTable;
             MaxCountTable = table.MaxCountTable;
         }
@@ -146,7 +147,23 @@ namespace KNNonAir.Domain.Context
         {
             QueryPoint = Road.PickQueryPoint();
             int regionId = VQTree.searchRegion(QueryPoint);
-            regionId = regionId;
+            double upperBound = MaxCountTable[regionId].Item2;
+
+            List<Region> cList = new List<Region>();
+            for (int i = 0; i < Regions.Count; i++)
+            {
+                if (i < regionId && MinTable[i][regionId] <= upperBound) cList.Add(Regions[i]);
+                else if (i == regionId) cList.Add(Regions[i]);
+                else if (i > regionId && MinTable[regionId][i] <= upperBound) cList.Add(Regions[i]);
+            }
+
+            RoadGraph graph = new RoadGraph(false);
+            while (cList.Count > 0)
+            {
+                CountingTable table = new CountingTable(cList.First().Road);
+                graph.AddGraph(table.Prune(cList.First(), QueryPoint, upperBound, 10));
+                cList.RemoveAt(0);
+            }
         }
     }
 }

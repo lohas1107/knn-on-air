@@ -206,5 +206,13 @@ namespace KNNonAir.Domain.Entity
             int count = Graph.Vertices.Count();
             return Graph.Vertices.ElementAt(random.Next(0, count-1));
         }
+
+        public void AddGraph(RoadGraph roadGraph)
+        {
+            foreach (Edge<Vertex> edge in roadGraph.Graph.Edges)
+            {
+                Graph.AddVerticesAndEdge(edge);
+            }
+        }
     }
 }
