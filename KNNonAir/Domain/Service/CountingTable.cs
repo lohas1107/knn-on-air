@@ -113,34 +113,76 @@ namespace KNNonAir.Domain.Service
             return maxDistance;
         }
 
-        public RoadGraph Prune(Region region, Vertex queryPoint, double upperBound, int k)
+        public RoadGraph PruneVertices(Region region, Vertex queryPoint, List<Vertex> pois, double upperBound, int k, bool isInRegion)
         {
             List<Vertex> savedVertex = new List<Vertex>();
+            savedVertex.Add(queryPoint);
+
+
             foreach (Vertex border in region.BorderPoints)
             {
                 Reset();
                 _dijkstra.Compute(border);
-                int count = 0;
 
-                foreach (Vertex vertex in region.Road.Graph.Vertices)
+                int count = 0;
+                double ub = -1;
+                if (!isInRegion) ub = upperBound - Arithmetics.GetDistance(queryPoint, border);
+                foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
                 {
-                    if (!_distObserver.Distances.ContainsKey(vertex)) continue;
-                    if (count < k && _distObserver.Distances[vertex] <= upperBound - Arithmetics.GetDistance(queryPoint, border))
+                    if (count < k && kvp.Value <= ub)
                     {
-                        if (vertex is InterestPoint) count++;
-                        savedVertex.Add(vertex);
+                        if (pois.Contains(kvp.Key)) count++;
+                        if (!savedVertex.Contains(kvp.Key)) savedVertex.Add(kvp.Key);
                     }
                 }
             }
 
             RoadGraph road = new RoadGraph(false);
-
             foreach (Edge<Vertex> edge in region.Road.Graph.Edges)
             {
                 if (savedVertex.Contains(edge.Source) && savedVertex.Contains(edge.Target)) road.Graph.AddVerticesAndEdge(edge);
             }
 
             return road;
+        }
+
+        public double UpdateUpperBound(Vertex queryPoint, List<Vertex> pois, Region region, int k)
+        {
+            double upperBound = double.MaxValue;
+
+            Reset();
+            _dijkstra.Compute(queryPoint);
+            _distObserver.Distances.OrderBy(o=>o.Value);
+
+            int count = 0;
+            foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
+            {
+                if (pois.Contains(kvp.Key) && count < k)
+                {
+                    count++;
+                    upperBound = kvp.Value;
+                }
+                else if (count == k) return upperBound;
+            }
+
+            return upperBound;
+        }
+
+        public List<Vertex> GetKNN(Vertex queryPoint, List<Vertex> pois, int k)
+        {
+            List<Vertex> knnList = new List<Vertex>();
+
+            Reset();
+            _dijkstra.Compute(queryPoint);
+
+            foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
+            {
+                if (pois.Contains(kvp.Key) && knnList.Count < k) 
+                    knnList.Add(kvp.Key);
+                if (knnList.Count == k) break;
+            }
+
+            return knnList;
         }
     }
 }
