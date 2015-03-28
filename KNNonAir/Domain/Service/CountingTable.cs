@@ -12,6 +12,7 @@ namespace KNNonAir.Domain.Service
     class CountingTable
     {
         private RoadGraph _road;
+        private List<Vertex> _pois;
         private Dictionary<Edge<Vertex>, double> _distances;
         private UndirectedDijkstraShortestPathAlgorithm<Vertex, Edge<Vertex>> _dijkstra;
         private UndirectedVertexDistanceRecorderObserver<Vertex, Edge<Vertex>> _distObserver;
@@ -20,6 +21,17 @@ namespace KNNonAir.Domain.Service
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
 
         public CountingTable(RoadGraph road)
+        {
+            Initialize(road);
+        }
+
+        public CountingTable(RoadGraph road, List<Vertex> pois)
+        {
+            Initialize(road);
+            _pois = pois;
+        }
+
+        public void Initialize(RoadGraph road)
         {
             _road = road;
             _distances = new Dictionary<Edge<Vertex>, double>();
@@ -115,7 +127,7 @@ namespace KNNonAir.Domain.Service
             return maxDistance;
         }
 
-        public RoadGraph PruneRegionVertices(Region region, Vertex queryPoint, List<Vertex> pois, double upperBound, int k)
+        public RoadGraph PruneRegionVertices(Region region, Vertex queryPoint, double upperBound, int k)
         {
             List<Vertex> savedVertex = new List<Vertex>();
             savedVertex.Add(queryPoint);
@@ -131,7 +143,7 @@ namespace KNNonAir.Domain.Service
                 {
                     if (count < k && kvp.Value <= upperBound - Arithmetics.GetDistance(queryPoint, border))
                     {
-                        if (pois.Contains(kvp.Key)) count++;
+                        if (_pois.Contains(kvp.Key)) count++;
                         if (!savedVertex.Contains(kvp.Key)) savedVertex.Add(kvp.Key);
                     }
                 }
@@ -146,27 +158,24 @@ namespace KNNonAir.Domain.Service
             return road;
         }
 
-        public RoadGraph PruneGraphVertices(Vertex queryPoint, List<Vertex> pois, double upperBound, int k)
+        public RoadGraph PruneGraphVertices(Vertex queryPoint, double upperBound, int k)
         {
             List<Vertex> savedVertex = new List<Vertex>();
             savedVertex.Add(queryPoint);
 
-            //foreach (Vertex border in region.BorderPoints)
-            //{
-                Reset();
-                _dijkstra.Compute(queryPoint);
-                _distObserver.Distances.OrderBy(o => o.Value);
+            Reset();
+            _dijkstra.Compute(queryPoint);
+            _distObserver.Distances.OrderBy(o => o.Value);
 
-                int count = 0;
-                foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
+            int count = 0;
+            foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
+            {
+                if (count < k && kvp.Value <= upperBound)
                 {
-                    if (count < k && kvp.Value <= upperBound)
-                    {
-                        if (pois.Contains(kvp.Key)) count++;
-                        if (!savedVertex.Contains(kvp.Key)) savedVertex.Add(kvp.Key);
-                    }
+                    if (_pois.Contains(kvp.Key)) count++;
+                    if (!savedVertex.Contains(kvp.Key)) savedVertex.Add(kvp.Key);
                 }
-            //}
+            }
 
             RoadGraph road = new RoadGraph(false);
             foreach (Edge<Vertex> edge in _road.Graph.Edges)
@@ -177,7 +186,7 @@ namespace KNNonAir.Domain.Service
             return road;
         }
 
-        public double UpdateUpperBound(Vertex queryPoint, List<Vertex> pois, Region region, int k)
+        public double UpdateUpperBound(Vertex queryPoint, int k)
         {
             double upperBound = double.MaxValue;
 
@@ -188,7 +197,7 @@ namespace KNNonAir.Domain.Service
             int count = 0;
             foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
             {
-                if (pois.Contains(kvp.Key) && count < k)
+                if (_pois.Contains(kvp.Key) && count < k)
                 {
                     count++;
                     upperBound = kvp.Value;
@@ -199,7 +208,7 @@ namespace KNNonAir.Domain.Service
             return upperBound;
         }
 
-        public List<Vertex> GetKNN(Vertex queryPoint, List<Vertex> pois, int k)
+        public List<Vertex> GetKNN(Vertex queryPoint, int k)
         {
             List<Vertex> knnList = new List<Vertex>();
 
@@ -208,7 +217,7 @@ namespace KNNonAir.Domain.Service
 
             foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
             {
-                if (pois.Contains(kvp.Key) && knnList.Count < k) 
+                if (_pois.Contains(kvp.Key) && knnList.Count < k) 
                     knnList.Add(kvp.Key);
                 if (knnList.Count == k) break;
             }

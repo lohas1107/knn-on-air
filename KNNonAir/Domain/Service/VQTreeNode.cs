@@ -22,7 +22,7 @@ namespace KNNonAir.Domain.Service
 
             foreach (Vertex borderPoint in borderPoints)
             {
-                if (mbr.Contains(borderPoint))
+                if (mbr.ContainsIn(borderPoint))
                 {
                     MBR neMBR = new MBR(mbr.X + halfWidth, mbr.Y, halfWidth, halfHeight);
                     neMBR.AddVertices(mbr.Vertices);
@@ -51,7 +51,13 @@ namespace KNNonAir.Domain.Service
 
         public int searchRegion(Vertex queryPoint)
         {
-            if (NE == null) return MBR.Vertices[0].RegionId;
+            if (NE == null)
+            {
+                foreach (Vertex vertex in MBR.Vertices)
+                {
+                    if (vertex.RegionId != -1) return vertex.RegionId;
+                }
+            }
             else
             {
                 if (NE.MBR.Contains(queryPoint)) return NE.searchRegion(queryPoint);

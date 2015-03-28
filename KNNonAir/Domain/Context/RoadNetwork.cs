@@ -144,56 +144,50 @@ namespace KNNonAir.Domain.Context
             MaxCountTable = table.MaxCountTable;
         }
 
-        public void SearchKNN()
+        public void SearchKNN(int position)
         {
-            int regionId = -1;
-            do
-            {
-                QueryPoint = Road.PickQueryPoint();
-                regionId = VQTree.searchRegion(QueryPoint);
-            }
-            while (regionId == -1);
+            QueryPoint = Road.PickQueryPoint();
+            int regionId = VQTree.searchRegion(QueryPoint);
             double upperBound = MaxCountTable[regionId].Item2;
 
-            List<Region> cList = new List<Region>();
+            Stack<Region> cList = new Stack<Region>();
             for (int i = 0; i < Regions.Count; i++)
             {
-                if (i < regionId && MinTable[i][regionId] <= upperBound) cList.Add(Regions[i]);
-                else if (i == regionId) cList.Add(Regions[i]);
-                else if (i > regionId && MinTable[regionId][i] <= upperBound) cList.Add(Regions[i]);
+                int index = (position + i) % Regions.Count;
+                if (CanTune(index, regionId, upperBound)) cList.Push(Regions[index]);
             }
 
-            List<Vertex> pois = new List<Vertex>();
             RoadGraph graph = new RoadGraph(false);
+            CountingTable table = new CountingTable(graph, PoIs);
+
             while (cList.Count > 0)
             {
-                Region region = cList.First();
-                cList.RemoveAt(0);
+                Region region = cList.Pop();
+                if (!CanTune(region.Id, regionId, upperBound)) continue;
 
                 if (region.Id == regionId)
                 {
-                    foreach (Vertex poi in region.PoIs) pois.Add(poi);
                     graph.AddGraph(region.Road);
-                    CountingTable table = new CountingTable(graph);
-                    upperBound = table.UpdateUpperBound(QueryPoint, pois, region, 10);
-                    graph = table.PruneGraphVertices(QueryPoint, pois, upperBound, 10);
+                    table.Initialize(graph);
+                    upperBound = table.UpdateUpperBound(QueryPoint, 10);
+                    graph = table.PruneGraphVertices(QueryPoint, upperBound, 10);
                 }
-                else if (CanTune(region.Id, regionId, upperBound))
+                else
                 {
-                    foreach (Vertex poi in region.PoIs) pois.Add(poi);
-                    CountingTable table = new CountingTable(region.Road);
-                    graph.AddGraph(table.PruneRegionVertices(region, QueryPoint, pois, upperBound, 10));
+                    table.Initialize(region.Road);
+                    graph.AddGraph(table.PruneRegionVertices(region, QueryPoint, upperBound, 10));
                 }
             }
 
-            CountingTable answer = new CountingTable(graph);
-            Answers = answer.GetKNN(QueryPoint, pois, 10);
+            table.Initialize(graph);
+            Answers = table.GetKNN(QueryPoint, 10);
         }
 
         private bool CanTune(int id, int regionId, double upperBound)
         {
-            if (id < regionId && MinTable[id][regionId] < upperBound) return true;
-            if (id > regionId && MinTable[regionId][id] < upperBound) return true;
+            if (id == regionId) return true;
+            if (id < regionId && MinTable[id][regionId] <= upperBound) return true;
+            if (id > regionId && MinTable[regionId][id] <= upperBound) return true;
             
             return false;
         }

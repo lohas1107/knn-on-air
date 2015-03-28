@@ -21,10 +21,17 @@ namespace KNNonAir.Domain.Entity
             Height = height;
         }
 
-        public bool Contains(Vertex vertex)
+        public bool ContainsIn(Vertex vertex)
         {
             if (vertex.Coordinate.Longitude > X && vertex.Coordinate.Longitude < X + Width &&
                 vertex.Coordinate.Latitude > Y - Height && vertex.Coordinate.Latitude < Y) return true;
+            else return false;
+        }
+
+        public bool Contains(Vertex vertex)
+        {
+            if (vertex.Coordinate.Longitude >= X && vertex.Coordinate.Longitude <= X + Width &&
+                vertex.Coordinate.Latitude >= Y - Height && vertex.Coordinate.Latitude <= Y) return true;
             else return false;
         }
 
@@ -34,7 +41,7 @@ namespace KNNonAir.Domain.Entity
 
             foreach (Vertex borderPoint in borderPoints)
             {
-                if (Contains(borderPoint)) mbrPoints.Add(borderPoint);
+                if (ContainsIn(borderPoint)) mbrPoints.Add(borderPoint);
             }
 
             return mbrPoints;
@@ -44,7 +51,7 @@ namespace KNNonAir.Domain.Entity
         {
             foreach (Vertex vertex in vertices)
             {
-                if (Contains(vertex)) Vertices.Add(vertex);
+                if (ContainsIn(vertex)) Vertices.Add(vertex);
             }
         }
     }
