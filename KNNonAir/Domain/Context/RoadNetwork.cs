@@ -176,13 +176,13 @@ namespace KNNonAir.Domain.Context
                     graph.AddGraph(region.Road);
                     CountingTable table = new CountingTable(graph);
                     upperBound = table.UpdateUpperBound(QueryPoint, pois, region, 10);
-                    graph = table.PruneVertices(region, QueryPoint, pois, upperBound, 10, true);
+                    graph = table.PruneGraphVertices(QueryPoint, pois, upperBound, 10);
                 }
                 else if (CanTune(region.Id, regionId, upperBound))
                 {
                     foreach (Vertex poi in region.PoIs) pois.Add(poi);
                     CountingTable table = new CountingTable(region.Road);
-                    graph.AddGraph(table.PruneVertices(region, QueryPoint, pois, upperBound, 10, false));
+                    graph.AddGraph(table.PruneRegionVertices(region, QueryPoint, pois, upperBound, 10));
                 }
             }
 

@@ -11,6 +11,7 @@ namespace KNNonAir.Domain.Service
 {
     class CountingTable
     {
+        private RoadGraph _road;
         private Dictionary<Edge<Vertex>, double> _distances;
         private UndirectedDijkstraShortestPathAlgorithm<Vertex, Edge<Vertex>> _dijkstra;
         private UndirectedVertexDistanceRecorderObserver<Vertex, Edge<Vertex>> _distObserver;
@@ -20,6 +21,7 @@ namespace KNNonAir.Domain.Service
 
         public CountingTable(RoadGraph road)
         {
+            _road = road;
             _distances = new Dictionary<Edge<Vertex>, double>();
 
             foreach (Edge<Vertex> edge in road.Graph.Edges)
@@ -113,23 +115,21 @@ namespace KNNonAir.Domain.Service
             return maxDistance;
         }
 
-        public RoadGraph PruneVertices(Region region, Vertex queryPoint, List<Vertex> pois, double upperBound, int k, bool isInRegion)
+        public RoadGraph PruneRegionVertices(Region region, Vertex queryPoint, List<Vertex> pois, double upperBound, int k)
         {
             List<Vertex> savedVertex = new List<Vertex>();
             savedVertex.Add(queryPoint);
-
 
             foreach (Vertex border in region.BorderPoints)
             {
                 Reset();
                 _dijkstra.Compute(border);
+                _distObserver.Distances.OrderBy(o => o.Value);
 
                 int count = 0;
-                double ub = -1;
-                if (!isInRegion) ub = upperBound - Arithmetics.GetDistance(queryPoint, border);
                 foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
                 {
-                    if (count < k && kvp.Value <= ub)
+                    if (count < k && kvp.Value <= upperBound - Arithmetics.GetDistance(queryPoint, border))
                     {
                         if (pois.Contains(kvp.Key)) count++;
                         if (!savedVertex.Contains(kvp.Key)) savedVertex.Add(kvp.Key);
@@ -139,6 +139,37 @@ namespace KNNonAir.Domain.Service
 
             RoadGraph road = new RoadGraph(false);
             foreach (Edge<Vertex> edge in region.Road.Graph.Edges)
+            {
+                if (savedVertex.Contains(edge.Source) && savedVertex.Contains(edge.Target)) road.Graph.AddVerticesAndEdge(edge);
+            }
+
+            return road;
+        }
+
+        public RoadGraph PruneGraphVertices(Vertex queryPoint, List<Vertex> pois, double upperBound, int k)
+        {
+            List<Vertex> savedVertex = new List<Vertex>();
+            savedVertex.Add(queryPoint);
+
+            //foreach (Vertex border in region.BorderPoints)
+            //{
+                Reset();
+                _dijkstra.Compute(queryPoint);
+                _distObserver.Distances.OrderBy(o => o.Value);
+
+                int count = 0;
+                foreach (KeyValuePair<Vertex, double> kvp in _distObserver.Distances)
+                {
+                    if (count < k && kvp.Value <= upperBound)
+                    {
+                        if (pois.Contains(kvp.Key)) count++;
+                        if (!savedVertex.Contains(kvp.Key)) savedVertex.Add(kvp.Key);
+                    }
+                }
+            //}
+
+            RoadGraph road = new RoadGraph(false);
+            foreach (Edge<Vertex> edge in _road.Graph.Edges)
             {
                 if (savedVertex.Contains(edge.Source) && savedVertex.Contains(edge.Target)) road.Graph.AddVerticesAndEdge(edge);
             }
