@@ -8,6 +8,7 @@ namespace KNNonAir.Domain.Entity
     {
         private Point _point;
         public Coordinate Coordinate { get; set; }
+        public int RegionId { get; set; }
 
         public Vertex() { } // InterestPoint() 繼承 Vertex()
 
@@ -15,6 +16,7 @@ namespace KNNonAir.Domain.Entity
         {
             _point = new Point(latitude, longitude);
             Coordinate = _point.Coordinate;
+            RegionId = -1;
         }
 
         public override int GetHashCode()

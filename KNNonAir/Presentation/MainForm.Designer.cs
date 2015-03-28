@@ -48,6 +48,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.quadTreeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -194,10 +195,11 @@
             this.partitionToolStripComboBox,
             this.toolStripSeparator2,
             this.quadTreeToolStripButton,
-            this.tableToolStripButton});
+            this.tableToolStripButton,
+            this.searchToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(192, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(215, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -263,6 +265,16 @@
             this.tableToolStripButton.Text = " Pre-computation Table";
             this.tableToolStripButton.Click += new System.EventHandler(this.ClickTableToolStripButton);
             // 
+            // searchToolStripButton
+            // 
+            this.searchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.searchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("searchToolStripButton.Image")));
+            this.searchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.searchToolStripButton.Name = "searchToolStripButton";
+            this.searchToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.searchToolStripButton.Text = "Search";
+            this.searchToolStripButton.Click += new System.EventHandler(this.ClickSearchToolStripButton);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -309,6 +321,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton quadTreeToolStripButton;
         private System.Windows.Forms.ToolStripButton tableToolStripButton;
+        private System.Windows.Forms.ToolStripButton searchToolStripButton;
     }
 }
 

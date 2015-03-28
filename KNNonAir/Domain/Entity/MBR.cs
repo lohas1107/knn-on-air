@@ -4,6 +4,8 @@ namespace KNNonAir.Domain.Entity
 {
     class MBR
     {
+        public int RegionId { get; set; }
+        public List<Vertex> Vertices { get; set; }
         public double X { get; set; } // Longitude
         public double Y { get; set; } // Latitude
         public double Width { get; set; }
@@ -11,6 +13,8 @@ namespace KNNonAir.Domain.Entity
 
         public MBR(double x, double y, double width, double height)
         {
+            RegionId = -1;
+            Vertices = new List<Vertex>();
             X = x;
             Y = y;
             Width = width;
@@ -34,6 +38,14 @@ namespace KNNonAir.Domain.Entity
             }
 
             return mbrPoints;
+        }
+
+        public void AddVertices(IEnumerable<Vertex> vertices)
+        {
+            foreach (Vertex vertex in vertices)
+            {
+                if (Contains(vertex)) Vertices.Add(vertex);
+            }
         }
     }
 }

@@ -10,18 +10,21 @@ namespace KNNonAir.Domain.Context
 {
     class RoadNetwork
     {
-        public RoadGraph RaodNetwork { get; set; }
+        public RoadGraph Road { get; set; }
         public List<Vertex> PoIs { get; set; }
         public Dictionary<Vertex, Edge<Vertex>> BorderPoints { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
         public Dictionary<int, Region> Regions { get; set; }
+        public VQTree VQTree { get; set; }
         public List<MBR> QuadMBRs { get; set; }
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
+        public Vertex QueryPoint { get; set; }
+        public List<Vertex> Answers { get; set; }
 
         public RoadNetwork()
         {
-            RaodNetwork = new RoadGraph(false);
+            Road = new RoadGraph(false);
             PoIs = new List<Vertex>();
             BorderPoints = new Dictionary<Vertex, Edge<Vertex>>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
@@ -32,7 +35,7 @@ namespace KNNonAir.Domain.Context
             List<Edge<Vertex>> edgeList = Parser.ParseRoadData(FileIO.ReadGeoJsonFile());
             if (edgeList == null) return;
 
-            RaodNetwork.LoadRoads(edgeList);
+            Road.LoadRoads(edgeList);
         }
 
         public void LoadPoIs()
@@ -42,7 +45,7 @@ namespace KNNonAir.Domain.Context
 
             foreach (Vertex poi in poiList)
             {
-                Vertex adjustedPoI = RaodNetwork.AdjustPoIToEdge(poi);
+                Vertex adjustedPoI = Road.AdjustPoIToEdge(poi);
                 if (adjustedPoI == null) continue;
 
                 PoIs.Add(adjustedPoI);
@@ -51,7 +54,7 @@ namespace KNNonAir.Domain.Context
 
         public void GenerateNVD()
         {
-            GenerateNVC(0, PoIs.Count, RaodNetwork);
+            GenerateNVC(0, PoIs.Count, Road);
         }
 
         private void AddBorderPoint(Vertex borderPoint, Edge<Vertex> edge)
@@ -98,7 +101,7 @@ namespace KNNonAir.Domain.Context
             List<NVCInfo> nvcList = FileIO.ReadNVDFile();
             if (nvcList == null) return;
 
-            RaodNetwork = Parser.ParseNVCInfoToGraph(nvcList);
+            Road = Parser.ParseNVCInfoToGraph(nvcList);
             NVD = Parser.ParseNVCInfoToNVD(nvcList);
             PoIs = Parser.ParsePoIInfo(nvcList);
         }
@@ -112,12 +115,7 @@ namespace KNNonAir.Domain.Context
         public void GenerateVQTree()
         {
             List<Vertex> borderPoints = new List<Vertex>();
-            List<Vertex> vertices = RaodNetwork.Graph.Vertices.ToList();
-
-            foreach (KeyValuePair<int, Region> region in Regions)
-            {
-                foreach (Vertex borderPoint in region.Value.BorderPoints) borderPoints.Add(borderPoint);
-            }
+            List<Vertex> vertices = Road.Graph.Vertices.ToList();
 
             vertices = vertices.OrderBy(o => o.Coordinate.Longitude).ToList();
             double x = vertices.First().Coordinate.Longitude;
@@ -127,15 +125,77 @@ namespace KNNonAir.Domain.Context
             double y = vertices.Last().Coordinate.Latitude;
             double height = y - vertices.First().Coordinate.Latitude;
 
-            VQTree vqTree = new VQTree(borderPoints, new MBR(x, y, width, height));
-            QuadMBRs = vqTree.MBRs;
+            MBR mbr = new MBR(x, y, width, height);
+            foreach (KeyValuePair<int, Region> region in Regions)
+            {
+                foreach (Vertex borderPoint in region.Value.BorderPoints) borderPoints.Add(borderPoint);
+                mbr.AddVertices(region.Value.Road.Graph.Vertices);
+            }
+
+            VQTree = new VQTree(borderPoints, mbr);
+            QuadMBRs = VQTree.MBRs;
         }
 
         public void ComputeTable()
         {
-            CountingTable table = new CountingTable(RaodNetwork, Regions);
+            CountingTable table = new CountingTable(Road);
+            table.ComputeTables(Regions);
             MinTable = table.MinTable;
             MaxCountTable = table.MaxCountTable;
+        }
+
+        public void SearchKNN()
+        {
+            int regionId = -1;
+            do
+            {
+                QueryPoint = Road.PickQueryPoint();
+                regionId = VQTree.searchRegion(QueryPoint);
+            }
+            while (regionId == -1);
+            double upperBound = MaxCountTable[regionId].Item2;
+
+            List<Region> cList = new List<Region>();
+            for (int i = 0; i < Regions.Count; i++)
+            {
+                if (i < regionId && MinTable[i][regionId] <= upperBound) cList.Add(Regions[i]);
+                else if (i == regionId) cList.Add(Regions[i]);
+                else if (i > regionId && MinTable[regionId][i] <= upperBound) cList.Add(Regions[i]);
+            }
+
+            List<Vertex> pois = new List<Vertex>();
+            RoadGraph graph = new RoadGraph(false);
+            while (cList.Count > 0)
+            {
+                Region region = cList.First();
+                cList.RemoveAt(0);
+
+                if (region.Id == regionId)
+                {
+                    foreach (Vertex poi in region.PoIs) pois.Add(poi);
+                    graph.AddGraph(region.Road);
+                    CountingTable table = new CountingTable(graph);
+                    upperBound = table.UpdateUpperBound(QueryPoint, pois, region, 10);
+                    graph = table.PruneGraphVertices(QueryPoint, pois, upperBound, 10);
+                }
+                else if (CanTune(region.Id, regionId, upperBound))
+                {
+                    foreach (Vertex poi in region.PoIs) pois.Add(poi);
+                    CountingTable table = new CountingTable(region.Road);
+                    graph.AddGraph(table.PruneRegionVertices(region, QueryPoint, pois, upperBound, 10));
+                }
+            }
+
+            CountingTable answer = new CountingTable(graph);
+            Answers = answer.GetKNN(QueryPoint, pois, 10);
+        }
+
+        private bool CanTune(int id, int regionId, double upperBound)
+        {
+            if (id < regionId && MinTable[id][regionId] < upperBound) return true;
+            if (id > regionId && MinTable[regionId][id] < upperBound) return true;
+            
+            return false;
         }
     }
 }
