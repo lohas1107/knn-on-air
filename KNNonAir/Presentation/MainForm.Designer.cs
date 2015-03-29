@@ -49,6 +49,7 @@
             this.quadTreeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -196,10 +197,11 @@
             this.toolStripSeparator2,
             this.quadTreeToolStripButton,
             this.tableToolStripButton,
-            this.searchToolStripButton});
+            this.searchToolStripButton,
+            this.kToolStripComboBox});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(215, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(229, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -237,7 +239,7 @@
             "128"});
             this.partitionToolStripComboBox.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
-            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 23);
+            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 25);
             this.partitionToolStripComboBox.Text = "16";
             // 
             // toolStripSeparator2
@@ -274,6 +276,25 @@
             this.searchToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.searchToolStripButton.Text = "Search";
             this.searchToolStripButton.Click += new System.EventHandler(this.ClickSearchToolStripButton);
+            // 
+            // kToolStripComboBox
+            // 
+            this.kToolStripComboBox.AutoSize = false;
+            this.kToolStripComboBox.Items.AddRange(new object[] {
+            "10",
+            "20",
+            "30",
+            "40",
+            "50",
+            "60",
+            "70",
+            "80",
+            "90",
+            "100"});
+            this.kToolStripComboBox.Name = "kToolStripComboBox";
+            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 25);
+            this.kToolStripComboBox.Text = "10";
+            this.kToolStripComboBox.ToolTipText = "k";
             // 
             // MainForm
             // 
@@ -322,6 +343,7 @@
         private System.Windows.Forms.ToolStripButton quadTreeToolStripButton;
         private System.Windows.Forms.ToolStripButton tableToolStripButton;
         private System.Windows.Forms.ToolStripButton searchToolStripButton;
+        private System.Windows.Forms.ToolStripComboBox kToolStripComboBox;
     }
 }
 
