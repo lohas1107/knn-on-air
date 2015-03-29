@@ -146,8 +146,13 @@ namespace KNNonAir.Domain.Context
 
         public void SearchKNN(int k)
         {
-            QueryPoint = Road.PickQueryPoint();
-            int regionId = VQTree.searchRegion(QueryPoint);
+            int regionId = -1;
+            do
+            {
+                QueryPoint = Road.PickQueryPoint();
+                regionId = VQTree.searchRegion(QueryPoint);
+            } 
+            while (regionId == -1);
             double upperBound = MaxCountTable[regionId].Item2;
 
             Stack<Region> cList = new Stack<Region>();
