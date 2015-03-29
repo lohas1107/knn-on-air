@@ -180,7 +180,7 @@ namespace KNNonAir.Presentation
 
         private void ClickSearchToolStripButton(object sender, EventArgs e)
         {
-            _roadNetwork.SearchKNN(0);
+            _roadNetwork.SearchKNN(Convert.ToInt32(kToolStripComboBox.SelectedItem));
             DrawMarkers(_roadNetwork.PoIs);
             DrawAnswer(_roadNetwork.QueryPoint, _roadNetwork.Answers);
         }
