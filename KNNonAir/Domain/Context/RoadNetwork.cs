@@ -144,13 +144,14 @@ namespace KNNonAir.Domain.Context
             MaxCountTable = table.MaxCountTable;
         }
 
-        public void SearchKNN(int position)
+        public void SearchKNN(int k)
         {
             QueryPoint = Road.PickQueryPoint();
             int regionId = VQTree.searchRegion(QueryPoint);
             double upperBound = MaxCountTable[regionId].Item2;
 
             Stack<Region> cList = new Stack<Region>();
+            int position = 0;
             for (int i = 0; i < Regions.Count; i++)
             {
                 int index = (position + i) % Regions.Count;
@@ -169,18 +170,18 @@ namespace KNNonAir.Domain.Context
                 {
                     graph.AddGraph(region.Road);
                     table.Initialize(graph);
-                    upperBound = table.UpdateUpperBound(QueryPoint, 10);
-                    graph = table.PruneGraphVertices(QueryPoint, upperBound, 10);
+                    upperBound = table.UpdateUpperBound(QueryPoint, k);
+                    graph = table.PruneGraphVertices(QueryPoint, upperBound, k);
                 }
                 else
                 {
                     table.Initialize(region.Road);
-                    graph.AddGraph(table.PruneRegionVertices(region, QueryPoint, upperBound, 10));
+                    graph.AddGraph(table.PruneRegionVertices(region, QueryPoint, upperBound, k));
                 }
             }
 
             table.Initialize(graph);
-            Answers = table.GetKNN(QueryPoint, 10);
+            Answers = table.GetKNN(QueryPoint, k);
         }
 
         private bool CanTune(int id, int regionId, double upperBound)
