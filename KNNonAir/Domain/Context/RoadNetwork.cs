@@ -17,8 +17,7 @@ namespace KNNonAir.Domain.Context
         public Dictionary<int, Region> Regions { get; set; }
         public VQTree VQTree { get; set; }
         public List<MBR> QuadMBRs { get; set; }
-        public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
-        public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
+        public CountingTable Table  { get; set; }
         public Vertex QueryPoint { get; set; }
         public List<Vertex> Answers { get; set; }
 
@@ -28,6 +27,7 @@ namespace KNNonAir.Domain.Context
             PoIs = new List<Vertex>();
             BorderPoints = new Dictionary<Vertex, Edge<Vertex>>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
+            Table = new CountingTable(Road, PoIs);
         }
 
         public void LoadRoads()
@@ -138,10 +138,8 @@ namespace KNNonAir.Domain.Context
 
         public void ComputeTable()
         {
-            CountingTable table = new CountingTable(Road);
-            table.ComputeTables(Regions);
-            MinTable = table.MinTable;
-            MaxCountTable = table.MaxCountTable;
+            Table.Initialize(Road);
+            Table.ComputeTables(Regions);
         }
 
         public void SearchKNN(int k)
@@ -153,49 +151,40 @@ namespace KNNonAir.Domain.Context
                 regionId = VQTree.searchRegion(QueryPoint);
             } 
             while (regionId == -1);
-            double upperBound = MaxCountTable[regionId].Item2;
+
+            double upperBound = Table.GetUpperBound(regionId, k);
 
             Stack<Region> cList = new Stack<Region>();
             int position = 0;
             for (int i = 0; i < Regions.Count; i++)
             {
                 int index = (position + i) % Regions.Count;
-                if (CanTune(index, regionId, upperBound)) cList.Push(Regions[index]);
+                if (Table.CanTune(index, regionId, upperBound)) cList.Push(Regions[index]);
             }
 
             RoadGraph graph = new RoadGraph(false);
-            CountingTable table = new CountingTable(graph, PoIs);
-
             while (cList.Count > 0)
             {
                 Region region = cList.Pop();
-                if (!CanTune(region.Id, regionId, upperBound)) continue;
+                if (!Table.CanTune(region.Id, regionId, upperBound)) continue;
 
                 if (region.Id == regionId)
                 {
                     graph.AddGraph(region.Road);
-                    table.Initialize(graph);
-                    upperBound = table.UpdateUpperBound(QueryPoint, k);
-                    graph = table.PruneGraphVertices(QueryPoint, upperBound, k);
+                    Table.Initialize(graph);
+                    upperBound = Table.UpdateUpperBound(QueryPoint, k, upperBound);
+                    graph = Table.PruneGraphVertices(QueryPoint, upperBound, k);
                 }
                 else
                 {
-                    table.Initialize(region.Road);
-                    graph.AddGraph(table.PruneRegionVertices(region, QueryPoint, upperBound, k));
+                    Table.Initialize(region.Road);
+                    if (region.Id > regionId) upperBound = Table.UpdateUpperBound(QueryPoint, k, upperBound);
+                    graph.AddGraph(Table.PruneRegionVertices(region, QueryPoint, upperBound, k));
                 }
             }
 
-            table.Initialize(graph);
-            Answers = table.GetKNN(QueryPoint, k);
-        }
-
-        private bool CanTune(int id, int regionId, double upperBound)
-        {
-            if (id == regionId) return true;
-            if (id < regionId && MinTable[id][regionId] <= upperBound) return true;
-            if (id > regionId && MinTable[regionId][id] <= upperBound) return true;
-            
-            return false;
+            Table.Initialize(graph);
+            Answers = Table.GetKNN(QueryPoint, k);
         }
     }
 }
