@@ -186,9 +186,9 @@ namespace KNNonAir.Domain.Service
             return road;
         }
 
-        public double UpdateUpperBound(Vertex queryPoint, int k)
+        public double UpdateUpperBound(Vertex queryPoint, int k, double upperBound)
         {
-            double upperBound = double.MaxValue;
+            double newUB = double.MaxValue;
 
             Reset();
             _dijkstra.Compute(queryPoint);
@@ -200,9 +200,9 @@ namespace KNNonAir.Domain.Service
                 if (_pois.Contains(kvp.Key) && count < k)
                 {
                     count++;
-                    upperBound = kvp.Value;
+                    newUB = kvp.Value;
                 }
-                else if (count == k) return upperBound;
+                else if (count == k && newUB < upperBound) return newUB;
             }
 
             return upperBound;
