@@ -27,7 +27,6 @@ namespace KNNonAir.Domain.Context
             PoIs = new List<Vertex>();
             BorderPoints = new Dictionary<Vertex, Edge<Vertex>>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
-            Table = new CountingTable(Road, PoIs);
         }
 
         public void LoadRoads()
@@ -138,7 +137,7 @@ namespace KNNonAir.Domain.Context
 
         public void ComputeTable()
         {
-            Table.Initialize(Road);
+            Table = new CountingTable(Road, PoIs);
             Table.ComputeTables(Regions);
         }
 
@@ -172,13 +171,12 @@ namespace KNNonAir.Domain.Context
                 {
                     graph.AddGraph(region.Road);
                     Table.Initialize(graph);
-                    upperBound = Table.UpdateUpperBound(QueryPoint, k, upperBound);
+                    if (region.Id >= regionId) upperBound = Table.UpdateUpperBound(QueryPoint, k, upperBound);
                     graph = Table.PruneGraphVertices(QueryPoint, upperBound, k);
                 }
                 else
                 {
                     Table.Initialize(region.Road);
-                    if (region.Id > regionId) upperBound = Table.UpdateUpperBound(QueryPoint, k, upperBound);
                     graph.AddGraph(Table.PruneRegionVertices(region, QueryPoint, upperBound, k));
                 }
             }
