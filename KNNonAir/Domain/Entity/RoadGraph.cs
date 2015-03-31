@@ -1,5 +1,6 @@
 ﻿using KNNonAir.Domain.Service;
 using QuickGraph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -197,6 +198,21 @@ namespace KNNonAir.Domain.Entity
             }
 
             return roadGraph;
+        }
+
+        public Vertex PickQueryPoint()
+        {
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            int count = Graph.Vertices.Count();
+            return Graph.Vertices.ElementAt(random.Next(0, count-1));
+        }
+
+        public void AddGraph(RoadGraph roadGraph)
+        {
+            foreach (Edge<Vertex> edge in roadGraph.Graph.Edges)
+            {
+                Graph.AddVerticesAndEdge(edge);
+            }
         }
     }
 }
