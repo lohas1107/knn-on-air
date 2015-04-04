@@ -50,12 +50,18 @@
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Search = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer.SuspendLayout();
             this.fileToolStrip.SuspendLayout();
             this.actionToolStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // gmap
@@ -110,6 +116,7 @@
             // 
             // toolStripContainer.ContentPanel
             // 
+            this.toolStripContainer.ContentPanel.Controls.Add(this.dataGridView);
             this.toolStripContainer.ContentPanel.Controls.Add(this.gmap);
             this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(784, 515);
             this.toolStripContainer.Location = new System.Drawing.Point(0, 0);
@@ -239,7 +246,7 @@
             "128"});
             this.partitionToolStripComboBox.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
-            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 25);
+            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 23);
             this.partitionToolStripComboBox.Text = "16";
             // 
             // toolStripSeparator2
@@ -292,9 +299,54 @@
             "90",
             "100"});
             this.kToolStripComboBox.Name = "kToolStripComboBox";
-            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 25);
+            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 23);
             this.kToolStripComboBox.Text = "10";
             this.kToolStripComboBox.ToolTipText = "k";
+            // 
+            // dataGridView
+            // 
+            this.dataGridView.AllowUserToAddRows = false;
+            this.dataGridView.AllowUserToDeleteRows = false;
+            this.dataGridView.AllowUserToOrderColumns = true;
+            this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView.BackgroundColor = System.Drawing.SystemColors.HighlightText;
+            this.dataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Search});
+            this.dataGridView.Location = new System.Drawing.Point(343, 463);
+            this.dataGridView.Name = "dataGridView";
+            this.dataGridView.ReadOnly = true;
+            this.dataGridView.RowTemplate.Height = 24;
+            this.dataGridView.Size = new System.Drawing.Size(441, 52);
+            this.dataGridView.TabIndex = 1;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Index Tree";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Table";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Regions";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            // 
+            // Search
+            // 
+            this.Search.HeaderText = "Search";
+            this.Search.Name = "Search";
+            this.Search.ReadOnly = true;
             // 
             // MainForm
             // 
@@ -316,6 +368,7 @@
             this.fileToolStrip.PerformLayout();
             this.actionToolStrip.ResumeLayout(false);
             this.actionToolStrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -344,6 +397,11 @@
         private System.Windows.Forms.ToolStripButton tableToolStripButton;
         private System.Windows.Forms.ToolStripButton searchToolStripButton;
         private System.Windows.Forms.ToolStripComboBox kToolStripComboBox;
+        private System.Windows.Forms.DataGridView dataGridView;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Search;
     }
 }
 
