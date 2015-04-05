@@ -5,6 +5,7 @@ using QuickGraph;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Runtime.InteropServices;
 
 namespace KNNonAir.Domain.Context
 {
@@ -183,6 +184,12 @@ namespace KNNonAir.Domain.Context
 
             Table.Initialize(graph);
             Answers = Table.GetKNN(QueryPoint, k);
+        }
+
+        public String GetSize(object obj, double packetSize)
+        {
+            double packetCount = Math.Ceiling(Parser.ObjectToByteArray(obj).Count() / packetSize);
+            return packetCount.ToString();
         }
     }
 }

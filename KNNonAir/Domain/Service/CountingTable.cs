@@ -6,10 +6,12 @@ using QuickGraph.Algorithms.ShortestPath;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace KNNonAir.Domain.Service
 {
-    class CountingTable
+    [Serializable]
+    class CountingTable : ISerializable
     {
         private RoadGraph _road;
         private List<Vertex> _pois;
@@ -260,6 +262,12 @@ namespace KNNonAir.Domain.Service
             }
 
             return knnList;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("MinTable", MinTable);
+            info.AddValue("MaxCountTable", MaxCountTable);
         }
     }
 }
