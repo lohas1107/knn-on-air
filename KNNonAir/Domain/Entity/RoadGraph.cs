@@ -1,12 +1,15 @@
-﻿using KNNonAir.Domain.Service;
+﻿using KNNonAir.Access;
+using KNNonAir.Domain.Service;
 using QuickGraph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace KNNonAir.Domain.Entity
 {
-    class RoadGraph
+    [Serializable]
+    class RoadGraph : ISerializable
     {
         private const double ROAD_WIDTH_OFFSET = 0.00001; // 1m
         private const double FIFTY_METER = 0.0005;
@@ -213,6 +216,18 @@ namespace KNNonAir.Domain.Entity
             {
                 Graph.AddVerticesAndEdge(edge);
             }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            List<EdgeInfo> edgeInfos = new List<EdgeInfo>();
+            foreach(Edge<Vertex> edge in Graph.Edges)
+            {
+                VertexInfo source = new VertexInfo(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude);
+                VertexInfo target = new VertexInfo(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude);
+                edgeInfos.Add(new EdgeInfo(source, target));
+            }
+            info.AddValue("Graph", edgeInfos);
         }
     }
 }

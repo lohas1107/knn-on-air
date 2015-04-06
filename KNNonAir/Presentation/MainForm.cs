@@ -189,6 +189,9 @@ namespace KNNonAir.Presentation
             _roadNetwork.SearchKNN(Convert.ToInt32(kToolStripComboBox.SelectedItem));
             DrawMarkers(_roadNetwork.PoIs);
             DrawAnswer(_roadNetwork.QueryPoint, _roadNetwork.Answers);
+            dataGridView.Rows[0].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, 128);
+            dataGridView.Rows[0].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, 128);
+            dataGridView.Rows[0].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, 128);
         }
     }
 }
