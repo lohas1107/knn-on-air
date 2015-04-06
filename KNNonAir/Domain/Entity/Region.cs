@@ -1,9 +1,12 @@
 ﻿using QuickGraph;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace KNNonAir.Domain.Entity
 {
-    class Region
+    [Serializable]
+    class Region : ISerializable
     {
         public int Id { get; set; }
         public List<Vertex> PoIs { get; set; }
@@ -50,6 +53,14 @@ namespace KNNonAir.Domain.Entity
             {
                 if (!(vertex is BorderPoint)) vertex.RegionId = Id;
             }            
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Id", Id);
+            info.AddValue("PoIs", PoIs);
+            info.AddValue("Road", Road);
+            info.AddValue("BorderPoints", BorderPoints);
         }
     }
 }

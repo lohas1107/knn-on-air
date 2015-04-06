@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace KNNonAir.Domain.Entity
 {
-    class BorderPoint : Vertex
+    [Serializable]
+    class BorderPoint : Vertex, ISerializable
     {
         public List<Vertex> PoIs { get; set; }
 

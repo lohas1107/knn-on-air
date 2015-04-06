@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace KNNonAir.Domain.Entity
 {
-    class MBR
+    [Serializable]
+    class MBR : ISerializable
     {
         public int RegionId { get; set; }
         public List<Vertex> Vertices { get; set; }
@@ -53,6 +56,16 @@ namespace KNNonAir.Domain.Entity
             {
                 if (ContainsIn(vertex)) Vertices.Add(vertex);
             }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("RegionId", RegionId);
+            info.AddValue("Vertices", Vertices);
+            info.AddValue("X", X);
+            info.AddValue("Y", Y);
+            info.AddValue("Width", Width);
+            info.AddValue("Height", Height);
         }
     }
 }

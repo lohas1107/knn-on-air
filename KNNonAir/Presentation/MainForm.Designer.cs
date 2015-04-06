@@ -33,6 +33,7 @@
             this.gmapStatusStrip = new System.Windows.Forms.StatusStrip();
             this.gmapToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
+            this.dataGridView = new System.Windows.Forms.DataGridView();
             this.fileToolStrip = new System.Windows.Forms.ToolStrip();
             this.readFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.addRoadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,10 +51,16 @@
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tuning = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.fileToolStrip.SuspendLayout();
             this.actionToolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -110,6 +117,7 @@
             // 
             // toolStripContainer.ContentPanel
             // 
+            this.toolStripContainer.ContentPanel.Controls.Add(this.dataGridView);
             this.toolStripContainer.ContentPanel.Controls.Add(this.gmap);
             this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(784, 515);
             this.toolStripContainer.Location = new System.Drawing.Point(0, 0);
@@ -122,6 +130,31 @@
             // 
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.fileToolStrip);
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.actionToolStrip);
+            // 
+            // dataGridView
+            // 
+            this.dataGridView.AllowUserToAddRows = false;
+            this.dataGridView.AllowUserToDeleteRows = false;
+            this.dataGridView.AllowUserToOrderColumns = true;
+            this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridView.BackgroundColor = System.Drawing.SystemColors.HighlightText;
+            this.dataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column4,
+            this.Tuning});
+            this.dataGridView.Location = new System.Drawing.Point(396, 447);
+            this.dataGridView.Name = "dataGridView";
+            this.dataGridView.ReadOnly = true;
+            this.dataGridView.RowHeadersWidth = 50;
+            this.dataGridView.RowTemplate.Height = 24;
+            this.dataGridView.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.dataGridView.Size = new System.Drawing.Size(388, 68);
+            this.dataGridView.TabIndex = 1;
             // 
             // fileToolStrip
             // 
@@ -239,7 +272,7 @@
             "128"});
             this.partitionToolStripComboBox.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
-            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 25);
+            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 23);
             this.partitionToolStripComboBox.Text = "16";
             // 
             // toolStripSeparator2
@@ -292,9 +325,44 @@
             "90",
             "100"});
             this.kToolStripComboBox.Name = "kToolStripComboBox";
-            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 25);
+            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 23);
             this.kToolStripComboBox.Text = "10";
             this.kToolStripComboBox.ToolTipText = "k";
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Index Tree";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 81;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Table";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.Width = 56;
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Regions";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Width = 68;
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Latency";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            this.Column4.Width = 67;
+            // 
+            // Tuning
+            // 
+            this.Tuning.HeaderText = "Tuning";
+            this.Tuning.Name = "Tuning";
+            this.Tuning.ReadOnly = true;
+            this.Tuning.Width = 64;
             // 
             // MainForm
             // 
@@ -312,6 +380,7 @@
             this.toolStripContainer.TopToolStripPanel.PerformLayout();
             this.toolStripContainer.ResumeLayout(false);
             this.toolStripContainer.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.fileToolStrip.ResumeLayout(false);
             this.fileToolStrip.PerformLayout();
             this.actionToolStrip.ResumeLayout(false);
@@ -344,6 +413,12 @@
         private System.Windows.Forms.ToolStripButton tableToolStripButton;
         private System.Windows.Forms.ToolStripButton searchToolStripButton;
         private System.Windows.Forms.ToolStripComboBox kToolStripComboBox;
+        private System.Windows.Forms.DataGridView dataGridView;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tuning;
     }
 }
 
