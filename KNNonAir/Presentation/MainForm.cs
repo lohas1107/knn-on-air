@@ -180,7 +180,7 @@ namespace KNNonAir.Presentation
 
         private void ClickShortcutToolStripButton(object sender, EventArgs e)
         {
-
+            _roadNetwork.GenerateSN();
         }
 
         private void ClickTableToolStripButton(object sender, EventArgs e)
