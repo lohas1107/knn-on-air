@@ -34,6 +34,11 @@
             this.gmapToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tuning = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fileToolStrip = new System.Windows.Forms.ToolStrip();
             this.readFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.addRoadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,14 +53,10 @@
             this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.quadTreeToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.shortcutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Tuning = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -156,6 +157,41 @@
             this.dataGridView.Size = new System.Drawing.Size(388, 68);
             this.dataGridView.TabIndex = 1;
             // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Index Tree";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 81;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Table";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.Width = 56;
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Regions";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Width = 68;
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Latency";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            this.Column4.Width = 67;
+            // 
+            // Tuning
+            // 
+            this.Tuning.HeaderText = "Tuning";
+            this.Tuning.Name = "Tuning";
+            this.Tuning.ReadOnly = true;
+            this.Tuning.Width = 64;
+            // 
             // fileToolStrip
             // 
             this.fileToolStrip.Dock = System.Windows.Forms.DockStyle.None;
@@ -183,21 +219,21 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
             // addNVDToolStripMenuItem
             // 
             this.addNVDToolStripMenuItem.Name = "addNVDToolStripMenuItem";
-            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.addNVDToolStripMenuItem.Text = "Add NVD";
             this.addNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNVDToolStripMenuItem);
             // 
@@ -215,7 +251,7 @@
             // saveNVDToolStripMenuItem
             // 
             this.saveNVDToolStripMenuItem.Name = "saveNVDToolStripMenuItem";
-            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.saveNVDToolStripMenuItem.Text = "Save NVD";
             this.saveNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNVDToolStripMenuItem);
             // 
@@ -229,12 +265,13 @@
             this.partitionToolStripComboBox,
             this.toolStripSeparator2,
             this.quadTreeToolStripButton,
+            this.shortcutToolStripButton,
             this.tableToolStripButton,
             this.searchToolStripButton,
             this.kToolStripComboBox});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(229, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(252, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -272,7 +309,7 @@
             "128"});
             this.partitionToolStripComboBox.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
-            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 23);
+            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.partitionToolStripComboBox.Text = "16";
             // 
             // toolStripSeparator2
@@ -289,6 +326,16 @@
             this.quadTreeToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.quadTreeToolStripButton.Text = "Quad Tree Index";
             this.quadTreeToolStripButton.Click += new System.EventHandler(this.ClickQuadTreeToolStripButton);
+            // 
+            // shortcutToolStripButton
+            // 
+            this.shortcutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.shortcutToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("shortcutToolStripButton.Image")));
+            this.shortcutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.shortcutToolStripButton.Name = "shortcutToolStripButton";
+            this.shortcutToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.shortcutToolStripButton.Text = "Shortcut Network";
+            this.shortcutToolStripButton.Click += new System.EventHandler(this.ClickShortcutToolStripButton);
             // 
             // tableToolStripButton
             // 
@@ -325,44 +372,9 @@
             "90",
             "100"});
             this.kToolStripComboBox.Name = "kToolStripComboBox";
-            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 23);
+            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.kToolStripComboBox.Text = "10";
             this.kToolStripComboBox.ToolTipText = "k";
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Index Tree";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            this.Column1.Width = 81;
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Table";
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
-            this.Column2.Width = 56;
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Regions";
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
-            this.Column3.Width = 68;
-            // 
-            // Column4
-            // 
-            this.Column4.HeaderText = "Latency";
-            this.Column4.Name = "Column4";
-            this.Column4.ReadOnly = true;
-            this.Column4.Width = 67;
-            // 
-            // Tuning
-            // 
-            this.Tuning.HeaderText = "Tuning";
-            this.Tuning.Name = "Tuning";
-            this.Tuning.ReadOnly = true;
-            this.Tuning.Width = 64;
             // 
             // MainForm
             // 
@@ -419,6 +431,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Tuning;
+        private System.Windows.Forms.ToolStripButton shortcutToolStripButton;
     }
 }
 
