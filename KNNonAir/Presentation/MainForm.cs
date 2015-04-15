@@ -19,6 +19,7 @@ namespace KNNonAir.Presentation
         private GMapOverlay _markersOverlay;
         private GMapOverlay _mbrOverlay;
         private GMapOverlay _answerOverlay;
+        private int _packetSize;
 
         public MainForm()
         {
@@ -29,6 +30,7 @@ namespace KNNonAir.Presentation
 
             _roadNetwork = new RoadNetwork();
             _presentationModel = new PresentationModel(_roadNetwork);
+            _packetSize = Convert.ToInt32(packetToolStripComboBox.SelectedItem);
 
             dataGridView.Rows.Add(2);
             dataGridView.Rows[0].HeaderCell.Value = "EB";
@@ -171,23 +173,28 @@ namespace KNNonAir.Presentation
             DrawColorLines(_presentationModel.GetRegionEdges());
         }
 
+        private void PacketToolStripComboBoxTextChanged(object sender, EventArgs e)
+        {
+            _packetSize = Convert.ToInt32(packetToolStripComboBox.SelectedItem);
+        }
+
         private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateVQTree();
             DrawMBRs();
-            dataGridView.Rows[0].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.VQTree, 128);
+            dataGridView.Rows[0].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.VQTree, _packetSize);
         }
 
         private void ClickShortcutToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateSN();
-            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Shortcuts, 128);
+            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Shortcuts, _packetSize);
         }
 
         private void ClickTableToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.ComputeTable();
-            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.Table, 128);
+            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.Table, _packetSize);
         }
 
         private void ClickSearchToolStripButton(object sender, EventArgs e)
@@ -195,9 +202,9 @@ namespace KNNonAir.Presentation
             _roadNetwork.SearchKNN(Convert.ToInt32(kToolStripComboBox.SelectedItem));
             DrawMarkers(_roadNetwork.PoIs);
             DrawAnswer(_roadNetwork.QueryPoint, _roadNetwork.Answers);
-            dataGridView.Rows[0].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, 128);
-            dataGridView.Rows[0].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, 128);
-            dataGridView.Rows[0].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, 128);
+            dataGridView.Rows[0].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, _packetSize);
+            dataGridView.Rows[0].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, _packetSize);
+            dataGridView.Rows[0].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, _packetSize);
         }
     }
 }

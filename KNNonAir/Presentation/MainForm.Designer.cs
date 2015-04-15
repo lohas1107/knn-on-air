@@ -52,12 +52,12 @@
             this.partitionToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.packetToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.quadTreeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.shortcutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.packetToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -273,7 +273,7 @@
             this.kToolStripComboBox});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(335, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(337, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -318,6 +318,24 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // packetToolStripComboBox
+            // 
+            this.packetToolStripComboBox.AutoSize = false;
+            this.packetToolStripComboBox.Items.AddRange(new object[] {
+            "128",
+            "256",
+            "384",
+            "512",
+            "640",
+            "768",
+            "896",
+            "1024"});
+            this.packetToolStripComboBox.Name = "packetToolStripComboBox";
+            this.packetToolStripComboBox.Size = new System.Drawing.Size(50, 24);
+            this.packetToolStripComboBox.Text = "128";
+            this.packetToolStripComboBox.ToolTipText = "packet size";
+            this.packetToolStripComboBox.TextChanged += new System.EventHandler(this.PacketToolStripComboBoxTextChanged);
             // 
             // quadTreeToolStripButton
             // 
@@ -377,23 +395,6 @@
             this.kToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.kToolStripComboBox.Text = "10";
             this.kToolStripComboBox.ToolTipText = "k";
-            // 
-            // packetToolStripComboBox
-            // 
-            this.packetToolStripComboBox.AutoSize = false;
-            this.packetToolStripComboBox.Items.AddRange(new object[] {
-            "128",
-            "256",
-            "384",
-            "512",
-            "640",
-            "768",
-            "896",
-            "1024"});
-            this.packetToolStripComboBox.Name = "packetToolStripComboBox";
-            this.packetToolStripComboBox.Size = new System.Drawing.Size(50, 25);
-            this.packetToolStripComboBox.Text = "128";
-            this.packetToolStripComboBox.ToolTipText = "packet size";
             // 
             // MainForm
             // 
