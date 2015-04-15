@@ -57,6 +57,7 @@
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.packetToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -264,6 +265,7 @@
             this.partitionToolStripButton,
             this.partitionToolStripComboBox,
             this.toolStripSeparator2,
+            this.packetToolStripComboBox,
             this.quadTreeToolStripButton,
             this.shortcutToolStripButton,
             this.tableToolStripButton,
@@ -271,7 +273,7 @@
             this.kToolStripComboBox});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(252, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(335, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -376,6 +378,23 @@
             this.kToolStripComboBox.Text = "10";
             this.kToolStripComboBox.ToolTipText = "k";
             // 
+            // packetToolStripComboBox
+            // 
+            this.packetToolStripComboBox.AutoSize = false;
+            this.packetToolStripComboBox.Items.AddRange(new object[] {
+            "128",
+            "256",
+            "384",
+            "512",
+            "640",
+            "768",
+            "896",
+            "1024"});
+            this.packetToolStripComboBox.Name = "packetToolStripComboBox";
+            this.packetToolStripComboBox.Size = new System.Drawing.Size(50, 25);
+            this.packetToolStripComboBox.Text = "128";
+            this.packetToolStripComboBox.ToolTipText = "packet size";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -432,6 +451,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Tuning;
         private System.Windows.Forms.ToolStripButton shortcutToolStripButton;
+        private System.Windows.Forms.ToolStripComboBox packetToolStripComboBox;
     }
 }
 
