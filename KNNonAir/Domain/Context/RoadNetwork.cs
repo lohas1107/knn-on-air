@@ -204,5 +204,17 @@ namespace KNNonAir.Domain.Context
             double packetCount = Math.Ceiling(Parser.ObjectToByteArray(obj).Count() / packetSize);
             return packetCount.ToString();
         }
+
+        public void GenerateSN()
+        {
+            RoadGraph road = new RoadGraph(false);
+            foreach (KeyValuePair<int, Region> region in Regions)
+            {
+                road.AddGraph(region.Value.Road);
+            }
+
+            CountingTable counting = new CountingTable(road);
+            List<ShortcutNetwork> shortcuts = counting.GenerateSN(Regions);
+        }
     }
 }

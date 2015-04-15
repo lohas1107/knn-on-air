@@ -178,6 +178,11 @@ namespace KNNonAir.Presentation
             dataGridView.Rows[0].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.VQTree, 128);
         }
 
+        private void ClickShortcutToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.GenerateSN();
+        }
+
         private void ClickTableToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.ComputeTable();
