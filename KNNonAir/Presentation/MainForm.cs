@@ -181,6 +181,7 @@ namespace KNNonAir.Presentation
         private void ClickShortcutToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateSN();
+            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Shortcuts, 128);
         }
 
         private void ClickTableToolStripButton(object sender, EventArgs e)
