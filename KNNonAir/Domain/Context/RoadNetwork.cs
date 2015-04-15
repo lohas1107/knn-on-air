@@ -17,9 +17,12 @@ namespace KNNonAir.Domain.Context
         public Dictionary<int, Region> Regions { get; set; }
         public VQTree VQTree { get; set; }
         public List<MBR> QuadMBRs { get; set; }
+        public List<ShortcutNetwork> Shortcuts { get; set; }
         public CountingTable Table  { get; set; }
         public Vertex QueryPoint { get; set; }
         public List<Vertex> Answers { get; set; }
+        public List<Region> Latency { get; set; }
+        public List<Region> Tuning { get; set; }
 
         public RoadNetwork()
         {
@@ -27,6 +30,8 @@ namespace KNNonAir.Domain.Context
             PoIs = new List<Vertex>();
             BorderPoints = new Dictionary<Vertex, Edge<Vertex>>();
             NVD = new Dictionary<Vertex, VoronoiCell>();
+            Latency = new List<Region>();
+            Tuning = new List<Region>();
         }
 
         public void LoadRoads()
@@ -162,10 +167,14 @@ namespace KNNonAir.Domain.Context
             }
 
             RoadGraph graph = new RoadGraph(false);
+            int start = cList.Last().Id;
+            int end = cList.Peek().Id;
+            Tuning.Clear();
             while (cList.Count > 0)
             {
                 Region region = cList.Pop();
                 if (!Table.CanTune(region.Id, regionId, upperBound)) continue;
+                Tuning.Add(region);
 
                 if (region.Id == regionId)
                 {
@@ -180,9 +189,32 @@ namespace KNNonAir.Domain.Context
                     graph.AddGraph(Table.PruneRegionVertices(region, QueryPoint, upperBound, k));
                 }
             }
+            Latency.Clear();
+            foreach (KeyValuePair<int, Region> r in Regions)
+            {
+                if (r.Value.Id >= start && r.Value.Id <= end) Latency.Add(r.Value);
+            }
 
             Table.Initialize(graph);
             Answers = Table.GetKNN(QueryPoint, k);
+        }
+
+        public String GetSize(object obj, double packetSize)
+        {
+            double packetCount = Math.Ceiling(Parser.ObjectToByteArray(obj).Count() / packetSize);
+            return packetCount.ToString();
+        }
+
+        public void GenerateSN()
+        {
+            RoadGraph road = new RoadGraph(false);
+            foreach (KeyValuePair<int, Region> region in Regions)
+            {
+                road.AddGraph(region.Value.Road);
+            }
+
+            CountingTable counting = new CountingTable(road);
+            Shortcuts = counting.GenerateSN(Regions);
         }
     }
 }

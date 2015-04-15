@@ -100,6 +100,7 @@
     <Compile Include="Domain\Entity\InterestPoint.cs" />
     <Compile Include="Domain\Service\KdTreeNode.cs" />
     <Compile Include="Domain\Service\Parser.cs" />
+    <Compile Include="Domain\Service\ShortcutNetwork.cs" />
     <Compile Include="Domain\Service\VQTree.cs" />
     <Compile Include="Domain\Service\VQTreeNode.cs" />
     <Compile Include="Presentation\MainForm.cs">

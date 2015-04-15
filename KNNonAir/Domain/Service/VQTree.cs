@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using KNNonAir.Domain.Entity;
+using System;
+using System.Runtime.Serialization;
 
 namespace KNNonAir.Domain.Service
 {
-    class VQTree
+    [Serializable]
+    class VQTree : ISerializable
     {
         public event MBRHandler PartitionMBRCompleted;
-
+        [NonSerialized]
         private VQTreeNode _root;
 
         public List<MBR> MBRs { get; set; }
@@ -28,6 +31,11 @@ namespace KNNonAir.Domain.Service
         public int searchRegion(Vertex queryPoint)
         {
             return _root.searchRegion(queryPoint);
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("MBRs", MBRs);
         }
     }
 }

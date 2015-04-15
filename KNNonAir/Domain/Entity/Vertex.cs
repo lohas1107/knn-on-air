@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Geo;
 using Geo.Geometries;
+using KNNonAir.Access;
 
 namespace KNNonAir.Domain.Entity
 {
-    class Vertex : IComparable<Vertex>
+    [Serializable]
+    class Vertex : IComparable<Vertex>, ISerializable
     {
+        [NonSerialized]
         private Point _point;
         public Coordinate Coordinate { get; set; }
         public int RegionId { get; set; }
@@ -39,6 +43,12 @@ namespace KNNonAir.Domain.Entity
         public int CompareTo(Vertex other)
         {
             return 0;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Point", new VertexInfo(Coordinate.Latitude, Coordinate.Longitude));
+            info.AddValue("RegionId", RegionId);
         }
     }
 }

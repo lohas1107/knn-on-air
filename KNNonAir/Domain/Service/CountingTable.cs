@@ -6,10 +6,12 @@ using QuickGraph.Algorithms.ShortestPath;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace KNNonAir.Domain.Service
 {
-    class CountingTable
+    [Serializable]
+    class CountingTable : ISerializable
     {
         private RoadGraph _road;
         private List<Vertex> _pois;
@@ -260,6 +262,47 @@ namespace KNNonAir.Domain.Service
             }
 
             return knnList;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("MinTable", MinTable);
+            info.AddValue("MaxCountTable", MaxCountTable);
+        }
+
+        public List<ShortcutNetwork> GenerateSN(Dictionary<int, Region> regions)
+        {
+            Dictionary<int, RoadGraph> shortcut = new Dictionary<int, RoadGraph>();
+            Dictionary<Edge<Vertex>, double> distances = new Dictionary<Edge<Vertex>,double>();
+
+            foreach (KeyValuePair<int, Region> region in regions)
+            {
+                RoadGraph road = new RoadGraph(false);
+                List<Vertex> borders = region.Value.BorderPoints;
+                for (int i = 0; i < borders.Count; i++)
+                {
+                    Reset();
+                    _dijkstra.Compute(borders[i]);
+                    for (int j = i + 1; j < borders.Count; j++)
+                    {
+                        Edge<Vertex> edge = new Edge<Vertex>(borders[i], borders[j]);
+                        road.Graph.AddVerticesAndEdge(edge);
+                        distances.Add(edge, _distObserver.Distances[borders[j]]);
+                    }
+                }
+                shortcut.Add(region.Key, road);
+            }
+
+            List<ShortcutNetwork> shortcuts = new List<ShortcutNetwork>();
+            for (int j = 0; j < regions.Count; j++)
+            {
+                ShortcutNetwork sn = new ShortcutNetwork(j);
+                sn.Distances = distances;
+                sn.Shortcut = shortcut;
+                sn.RegionGraph = regions[j].Road;
+                shortcuts.Add(sn);
+            }
+            return shortcuts;
         }
     }
 }
