@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Geo;
 using Geo.Geometries;
-using System.Runtime.Serialization;
 using KNNonAir.Access;
 
 namespace KNNonAir.Domain.Entity
