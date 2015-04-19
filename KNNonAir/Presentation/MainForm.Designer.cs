@@ -58,6 +58,8 @@
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.paTableToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -220,21 +222,21 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
             // addNVDToolStripMenuItem
             // 
             this.addNVDToolStripMenuItem.Name = "addNVDToolStripMenuItem";
-            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addNVDToolStripMenuItem.Text = "Add NVD";
             this.addNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNVDToolStripMenuItem);
             // 
@@ -252,7 +254,7 @@
             // saveNVDToolStripMenuItem
             // 
             this.saveNVDToolStripMenuItem.Name = "saveNVDToolStripMenuItem";
-            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.saveNVDToolStripMenuItem.Text = "Save NVD";
             this.saveNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNVDToolStripMenuItem);
             // 
@@ -267,13 +269,15 @@
             this.toolStripSeparator2,
             this.packetToolStripComboBox,
             this.quadTreeToolStripButton,
-            this.shortcutToolStripButton,
             this.tableToolStripButton,
             this.searchToolStripButton,
-            this.kToolStripComboBox});
+            this.kToolStripComboBox,
+            this.toolStripSeparator3,
+            this.paTableToolStripButton,
+            this.shortcutToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(337, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(364, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -311,7 +315,7 @@
             "128"});
             this.partitionToolStripComboBox.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
-            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 24);
+            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 23);
             this.partitionToolStripComboBox.Text = "16";
             // 
             // toolStripSeparator2
@@ -332,7 +336,7 @@
             "896",
             "1024"});
             this.packetToolStripComboBox.Name = "packetToolStripComboBox";
-            this.packetToolStripComboBox.Size = new System.Drawing.Size(50, 24);
+            this.packetToolStripComboBox.Size = new System.Drawing.Size(50, 23);
             this.packetToolStripComboBox.Text = "128";
             this.packetToolStripComboBox.ToolTipText = "packet size";
             this.packetToolStripComboBox.TextChanged += new System.EventHandler(this.PacketToolStripComboBoxTextChanged);
@@ -392,9 +396,24 @@
             "90",
             "100"});
             this.kToolStripComboBox.Name = "kToolStripComboBox";
-            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 24);
+            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 23);
             this.kToolStripComboBox.Text = "10";
             this.kToolStripComboBox.ToolTipText = "k";
+            // 
+            // paTableToolStripButton
+            // 
+            this.paTableToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.paTableToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("paTableToolStripButton.Image")));
+            this.paTableToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.paTableToolStripButton.Name = "paTableToolStripButton";
+            this.paTableToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.paTableToolStripButton.Text = "PA table";
+            this.paTableToolStripButton.Click += new System.EventHandler(this.ClickPATableToolStripButton);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // MainForm
             // 
@@ -453,6 +472,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Tuning;
         private System.Windows.Forms.ToolStripButton shortcutToolStripButton;
         private System.Windows.Forms.ToolStripComboBox packetToolStripComboBox;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton paTableToolStripButton;
     }
 }
 
