@@ -185,12 +185,6 @@ namespace KNNonAir.Presentation
             dataGridView.Rows[0].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.VQTree, _packetSize);
         }
 
-        private void ClickShortcutToolStripButton(object sender, EventArgs e)
-        {
-            _roadNetwork.GenerateSN();
-            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Shortcuts, _packetSize);
-        }
-
         private void ClickTableToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.ComputeTable();
@@ -205,6 +199,17 @@ namespace KNNonAir.Presentation
             dataGridView.Rows[0].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, _packetSize);
             dataGridView.Rows[0].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, _packetSize);
             dataGridView.Rows[0].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, _packetSize);
+        }
+
+        private void ClickShortcutToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.GenerateSN();
+            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Shortcuts, _packetSize);
+        }
+
+        private void ClickPATableToolStripButton(object sender, EventArgs e)
+        {
+
         }
     }
 }
