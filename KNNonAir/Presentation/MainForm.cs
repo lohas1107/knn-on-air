@@ -187,8 +187,8 @@ namespace KNNonAir.Presentation
 
         private void ClickTableToolStripButton(object sender, EventArgs e)
         {
-            _roadNetwork.ComputeTable();
-            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.Table, _packetSize);
+            _roadNetwork.ComputeEBTable();
+            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.EBTable, _packetSize);
         }
 
         private void ClickSearchToolStripButton(object sender, EventArgs e)
@@ -209,7 +209,8 @@ namespace KNNonAir.Presentation
 
         private void ClickPATableToolStripButton(object sender, EventArgs e)
         {
-
+            _roadNetwork.ComputePATable();
+            dataGridView.Rows[1].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.PATable, _packetSize);
         }
     }
 }
