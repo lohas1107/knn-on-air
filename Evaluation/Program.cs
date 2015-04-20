@@ -6,14 +6,13 @@ namespace Evaluation
 {
     class Program
     {
+        private static EBAlgorithm _eb;
+
         static void Main(string[] args)
         {
             if (args.Count() == 0) return;
 
-            File.AppendAllText("test.txt", "456" + Environment.NewLine);
-
-            Console.WriteLine("Finish!");
-            Console.ReadLine();
+            if (args[0] == "1") _eb = new EBAlgorithm(args.Skip(0).ToArray<String>());
         }
     }
 }
