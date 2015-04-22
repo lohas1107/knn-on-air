@@ -44,6 +44,7 @@
             this.addRoadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.saveNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -213,7 +214,8 @@
             this.readFileToolStripSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addRoadsToolStripMenuItem,
             this.addPoIsToolStripMenuItem,
-            this.addNVDToolStripMenuItem});
+            this.addNVDToolStripMenuItem,
+            this.addEBTableToolStripMenuItem});
             this.readFileToolStripSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("readFileToolStripSplitButton.Image")));
             this.readFileToolStripSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.readFileToolStripSplitButton.Name = "readFileToolStripSplitButton";
@@ -223,23 +225,30 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
             // 
             // addNVDToolStripMenuItem
             // 
             this.addNVDToolStripMenuItem.Name = "addNVDToolStripMenuItem";
-            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addNVDToolStripMenuItem.Text = "Add NVD";
             this.addNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNVDToolStripMenuItem);
+            // 
+            // addEBTableToolStripMenuItem
+            // 
+            this.addEBTableToolStripMenuItem.Name = "addEBTableToolStripMenuItem";
+            this.addEBTableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addEBTableToolStripMenuItem.Text = "Add EB Table";
+            this.addEBTableToolStripMenuItem.Click += new System.EventHandler(this.ClickAddEBTableToolStripMenuItem);
             // 
             // saveFileToolStripSplitButton
             // 
@@ -484,6 +493,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton paTableToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem saveEBTableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addEBTableToolStripMenuItem;
     }
 }
 
