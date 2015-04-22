@@ -215,7 +215,7 @@ namespace KNNonAir.Presentation
 
         private void ClickSaveEBTableToolStripMenuItem(object sender, EventArgs e)
         {
-
+            FileIO.SaveEBTable(_roadNetwork.EBTable);
         }
     }
 }
