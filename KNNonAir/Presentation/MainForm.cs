@@ -220,7 +220,7 @@ namespace KNNonAir.Presentation
 
         private void ClickAddEBTableToolStripMenuItem(object sender, EventArgs e)
         {
-
+            _roadNetwork.AddEBTable();
         }
     }
 }

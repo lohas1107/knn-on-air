@@ -73,5 +73,13 @@ namespace KNNonAir.Domain.Service
             string output = JsonConvert.SerializeObject(countingTable);
             File.WriteAllText(_fileName, output);
         }
+
+        public static CountingTable ReadEBTableFile()
+        {
+            if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
+
+            CountingTable table = JsonConvert.DeserializeObject<CountingTable>(File.ReadAllText(_fileName));
+            return table;
+        }
     }
 }

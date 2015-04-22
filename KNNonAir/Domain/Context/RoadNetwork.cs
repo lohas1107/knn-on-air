@@ -226,5 +226,12 @@ namespace KNNonAir.Domain.Context
                 PATable.Add(region.Key, region.Value.PoIs.Count);
             }
         }
+
+        public void AddEBTable()
+        {
+            EBTable = FileIO.ReadEBTableFile();
+
+
+        }
     }
 }
