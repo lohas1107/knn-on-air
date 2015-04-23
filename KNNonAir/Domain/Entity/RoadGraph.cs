@@ -22,6 +22,18 @@ namespace KNNonAir.Domain.Entity
             Graph = new UndirectedGraph<Vertex, Edge<Vertex>>(allowParallelEdges);
         }
 
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            List<EdgeInfo> edgeInfos = new List<EdgeInfo>();
+            foreach (Edge<Vertex> edge in Graph.Edges)
+            {
+                VertexInfo source = new VertexInfo(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude);
+                VertexInfo target = new VertexInfo(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude);
+                edgeInfos.Add(new EdgeInfo(source, target));
+            }
+            info.AddValue("Graph", edgeInfos);
+        }
+
         public void LoadRoads(List<Edge<Vertex>> edgeList)
         {
             foreach (Edge<Vertex> edge in edgeList)
@@ -216,18 +228,6 @@ namespace KNNonAir.Domain.Entity
             {
                 Graph.AddVerticesAndEdge(edge);
             }
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            List<EdgeInfo> edgeInfos = new List<EdgeInfo>();
-            foreach(Edge<Vertex> edge in Graph.Edges)
-            {
-                VertexInfo source = new VertexInfo(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude);
-                VertexInfo target = new VertexInfo(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude);
-                edgeInfos.Add(new EdgeInfo(source, target));
-            }
-            info.AddValue("Graph", edgeInfos);
         }
     }
 }

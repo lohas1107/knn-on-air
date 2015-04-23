@@ -90,11 +90,11 @@ namespace KNNonAir.Domain.Service
             }
         }
 
-        private double ComputeMin(Region formRegion, Region toRegion)
+        private double ComputeMin(Region fromRegion, Region toRegion)
         {
             double minDistance = double.MaxValue;
 
-            foreach (Vertex fromBorder in formRegion.BorderPoints)
+            foreach (Vertex fromBorder in fromRegion.BorderPoints)
             {
                 Reset();
                 _dijkstra.Compute(fromBorder);
@@ -119,16 +119,16 @@ namespace KNNonAir.Domain.Service
             return minDistance;
         }
 
-        private double ComputeMax(Region formRegion)
+        private double ComputeMax(Region fromRegion)
         {
             double maxDistance = double.MinValue;
 
-            foreach (Vertex fromBorder in formRegion.BorderPoints)
+            foreach (Vertex fromBorder in fromRegion.BorderPoints)
             {
                 Reset();
                 _dijkstra.Compute(fromBorder);
 
-                foreach (Vertex poi in formRegion.PoIs)
+                foreach (Vertex poi in fromRegion.PoIs)
                 {
                     if (!_distObserver.Distances.ContainsKey(poi)) continue;
                     if (_distObserver.Distances[poi] > maxDistance)
@@ -276,9 +276,9 @@ namespace KNNonAir.Domain.Service
             return knnList;
         }
 
-        public List<ShortcutNetwork> GenerateSN(Dictionary<int, Region> regions)
+        public ShortcutNetwork GenerateSN(Dictionary<int, Region> regions)
         {
-            Dictionary<int, RoadGraph> shortcut = new Dictionary<int, RoadGraph>();
+            Dictionary<int, RoadGraph> shortcutGraph = new Dictionary<int, RoadGraph>();
             Dictionary<Edge<Vertex>, double> distances = new Dictionary<Edge<Vertex>,double>();
 
             foreach (KeyValuePair<int, Region> region in regions)
@@ -296,19 +296,13 @@ namespace KNNonAir.Domain.Service
                         distances.Add(edge, _distObserver.Distances[borders[j]]);
                     }
                 }
-                shortcut.Add(region.Key, road);
+                shortcutGraph.Add(region.Key, road);
             }
 
-            List<ShortcutNetwork> shortcuts = new List<ShortcutNetwork>();
-            for (int j = 0; j < regions.Count; j++)
-            {
-                ShortcutNetwork sn = new ShortcutNetwork(j);
-                sn.Distances = distances;
-                sn.Shortcut = shortcut;
-                sn.RegionGraph = regions[j].Road;
-                shortcuts.Add(sn);
-            }
-            return shortcuts;
+            ShortcutNetwork shortcut = new ShortcutNetwork();
+            shortcut.Distances = distances;
+            shortcut.Shortcut = shortcutGraph;
+            return shortcut;
         }
     }
 }

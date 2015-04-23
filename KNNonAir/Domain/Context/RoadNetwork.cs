@@ -17,7 +17,7 @@ namespace KNNonAir.Domain.Context
         public Dictionary<int, Region> Regions { get; set; }
         public VQTree VQTree { get; set; }
         public List<MBR> QuadMBRs { get; set; }
-        public List<ShortcutNetwork> Shortcuts { get; set; }
+        public ShortcutNetwork Shortcut { get; set; }
         public CountingTable EBTable  { get; set; }
         public Vertex QueryPoint { get; set; }
         public List<Vertex> Answers { get; set; }
@@ -215,7 +215,7 @@ namespace KNNonAir.Domain.Context
             }
 
             CountingTable counting = new CountingTable(road);
-            Shortcuts = counting.GenerateSN(Regions);
+            Shortcut = counting.GenerateSN(Regions);
         }
 
         public void ComputePATable()

@@ -204,7 +204,7 @@ namespace KNNonAir.Presentation
         private void ClickShortcutToolStripButton(object sender, EventArgs e)
         {
             _roadNetwork.GenerateSN();
-            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Shortcuts, _packetSize);
+            dataGridView.Rows[1].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.Shortcut, _packetSize);
         }
 
         private void ClickPATableToolStripButton(object sender, EventArgs e)
