@@ -10,23 +10,17 @@ namespace KNNonAir.Domain.Service
     [Serializable]
     class ShortcutNetwork : ISerializable
     {
-        public int RegionId { get; set; }
         public Dictionary<Edge<Vertex>, double> Distances;
         public Dictionary<int, RoadGraph> Shortcut { get; set; }
-        public RoadGraph RegionGraph { get; set; }
 
-        public ShortcutNetwork(int id)
+        public ShortcutNetwork()
         {
-            RegionId = id;
             Distances = new Dictionary<Edge<Vertex>, double>();
             Shortcut = new Dictionary<int, RoadGraph>();
-            RegionGraph = new RoadGraph(false);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("RegionId", RegionId);
-
             Dictionary<EdgeInfo, double> distances = new Dictionary<EdgeInfo, double>();
             foreach (KeyValuePair<Edge<Vertex>, double> distance in Distances)
             {
@@ -37,7 +31,6 @@ namespace KNNonAir.Domain.Service
 
             info.AddValue("Distances", distances);
             info.AddValue("Shortcut", Shortcut);
-            info.AddValue("RegionGraph", RegionGraph);
         }
     }
 }

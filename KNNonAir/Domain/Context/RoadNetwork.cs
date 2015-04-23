@@ -17,12 +17,13 @@ namespace KNNonAir.Domain.Context
         public Dictionary<int, Region> Regions { get; set; }
         public VQTree VQTree { get; set; }
         public List<MBR> QuadMBRs { get; set; }
-        public List<ShortcutNetwork> Shortcuts { get; set; }
-        public CountingTable Table  { get; set; }
+        public ShortcutNetwork Shortcut { get; set; }
+        public CountingTable EBTable  { get; set; }
         public Vertex QueryPoint { get; set; }
         public List<Vertex> Answers { get; set; }
         public List<Region> Latency { get; set; }
         public List<Region> Tuning { get; set; }
+        public Dictionary<int, int> PATable { get; set; }
 
         public RoadNetwork()
         {
@@ -140,10 +141,10 @@ namespace KNNonAir.Domain.Context
             QuadMBRs = VQTree.MBRs;
         }
 
-        public void ComputeTable()
+        public void ComputeEBTable()
         {
-            Table = new CountingTable(Road, PoIs);
-            Table.ComputeTables(Regions);
+            EBTable = new CountingTable(Road, PoIs);
+            EBTable.ComputeTables(Regions);
         }
 
         public void SearchKNN(int k)
@@ -156,14 +157,14 @@ namespace KNNonAir.Domain.Context
             } 
             while (regionId == -1);
 
-            double upperBound = Table.GetUpperBound(regionId, k);
+            double upperBound = EBTable.GetUpperBound(regionId, k);
 
             Stack<Region> cList = new Stack<Region>();
             int position = 0;
             for (int i = 0; i < Regions.Count; i++)
             {
                 int index = (position + i) % Regions.Count;
-                if (Table.CanTune(index, regionId, upperBound)) cList.Push(Regions[index]);
+                if (EBTable.CanTune(index, regionId, upperBound)) cList.Push(Regions[index]);
             }
 
             RoadGraph graph = new RoadGraph(false);
@@ -173,20 +174,20 @@ namespace KNNonAir.Domain.Context
             while (cList.Count > 0)
             {
                 Region region = cList.Pop();
-                if (!Table.CanTune(region.Id, regionId, upperBound)) continue;
+                if (!EBTable.CanTune(region.Id, regionId, upperBound)) continue;
                 Tuning.Add(region);
 
                 if (region.Id == regionId)
                 {
                     graph.AddGraph(region.Road);
-                    Table.Initialize(graph);
-                    if (region.Id >= regionId) upperBound = Table.UpdateUpperBound(QueryPoint, k, upperBound);
-                    graph = Table.PruneGraphVertices(QueryPoint, upperBound, k);
+                    EBTable.Initialize(graph);
+                    if (region.Id >= regionId) upperBound = EBTable.UpdateUpperBound(QueryPoint, k, upperBound);
+                    graph = EBTable.PruneGraphVertices(QueryPoint, upperBound, k);
                 }
                 else
                 {
-                    Table.Initialize(region.Road);
-                    graph.AddGraph(Table.PruneRegionVertices(region, QueryPoint, upperBound, k));
+                    EBTable.Initialize(region.Road);
+                    graph.AddGraph(EBTable.PruneRegionVertices(region, QueryPoint, upperBound, k));
                 }
             }
             Latency.Clear();
@@ -195,8 +196,8 @@ namespace KNNonAir.Domain.Context
                 if (r.Value.Id >= start && r.Value.Id <= end) Latency.Add(r.Value);
             }
 
-            Table.Initialize(graph);
-            Answers = Table.GetKNN(QueryPoint, k);
+            EBTable.Initialize(graph);
+            Answers = EBTable.GetKNN(QueryPoint, k);
         }
 
         public String GetSize(object obj, double packetSize)
@@ -214,7 +215,29 @@ namespace KNNonAir.Domain.Context
             }
 
             CountingTable counting = new CountingTable(road);
-            Shortcuts = counting.GenerateSN(Regions);
+            Shortcut = counting.GenerateSN(Regions);
+        }
+
+        public void ComputePATable()
+        {
+            PATable = new Dictionary<int, int>();
+            foreach (KeyValuePair<int, Region> region in Regions)
+            {
+                PATable.Add(region.Key, region.Value.PoIs.Count);
+            }
+        }
+
+        public void SaveEBTable()
+        {
+            FileIO.SaveEBTable(Parser.ParseCountingTable(PoIs, EBTable));
+        }
+
+        public void AddEBTable()
+        {
+            TableInfo tableInfo = FileIO.ReadEBTableFile();
+            EBTable = new CountingTable(Road, PoIs);
+            EBTable.MinTable = tableInfo.MinTable;
+            EBTable.MaxCountTable = tableInfo.MaxCountTable;
         }
     }
 }

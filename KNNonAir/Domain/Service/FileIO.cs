@@ -1,9 +1,10 @@
-﻿using KNNonAir.Access;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using KNNonAir.Access;
+using Newtonsoft.Json;
 
 namespace KNNonAir.Domain.Service
 {
@@ -11,6 +12,7 @@ namespace KNNonAir.Domain.Service
     {
         private const string GEOJSON_FILE_FILTER = "geojson files (*.geojson)|*.geojson";
         private const string XML_FILE_FILTER = "xml files (*.xml)|*.xml";
+        private const string JSON_FILE_FILTER = "json files (*.json)|*.json";
 
         private static string _fileName;
 
@@ -62,6 +64,22 @@ namespace KNNonAir.Domain.Service
             List<NVCInfo> nvdList = (List<NVCInfo>)serializer.Deserialize(File.OpenText(_fileName));
 
             return nvdList;
+        }
+
+        public static void SaveEBTable(TableInfo countingTable)
+        {
+            if (SaveFile(JSON_FILE_FILTER) != DialogResult.OK) return;
+
+            string output = JsonConvert.SerializeObject(countingTable);
+            File.WriteAllText(_fileName, output);
+        }
+
+        public static TableInfo ReadEBTableFile()
+        {
+            if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
+
+            TableInfo table = JsonConvert.DeserializeObject<TableInfo>(File.ReadAllText(_fileName));
+            return table;
         }
     }
 }

@@ -177,10 +177,22 @@ namespace KNNonAir.Domain.Service
         {
             if (obj == null) return null;
 
-            BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream();
-            bf.Serialize(ms, obj);
-            return ms.ToArray();
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            formatter.Serialize(stream, obj);
+            return stream.ToArray();
+        }
+
+        public static TableInfo ParseCountingTable(List<Vertex> pois, CountingTable countingTable)
+        {
+            List<VertexInfo> poiList = new List<VertexInfo>();
+
+            foreach (Vertex poi in pois)
+            {
+                poiList.Add(new VertexInfo(poi.Coordinate.Latitude, poi.Coordinate.Longitude));
+            }
+
+            return new TableInfo(poiList, countingTable.MinTable, countingTable.MaxCountTable);
         }
     }
 }

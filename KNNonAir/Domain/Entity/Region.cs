@@ -60,7 +60,6 @@ namespace KNNonAir.Domain.Entity
             info.AddValue("Id", Id);
             info.AddValue("PoIs", PoIs);
             info.AddValue("Road", Road);
-            info.AddValue("BorderPoints", BorderPoints);
         }
     }
 }

@@ -185,16 +185,10 @@ namespace KNNonAir.Presentation
             dataGridView.Rows[0].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.VQTree, _packetSize);
         }
 
-        private void ClickShortcutToolStripButton(object sender, EventArgs e)
-        {
-            _roadNetwork.GenerateSN();
-            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Shortcuts, _packetSize);
-        }
-
         private void ClickTableToolStripButton(object sender, EventArgs e)
         {
-            _roadNetwork.ComputeTable();
-            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.Table, _packetSize);
+            _roadNetwork.ComputeEBTable();
+            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.EBTable, _packetSize);
         }
 
         private void ClickSearchToolStripButton(object sender, EventArgs e)
@@ -205,6 +199,29 @@ namespace KNNonAir.Presentation
             dataGridView.Rows[0].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, _packetSize);
             dataGridView.Rows[0].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, _packetSize);
             dataGridView.Rows[0].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, _packetSize);
+        }
+
+        private void ClickShortcutToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.GenerateSN();
+            dataGridView.Rows[1].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.Shortcut, _packetSize);
+        }
+
+        private void ClickPATableToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.ComputePATable();
+            dataGridView.Rows[1].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.PATable, _packetSize);
+        }
+
+        private void ClickSaveEBTableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _roadNetwork.SaveEBTable();
+        }
+
+        private void ClickAddEBTableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _roadNetwork.AddEBTable();
+            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.EBTable, _packetSize);
         }
     }
 }
