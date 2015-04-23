@@ -226,5 +226,18 @@ namespace KNNonAir.Domain.Context
                 PATable.Add(region.Key, region.Value.PoIs.Count);
             }
         }
+
+        public void SaveEBTable()
+        {
+            FileIO.SaveEBTable(Parser.ParseCountingTable(PoIs, EBTable));
+        }
+
+        public void AddEBTable()
+        {
+            TableInfo tableInfo = FileIO.ReadEBTableFile();
+            EBTable = new CountingTable(Road, PoIs);
+            EBTable.MinTable = tableInfo.MinTable;
+            EBTable.MaxCountTable = tableInfo.MaxCountTable;
+        }
     }
 }

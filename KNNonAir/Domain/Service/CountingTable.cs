@@ -33,6 +33,18 @@ namespace KNNonAir.Domain.Service
             _pois = pois;
         }
 
+        public CountingTable(SerializationInfo info, StreamingContext context)
+        {
+            MinTable = (Dictionary<int, Dictionary<int, double>>)info.GetValue("MinTable", typeof(Dictionary<int, Dictionary<int, double>>));
+            MaxCountTable = (Dictionary<int, Tuple<int, double>>)info.GetValue("MaxCountTable", typeof(Dictionary<int, Tuple<int, double>>));
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("MinTable", MinTable);
+            info.AddValue("MaxCountTable", MaxCountTable);
+        }
+
         public void Initialize(RoadGraph road)
         {
             _road = road;
@@ -262,12 +274,6 @@ namespace KNNonAir.Domain.Service
             }
 
             return knnList;
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("MinTable", MinTable);
-            info.AddValue("MaxCountTable", MaxCountTable);
         }
 
         public List<ShortcutNetwork> GenerateSN(Dictionary<int, Region> regions)

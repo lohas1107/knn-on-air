@@ -212,5 +212,16 @@ namespace KNNonAir.Presentation
             _roadNetwork.ComputePATable();
             dataGridView.Rows[1].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.PATable, _packetSize);
         }
+
+        private void ClickSaveEBTableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _roadNetwork.SaveEBTable();
+        }
+
+        private void ClickAddEBTableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _roadNetwork.AddEBTable();
+            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.EBTable, _packetSize);
+        }
     }
 }
