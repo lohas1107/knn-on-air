@@ -227,11 +227,17 @@ namespace KNNonAir.Domain.Context
             }
         }
 
+        public void SaveEBTable()
+        {
+            FileIO.SaveEBTable(Parser.ParseCountingTable(PoIs, EBTable));
+        }
+
         public void AddEBTable()
         {
-            EBTable = FileIO.ReadEBTableFile();
-
-
+            TableInfo tableInfo = FileIO.ReadEBTableFile();
+            EBTable = new CountingTable(Road, PoIs);
+            EBTable.MinTable = tableInfo.MinTable;
+            EBTable.MaxCountTable = tableInfo.MaxCountTable;
         }
     }
 }

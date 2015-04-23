@@ -215,12 +215,13 @@ namespace KNNonAir.Presentation
 
         private void ClickSaveEBTableToolStripMenuItem(object sender, EventArgs e)
         {
-            FileIO.SaveEBTable(_roadNetwork.EBTable);
+            _roadNetwork.SaveEBTable();
         }
 
         private void ClickAddEBTableToolStripMenuItem(object sender, EventArgs e)
         {
             _roadNetwork.AddEBTable();
+            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.EBTable, _packetSize);
         }
     }
 }
