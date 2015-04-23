@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using KNNonAir.Domain.Entity;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using KNNonAir.Domain.Entity;
 
 namespace KNNonAir.Domain.Service
 {

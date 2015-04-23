@@ -90,11 +90,11 @@ namespace KNNonAir.Domain.Service
             }
         }
 
-        private double ComputeMin(Region formRegion, Region toRegion)
+        private double ComputeMin(Region fromRegion, Region toRegion)
         {
             double minDistance = double.MaxValue;
 
-            foreach (Vertex fromBorder in formRegion.BorderPoints)
+            foreach (Vertex fromBorder in fromRegion.BorderPoints)
             {
                 Reset();
                 _dijkstra.Compute(fromBorder);
@@ -119,16 +119,16 @@ namespace KNNonAir.Domain.Service
             return minDistance;
         }
 
-        private double ComputeMax(Region formRegion)
+        private double ComputeMax(Region fromRegion)
         {
             double maxDistance = double.MinValue;
 
-            foreach (Vertex fromBorder in formRegion.BorderPoints)
+            foreach (Vertex fromBorder in fromRegion.BorderPoints)
             {
                 Reset();
                 _dijkstra.Compute(fromBorder);
 
-                foreach (Vertex poi in formRegion.PoIs)
+                foreach (Vertex poi in fromRegion.PoIs)
                 {
                     if (!_distObserver.Distances.ContainsKey(poi)) continue;
                     if (_distObserver.Distances[poi] > maxDistance)
