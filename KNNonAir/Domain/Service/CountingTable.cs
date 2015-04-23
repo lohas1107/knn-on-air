@@ -276,9 +276,9 @@ namespace KNNonAir.Domain.Service
             return knnList;
         }
 
-        public List<ShortcutNetwork> GenerateSN(Dictionary<int, Region> regions)
+        public ShortcutNetwork GenerateSN(Dictionary<int, Region> regions)
         {
-            Dictionary<int, RoadGraph> shortcut = new Dictionary<int, RoadGraph>();
+            Dictionary<int, RoadGraph> shortcutGraph = new Dictionary<int, RoadGraph>();
             Dictionary<Edge<Vertex>, double> distances = new Dictionary<Edge<Vertex>,double>();
 
             foreach (KeyValuePair<int, Region> region in regions)
@@ -296,19 +296,13 @@ namespace KNNonAir.Domain.Service
                         distances.Add(edge, _distObserver.Distances[borders[j]]);
                     }
                 }
-                shortcut.Add(region.Key, road);
+                shortcutGraph.Add(region.Key, road);
             }
 
-            List<ShortcutNetwork> shortcuts = new List<ShortcutNetwork>();
-            for (int j = 0; j < regions.Count; j++)
-            {
-                ShortcutNetwork sn = new ShortcutNetwork(j);
-                sn.Distances = distances;
-                sn.Shortcut = shortcut;
-                sn.RegionGraph = regions[j].Road;
-                shortcuts.Add(sn);
-            }
-            return shortcuts;
+            ShortcutNetwork shortcut = new ShortcutNetwork();
+            shortcut.Distances = distances;
+            shortcut.Shortcut = shortcutGraph;
+            return shortcut;
         }
     }
 }

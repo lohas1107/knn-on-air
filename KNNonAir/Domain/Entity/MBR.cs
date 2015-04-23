@@ -61,7 +61,6 @@ namespace KNNonAir.Domain.Entity
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("RegionId", RegionId);
-            info.AddValue("Vertices", Vertices);
             info.AddValue("X", X);
             info.AddValue("Y", Y);
             info.AddValue("Width", Width);
