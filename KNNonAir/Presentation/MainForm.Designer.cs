@@ -48,26 +48,28 @@
             this.saveFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.saveNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.parameterToolStrip = new System.Windows.Forms.ToolStrip();
+            this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.packetToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.actionToolStrip = new System.Windows.Forms.ToolStrip();
             this.nvdToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.partitionToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.packetToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quadTreeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.paTableToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.shortcutToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.paTableToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.paSearchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.fileToolStrip.SuspendLayout();
+            this.parameterToolStrip.SuspendLayout();
             this.actionToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -135,6 +137,7 @@
             // toolStripContainer.TopToolStripPanel
             // 
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.fileToolStrip);
+            this.toolStripContainer.TopToolStripPanel.Controls.Add(this.parameterToolStrip);
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.actionToolStrip);
             // 
             // dataGridView
@@ -276,52 +279,17 @@
             this.saveEBTableToolStripMenuItem.Text = "Save EB Table";
             this.saveEBTableToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveEBTableToolStripMenuItem);
             // 
-            // actionToolStrip
+            // parameterToolStrip
             // 
-            this.actionToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.actionToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.nvdToolStripButton,
-            this.toolStripSeparator1,
-            this.partitionToolStripButton,
+            this.parameterToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.parameterToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.partitionToolStripComboBox,
-            this.toolStripSeparator2,
             this.packetToolStripComboBox,
-            this.quadTreeToolStripButton,
-            this.tableToolStripButton,
-            this.searchToolStripButton,
-            this.kToolStripComboBox,
-            this.toolStripSeparator3,
-            this.paTableToolStripButton,
-            this.shortcutToolStripButton});
-            this.actionToolStrip.Location = new System.Drawing.Point(79, 0);
-            this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(364, 25);
-            this.actionToolStrip.TabIndex = 1;
-            // 
-            // nvdToolStripButton
-            // 
-            this.nvdToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.nvdToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("nvdToolStripButton.Image")));
-            this.nvdToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.nvdToolStripButton.Name = "nvdToolStripButton";
-            this.nvdToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.nvdToolStripButton.Text = "Generate NVD";
-            this.nvdToolStripButton.Click += new System.EventHandler(this.ClickNvdToolStripButton);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // partitionToolStripButton
-            // 
-            this.partitionToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.partitionToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("partitionToolStripButton.Image")));
-            this.partitionToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.partitionToolStripButton.Name = "partitionToolStripButton";
-            this.partitionToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.partitionToolStripButton.Text = "Partition";
-            this.partitionToolStripButton.Click += new System.EventHandler(this.ClickPartitionToolStripButton);
+            this.kToolStripComboBox});
+            this.parameterToolStrip.Location = new System.Drawing.Point(79, 0);
+            this.parameterToolStrip.Name = "parameterToolStrip";
+            this.parameterToolStrip.Size = new System.Drawing.Size(154, 25);
+            this.parameterToolStrip.TabIndex = 2;
             // 
             // partitionToolStripComboBox
             // 
@@ -335,11 +303,7 @@
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
             this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.partitionToolStripComboBox.Text = "16";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.partitionToolStripComboBox.ToolTipText = "regions";
             // 
             // packetToolStripComboBox
             // 
@@ -357,37 +321,6 @@
             this.packetToolStripComboBox.Size = new System.Drawing.Size(50, 24);
             this.packetToolStripComboBox.Text = "128";
             this.packetToolStripComboBox.ToolTipText = "packet size";
-            this.packetToolStripComboBox.TextChanged += new System.EventHandler(this.PacketToolStripComboBoxTextChanged);
-            // 
-            // quadTreeToolStripButton
-            // 
-            this.quadTreeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.quadTreeToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("quadTreeToolStripButton.Image")));
-            this.quadTreeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.quadTreeToolStripButton.Name = "quadTreeToolStripButton";
-            this.quadTreeToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.quadTreeToolStripButton.Text = "Quad Tree Index";
-            this.quadTreeToolStripButton.Click += new System.EventHandler(this.ClickQuadTreeToolStripButton);
-            // 
-            // tableToolStripButton
-            // 
-            this.tableToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tableToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("tableToolStripButton.Image")));
-            this.tableToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tableToolStripButton.Name = "tableToolStripButton";
-            this.tableToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.tableToolStripButton.Text = " Pre-computation Table";
-            this.tableToolStripButton.Click += new System.EventHandler(this.ClickTableToolStripButton);
-            // 
-            // searchToolStripButton
-            // 
-            this.searchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.searchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("searchToolStripButton.Image")));
-            this.searchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.searchToolStripButton.Name = "searchToolStripButton";
-            this.searchToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.searchToolStripButton.Text = "Search";
-            this.searchToolStripButton.Click += new System.EventHandler(this.ClickSearchToolStripButton);
             // 
             // kToolStripComboBox
             // 
@@ -408,10 +341,94 @@
             this.kToolStripComboBox.Text = "10";
             this.kToolStripComboBox.ToolTipText = "k";
             // 
-            // toolStripSeparator3
+            // actionToolStrip
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.actionToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.actionToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.nvdToolStripButton,
+            this.partitionToolStripButton,
+            this.toolStripSeparator1,
+            this.quadTreeToolStripButton,
+            this.tableToolStripButton,
+            this.searchToolStripButton,
+            this.toolStripSeparator2,
+            this.shortcutToolStripButton,
+            this.paTableToolStripButton,
+            this.paSearchToolStripButton});
+            this.actionToolStrip.Location = new System.Drawing.Point(233, 0);
+            this.actionToolStrip.Name = "actionToolStrip";
+            this.actionToolStrip.Size = new System.Drawing.Size(208, 25);
+            this.actionToolStrip.TabIndex = 1;
+            // 
+            // nvdToolStripButton
+            // 
+            this.nvdToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.nvdToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("nvdToolStripButton.Image")));
+            this.nvdToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.nvdToolStripButton.Name = "nvdToolStripButton";
+            this.nvdToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.nvdToolStripButton.Text = "Generate NVD";
+            this.nvdToolStripButton.Click += new System.EventHandler(this.ClickNvdToolStripButton);
+            // 
+            // partitionToolStripButton
+            // 
+            this.partitionToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.partitionToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("partitionToolStripButton.Image")));
+            this.partitionToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.partitionToolStripButton.Name = "partitionToolStripButton";
+            this.partitionToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.partitionToolStripButton.Text = "Partition";
+            this.partitionToolStripButton.Click += new System.EventHandler(this.ClickPartitionToolStripButton);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // quadTreeToolStripButton
+            // 
+            this.quadTreeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.quadTreeToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("quadTreeToolStripButton.Image")));
+            this.quadTreeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.quadTreeToolStripButton.Name = "quadTreeToolStripButton";
+            this.quadTreeToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.quadTreeToolStripButton.Text = "Quad Tree Index";
+            this.quadTreeToolStripButton.Click += new System.EventHandler(this.ClickQuadTreeToolStripButton);
+            // 
+            // tableToolStripButton
+            // 
+            this.tableToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tableToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("tableToolStripButton.Image")));
+            this.tableToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tableToolStripButton.Name = "tableToolStripButton";
+            this.tableToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.tableToolStripButton.Text = "EB Table";
+            this.tableToolStripButton.Click += new System.EventHandler(this.ClickTableToolStripButton);
+            // 
+            // searchToolStripButton
+            // 
+            this.searchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.searchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("searchToolStripButton.Image")));
+            this.searchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.searchToolStripButton.Name = "searchToolStripButton";
+            this.searchToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.searchToolStripButton.Text = "EB Search";
+            this.searchToolStripButton.Click += new System.EventHandler(this.ClickSearchToolStripButton);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // shortcutToolStripButton
+            // 
+            this.shortcutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.shortcutToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("shortcutToolStripButton.Image")));
+            this.shortcutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.shortcutToolStripButton.Name = "shortcutToolStripButton";
+            this.shortcutToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.shortcutToolStripButton.Text = "Shortcut Network";
+            this.shortcutToolStripButton.Click += new System.EventHandler(this.ClickShortcutToolStripButton);
             // 
             // paTableToolStripButton
             // 
@@ -423,15 +440,15 @@
             this.paTableToolStripButton.Text = "PA table";
             this.paTableToolStripButton.Click += new System.EventHandler(this.ClickPATableToolStripButton);
             // 
-            // shortcutToolStripButton
+            // paSearchToolStripButton
             // 
-            this.shortcutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.shortcutToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("shortcutToolStripButton.Image")));
-            this.shortcutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.shortcutToolStripButton.Name = "shortcutToolStripButton";
-            this.shortcutToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.shortcutToolStripButton.Text = "Shortcut Network";
-            this.shortcutToolStripButton.Click += new System.EventHandler(this.ClickShortcutToolStripButton);
+            this.paSearchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.paSearchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("paSearchToolStripButton.Image")));
+            this.paSearchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.paSearchToolStripButton.Name = "paSearchToolStripButton";
+            this.paSearchToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.paSearchToolStripButton.Text = "pa search";
+            this.paSearchToolStripButton.Click += new System.EventHandler(this.ClickPASearchToolStripButton);
             // 
             // MainForm
             // 
@@ -452,6 +469,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.fileToolStrip.ResumeLayout(false);
             this.fileToolStrip.PerformLayout();
+            this.parameterToolStrip.ResumeLayout(false);
+            this.parameterToolStrip.PerformLayout();
             this.actionToolStrip.ResumeLayout(false);
             this.actionToolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -475,13 +494,11 @@
         private System.Windows.Forms.ToolStripMenuItem saveNVDToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNVDToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton partitionToolStripButton;
-        private System.Windows.Forms.ToolStripComboBox partitionToolStripComboBox;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton quadTreeToolStripButton;
         private System.Windows.Forms.ToolStripButton tableToolStripButton;
         private System.Windows.Forms.ToolStripButton searchToolStripButton;
-        private System.Windows.Forms.ToolStripComboBox kToolStripComboBox;
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
@@ -489,11 +506,14 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Tuning;
         private System.Windows.Forms.ToolStripButton shortcutToolStripButton;
-        private System.Windows.Forms.ToolStripComboBox packetToolStripComboBox;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton paTableToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem saveEBTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addEBTableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton paSearchToolStripButton;
+        private System.Windows.Forms.ToolStrip parameterToolStrip;
+        private System.Windows.Forms.ToolStripComboBox partitionToolStripComboBox;
+        private System.Windows.Forms.ToolStripComboBox packetToolStripComboBox;
+        private System.Windows.Forms.ToolStripComboBox kToolStripComboBox;
     }
 }
 
