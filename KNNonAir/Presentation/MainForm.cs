@@ -227,6 +227,10 @@ namespace KNNonAir.Presentation
         private void ClickPASearchToolStripButton(object sender, EventArgs e)
         {
 
+        private void ClickReadFileToolStripSplitButton(object sender, EventArgs e)
+        {
+            _roadNetwork.AddNVD();
+            DrawColorLines(_presentationModel.GetNVDEdges());
         }
     }
 }

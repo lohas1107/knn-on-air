@@ -224,6 +224,7 @@
             this.readFileToolStripSplitButton.Name = "readFileToolStripSplitButton";
             this.readFileToolStripSplitButton.Size = new System.Drawing.Size(32, 22);
             this.readFileToolStripSplitButton.ToolTipText = "Read File";
+            this.readFileToolStripSplitButton.ButtonClick += new System.EventHandler(this.ClickReadFileToolStripSplitButton);
             // 
             // addRoadsToolStripMenuItem
             // 
@@ -357,7 +358,7 @@
             this.paSearchToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(233, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(208, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(239, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
