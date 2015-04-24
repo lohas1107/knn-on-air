@@ -226,6 +226,13 @@ namespace KNNonAir.Presentation
 
         private void ClickPASearchToolStripButton(object sender, EventArgs e)
         {
+            _roadNetwork.PASearch(Convert.ToInt32(kToolStripComboBox.SelectedItem));
+            DrawMarkers(_roadNetwork.PoIs);
+            DrawAnswer(_roadNetwork.QueryPoint, _roadNetwork.Answers);
+            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, _packetSize);
+            dataGridView.Rows[1].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, _packetSize);
+            dataGridView.Rows[1].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, _packetSize);
+        }
 
         private void ClickReadFileToolStripSplitButton(object sender, EventArgs e)
         {
