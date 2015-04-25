@@ -7,7 +7,7 @@ using KNNonAir.Access;
 namespace KNNonAir.Domain.Entity
 {
     [Serializable]
-    class Vertex : IComparable<Vertex>, ISerializable
+    public class Vertex : IComparable<Vertex>, ISerializable
     {
         [NonSerialized]
         private Point _point;

@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace KNNonAir.Domain.Entity
 {
     [Serializable]
-    class MBR : ISerializable
+    public class MBR : ISerializable
     {
         public int RegionId { get; set; }
         public List<Vertex> Vertices { get; set; }
