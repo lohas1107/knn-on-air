@@ -93,6 +93,7 @@
     <Compile Include="Access\EdgeInfo.cs" />
     <Compile Include="Access\NVCInfo.cs" />
     <Compile Include="Access\EBTableInfo.cs" />
+    <Compile Include="Access\PATableInfo.cs" />
     <Compile Include="Access\VertexInfo.cs" />
     <Compile Include="Domain\Entity\MBR.cs" />
     <Compile Include="Domain\Entity\RoadGraph.cs" />

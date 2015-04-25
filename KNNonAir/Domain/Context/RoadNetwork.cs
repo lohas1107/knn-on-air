@@ -23,7 +23,7 @@ namespace KNNonAir.Domain.Context
         public List<Vertex> Answers { get; set; }
         public List<Region> Latency { get; set; }
         public List<Region> Tuning { get; set; }
-        public Dictionary<int, int> PATable { get; set; }
+        public Dictionary<int, PATableInfo> PATable { get; set; }
 
         public RoadNetwork()
         {
@@ -220,10 +220,20 @@ namespace KNNonAir.Domain.Context
 
         public void ComputePATable()
         {
-            PATable = new Dictionary<int, int>();
+            PATable = new Dictionary<int, PATableInfo>();
             foreach (KeyValuePair<int, Region> region in Regions)
             {
-                PATable.Add(region.Key, region.Value.PoIs.Count);
+                List<Vertex> borders = region.Value.BorderPoints;
+                borders = borders.OrderBy(o => o.Coordinate.Longitude).ToList();
+                double x = borders.First().Coordinate.Longitude;
+                double width = borders.Last().Coordinate.Longitude - x;
+
+                borders = borders.OrderBy(o => o.Coordinate.Latitude).ToList();
+                double y = borders.Last().Coordinate.Latitude;
+                double height = y - borders.First().Coordinate.Latitude;
+
+                PATableInfo tableInfo = new PATableInfo(region.Value.PoIs.Count, new MBR(x, y, width, height));
+                PATable.Add(region.Key, tableInfo);
             }
         }
 
@@ -234,7 +244,7 @@ namespace KNNonAir.Domain.Context
 
         public void AddEBTable()
         {
-            TableInfo tableInfo = FileIO.ReadEBTableFile();
+            EBTableInfo tableInfo = FileIO.ReadEBTableFile();
             EBTable = new CountingTable(Road, PoIs);
             EBTable.MinTable = tableInfo.MinTable;
             EBTable.MaxCountTable = tableInfo.MaxCountTable;
