@@ -66,7 +66,7 @@ namespace KNNonAir.Domain.Service
             return nvdList;
         }
 
-        public static void SaveEBTable(TableInfo countingTable)
+        public static void SaveEBTable(EBTableInfo countingTable)
         {
             if (SaveFile(JSON_FILE_FILTER) != DialogResult.OK) return;
 
@@ -74,11 +74,11 @@ namespace KNNonAir.Domain.Service
             File.WriteAllText(_fileName, output);
         }
 
-        public static TableInfo ReadEBTableFile()
+        public static EBTableInfo ReadEBTableFile()
         {
             if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
 
-            TableInfo table = JsonConvert.DeserializeObject<TableInfo>(File.ReadAllText(_fileName));
+            EBTableInfo table = JsonConvert.DeserializeObject<EBTableInfo>(File.ReadAllText(_fileName));
             return table;
         }
     }
