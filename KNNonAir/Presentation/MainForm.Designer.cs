@@ -49,6 +49,7 @@
             this.saveNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.parameterToolStrip = new System.Windows.Forms.ToolStrip();
+            this.strategyToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.packetToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -59,10 +60,6 @@
             this.quadTreeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.shortcutToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.paTableToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.paSearchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -156,13 +153,13 @@
             this.Column3,
             this.Column4,
             this.Tuning});
-            this.dataGridView.Location = new System.Drawing.Point(396, 447);
+            this.dataGridView.Location = new System.Drawing.Point(392, 422);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
-            this.dataGridView.RowHeadersWidth = 50;
+            this.dataGridView.RowHeadersWidth = 55;
             this.dataGridView.RowTemplate.Height = 24;
             this.dataGridView.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridView.Size = new System.Drawing.Size(388, 68);
+            this.dataGridView.Size = new System.Drawing.Size(392, 93);
             this.dataGridView.TabIndex = 1;
             // 
             // Column1
@@ -238,7 +235,7 @@
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
             this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
-            this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddLandMarkToolStripMenuItem);
+            this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddPoIToolStripMenuItem);
             // 
             // addNVDToolStripMenuItem
             // 
@@ -284,13 +281,27 @@
             // 
             this.parameterToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.parameterToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.strategyToolStripComboBox,
             this.partitionToolStripComboBox,
             this.packetToolStripComboBox,
             this.kToolStripComboBox});
             this.parameterToolStrip.Location = new System.Drawing.Point(79, 0);
             this.parameterToolStrip.Name = "parameterToolStrip";
-            this.parameterToolStrip.Size = new System.Drawing.Size(154, 25);
+            this.parameterToolStrip.Size = new System.Drawing.Size(199, 25);
             this.parameterToolStrip.TabIndex = 2;
+            // 
+            // strategyToolStripComboBox
+            // 
+            this.strategyToolStripComboBox.AutoSize = false;
+            this.strategyToolStripComboBox.Items.AddRange(new object[] {
+            "EB",
+            "PA",
+            "NPI"});
+            this.strategyToolStripComboBox.Name = "strategyToolStripComboBox";
+            this.strategyToolStripComboBox.Size = new System.Drawing.Size(43, 24);
+            this.strategyToolStripComboBox.Text = "EB";
+            this.strategyToolStripComboBox.ToolTipText = "strategies";
+            this.strategyToolStripComboBox.TextChanged += new System.EventHandler(this.strategyToolStripComboBox_TextChanged);
             // 
             // partitionToolStripComboBox
             // 
@@ -300,7 +311,6 @@
             "32",
             "64",
             "128"});
-            this.partitionToolStripComboBox.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
             this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.partitionToolStripComboBox.Text = "16";
@@ -351,14 +361,10 @@
             this.toolStripSeparator1,
             this.quadTreeToolStripButton,
             this.tableToolStripButton,
-            this.searchToolStripButton,
-            this.toolStripSeparator2,
-            this.shortcutToolStripButton,
-            this.paTableToolStripButton,
-            this.paSearchToolStripButton});
-            this.actionToolStrip.Location = new System.Drawing.Point(233, 0);
+            this.searchToolStripButton});
+            this.actionToolStrip.Location = new System.Drawing.Point(278, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(239, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(164, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
@@ -394,7 +400,8 @@
             this.quadTreeToolStripButton.Name = "quadTreeToolStripButton";
             this.quadTreeToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.quadTreeToolStripButton.Text = "Quad Tree Index";
-            this.quadTreeToolStripButton.Click += new System.EventHandler(this.ClickQuadTreeToolStripButton);
+            this.quadTreeToolStripButton.ToolTipText = "Generate Index";
+            this.quadTreeToolStripButton.Click += new System.EventHandler(this.ClickIndexToolStripButton);
             // 
             // tableToolStripButton
             // 
@@ -404,6 +411,7 @@
             this.tableToolStripButton.Name = "tableToolStripButton";
             this.tableToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.tableToolStripButton.Text = "EB Table";
+            this.tableToolStripButton.ToolTipText = "Generate Table";
             this.tableToolStripButton.Click += new System.EventHandler(this.ClickTableToolStripButton);
             // 
             // searchToolStripButton
@@ -414,42 +422,8 @@
             this.searchToolStripButton.Name = "searchToolStripButton";
             this.searchToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.searchToolStripButton.Text = "EB Search";
+            this.searchToolStripButton.ToolTipText = "Search KNN";
             this.searchToolStripButton.Click += new System.EventHandler(this.ClickSearchToolStripButton);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // shortcutToolStripButton
-            // 
-            this.shortcutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.shortcutToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("shortcutToolStripButton.Image")));
-            this.shortcutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.shortcutToolStripButton.Name = "shortcutToolStripButton";
-            this.shortcutToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.shortcutToolStripButton.Text = "Shortcut Network";
-            this.shortcutToolStripButton.Click += new System.EventHandler(this.ClickShortcutToolStripButton);
-            // 
-            // paTableToolStripButton
-            // 
-            this.paTableToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.paTableToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("paTableToolStripButton.Image")));
-            this.paTableToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.paTableToolStripButton.Name = "paTableToolStripButton";
-            this.paTableToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.paTableToolStripButton.Text = "PA table";
-            this.paTableToolStripButton.Click += new System.EventHandler(this.ClickPATableToolStripButton);
-            // 
-            // paSearchToolStripButton
-            // 
-            this.paSearchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.paSearchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("paSearchToolStripButton.Image")));
-            this.paSearchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.paSearchToolStripButton.Name = "paSearchToolStripButton";
-            this.paSearchToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.paSearchToolStripButton.Text = "pa search";
-            this.paSearchToolStripButton.Click += new System.EventHandler(this.ClickPASearchToolStripButton);
             // 
             // MainForm
             // 
@@ -496,7 +470,6 @@
         private System.Windows.Forms.ToolStripMenuItem addNVDToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton partitionToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton quadTreeToolStripButton;
         private System.Windows.Forms.ToolStripButton tableToolStripButton;
         private System.Windows.Forms.ToolStripButton searchToolStripButton;
@@ -506,15 +479,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Tuning;
-        private System.Windows.Forms.ToolStripButton shortcutToolStripButton;
-        private System.Windows.Forms.ToolStripButton paTableToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem saveEBTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addEBTableToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton paSearchToolStripButton;
         private System.Windows.Forms.ToolStrip parameterToolStrip;
         private System.Windows.Forms.ToolStripComboBox partitionToolStripComboBox;
         private System.Windows.Forms.ToolStripComboBox packetToolStripComboBox;
         private System.Windows.Forms.ToolStripComboBox kToolStripComboBox;
+        private System.Windows.Forms.ToolStripComboBox strategyToolStripComboBox;
     }
 }
 

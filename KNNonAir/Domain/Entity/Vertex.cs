@@ -16,6 +16,11 @@ namespace KNNonAir.Domain.Entity
 
         public Vertex() { } // InterestPoint() 繼承 Vertex()
 
+        public Vertex(Coordinate coordinate)
+        {
+            Coordinate = coordinate;
+        }
+
         public Vertex(double latitude, double longitude)
         {
             _point = new Point(latitude, longitude);

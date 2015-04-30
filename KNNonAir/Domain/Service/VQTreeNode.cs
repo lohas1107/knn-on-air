@@ -18,7 +18,6 @@ namespace KNNonAir.Domain.Service
 
             double halfWidth = mbr.Width / 2;
             double halfHeight = mbr.Height / 2;
-            //if (halfWidth < 0.0001 || halfHeight < 0.0001) return;
 
             foreach (Vertex borderPoint in borderPoints)
             {

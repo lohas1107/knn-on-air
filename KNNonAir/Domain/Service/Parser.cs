@@ -18,10 +18,10 @@ namespace KNNonAir.Domain.Service
             if (rawData == null) return null;
             List<Edge<Vertex>> edgeList = new List<Edge<Vertex>>();
 
-            FeatureCollection geoObject = (FeatureCollection)GeoJson.DeSerialize(rawData);
+            FeatureCollection geoObject = GeoJson.DeSerialize(rawData) as FeatureCollection;
             foreach (Feature feature in geoObject.Features)
             {
-                if (feature.Geometry.GetType() == new MultiLineString().GetType())
+                if (feature.Geometry is MultiLineString)
                 {
                     MultiLineString multiLingString = feature.Geometry as MultiLineString;
                     foreach (LineString lineString in multiLingString.Geometries)
@@ -39,21 +39,6 @@ namespace KNNonAir.Domain.Service
             return edgeList;
         }
 
-        public static List<Vertex> ParsePoIData(string rawData)
-        {
-            if (rawData == null) return null;
-            List<Vertex> poiList = new List<Vertex>();
-
-            FeatureCollection geoObject = (FeatureCollection)GeoJson.DeSerialize(rawData);
-            foreach (Feature feature in geoObject.Features)
-            {
-                Point point = feature.Geometry as Point;
-                poiList.Add(new Vertex(point.Coordinate.Latitude, point.Coordinate.Longitude));
-            }
-
-            return poiList;
-        }
-
         private static void LoadLineString(List<Edge<Vertex>> edgeList, LineString lineString)
         {
             Vertex source = null;
@@ -63,15 +48,30 @@ namespace KNNonAir.Domain.Service
             {
                 if (source == null)
                 {
-                    source = new Vertex(coordinate.Latitude, coordinate.Longitude);
+                    source = new Vertex(coordinate);
                 }
                 else
                 {
-                    target = new Vertex(coordinate.Latitude, coordinate.Longitude);
+                    target = new Vertex(coordinate);
                     edgeList.Add(new Edge<Vertex>(source, target));
                     source = target;
                 }
             }
+        }
+
+        public static List<Vertex> ParsePoIData(string rawData)
+        {
+            if (rawData == null) return null;
+            List<Vertex> poiList = new List<Vertex>();
+
+            FeatureCollection geoObject = GeoJson.DeSerialize(rawData) as FeatureCollection;
+            foreach (Feature feature in geoObject.Features)
+            {
+                Point point = feature.Geometry as Point;
+                poiList.Add(new InterestPoint(point.Coordinate.Latitude, point.Coordinate.Longitude));
+            }
+
+            return poiList;
         }
 
         public static List<NVCInfo> ParseNVD(Dictionary<Vertex, VoronoiCell> nvd)
@@ -137,7 +137,16 @@ namespace KNNonAir.Domain.Service
             foreach (NVCInfo nvc in nvcList)
             {
                 VoronoiCell vc = new VoronoiCell();
-                vc.PoI = new Vertex(nvc.PoI.Latitude, nvc.PoI.Longitude);
+                vc.PoI = new InterestPoint(nvc.PoI.Latitude, nvc.PoI.Longitude);
+                vc.Road.Graph.AddVertex(vc.PoI);
+
+                foreach (BorderInfo borderPoint in nvc.BPs)
+                {
+                    BorderPoint bp = new BorderPoint(borderPoint.Vertex.Latitude, borderPoint.Vertex.Longitude);
+                    foreach (VertexInfo poi in borderPoint.PoIs) bp.PoIs.Add(new InterestPoint(poi.Latitude, poi.Longitude));
+                    vc.BorderPoints.Add(bp);
+                    vc.Road.Graph.AddVertex(bp);
+                }
 
                 foreach (EdgeInfo edge in nvc.Graph)
                 {
@@ -146,13 +155,6 @@ namespace KNNonAir.Domain.Service
                     if (!vc.Road.Graph.ContainsVertex(source)) vc.Road.Graph.AddVertex(source);
                     if (!vc.Road.Graph.ContainsVertex(target)) vc.Road.Graph.AddVertex(target);
                     vc.Road.Graph.AddEdge(new Edge<Vertex>(source, target));
-                }
-
-                foreach (BorderInfo borderPoint in nvc.BPs)
-                {
-                    BorderPoint bp = new BorderPoint(borderPoint.Vertex.Latitude, borderPoint.Vertex.Longitude);
-                    foreach (VertexInfo poi in borderPoint.PoIs) bp.PoIs.Add(new Vertex(poi.Latitude, poi.Longitude));
-                    vc.BorderPoints.Add(bp);
                 }
 
                 nvd.Add(vc.PoI, vc);
@@ -167,23 +169,25 @@ namespace KNNonAir.Domain.Service
 
             foreach (NVCInfo nvc in nvcList)
             {
-                pois.Add(new Vertex(nvc.PoI.Latitude, nvc.PoI.Longitude));
+                pois.Add(new InterestPoint(nvc.PoI.Latitude, nvc.PoI.Longitude));
             }
 
             return pois;
         }
 
-        public static byte[] ObjectToByteArray(Object obj)
+        public static long ObjectToByteArray(Object obj)
         {
-            if (obj == null) return null;
+            if (obj == null) return 0;
 
             BinaryFormatter formatter = new BinaryFormatter();
-            MemoryStream stream = new MemoryStream();
-            formatter.Serialize(stream, obj);
-            return stream.ToArray();
+            using(MemoryStream stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, obj);
+                return stream.Length;
+            }
         }
 
-        public static EBTableInfo ParseCountingTable(List<Vertex> pois, CountingTable countingTable)
+        public static EBTableInfo ParseCountingTable(List<Vertex> pois, StrategyEB eb)
         {
             List<VertexInfo> poiList = new List<VertexInfo>();
 
@@ -192,7 +196,7 @@ namespace KNNonAir.Domain.Service
                 poiList.Add(new VertexInfo(poi.Coordinate.Latitude, poi.Coordinate.Longitude));
             }
 
-            return new EBTableInfo(poiList, countingTable.MinTable, countingTable.MaxCountTable);
+            return new EBTableInfo(poiList, eb.MinTable, eb.MaxCountTable);
         }
     }
 }
