@@ -223,5 +223,21 @@ namespace KNNonAir.Presentation
             _roadNetwork.AddEBTable();
             dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.EBTable, _packetSize);
         }
+
+        private void ClickPASearchToolStripButton(object sender, EventArgs e)
+        {
+            _roadNetwork.PASearch(Convert.ToInt32(kToolStripComboBox.SelectedItem));
+            DrawMarkers(_roadNetwork.PoIs);
+            DrawAnswer(_roadNetwork.QueryPoint, _roadNetwork.Answers);
+            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, _packetSize);
+            dataGridView.Rows[1].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, _packetSize);
+            dataGridView.Rows[1].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, _packetSize);
+        }
+
+        private void ClickReadFileToolStripSplitButton(object sender, EventArgs e)
+        {
+            _roadNetwork.AddNVD();
+            DrawColorLines(_presentationModel.GetNVDEdges());
+        }
     }
 }

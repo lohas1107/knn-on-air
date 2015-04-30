@@ -159,23 +159,26 @@ namespace KNNonAir.Domain.Context
 
             double upperBound = EBTable.GetUpperBound(regionId, k);
 
-            Stack<Region> cList = new Stack<Region>();
-            int position = 0;
+            Queue<Region> cList = new Queue<Region>();
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            int position = random.Next(0, Regions.Count - 1);
+
             for (int i = 0; i < Regions.Count; i++)
             {
                 int index = (position + i) % Regions.Count;
-                if (EBTable.CanTune(index, regionId, upperBound)) cList.Push(Regions[index]);
+                if (EBTable.CanTune(index, regionId, upperBound)) cList.Enqueue(Regions[index]);
             }
 
             RoadGraph graph = new RoadGraph(false);
-            int start = cList.Last().Id;
-            int end = cList.Peek().Id;
+            int start = cList.First().Id;
+            int end = start;
             Tuning.Clear();
             while (cList.Count > 0)
             {
-                Region region = cList.Pop();
+                Region region = cList.Dequeue();
                 if (!EBTable.CanTune(region.Id, regionId, upperBound)) continue;
                 Tuning.Add(region);
+                end = region.Id;
 
                 if (region.Id == regionId)
                 {
@@ -190,11 +193,14 @@ namespace KNNonAir.Domain.Context
                     graph.AddGraph(EBTable.PruneRegionVertices(region, QueryPoint, upperBound, k));
                 }
             }
+
             Latency.Clear();
-            foreach (KeyValuePair<int, Region> r in Regions)
+            while (start % Regions.Count() != end)
             {
-                if (r.Value.Id >= start && r.Value.Id <= end) Latency.Add(r.Value);
+                Latency.Add(Regions[start % Regions.Count()]);
+                start++;
             }
+            Latency.Add(Regions[end]);
 
             EBTable.Initialize(graph);
             Answers = EBTable.GetKNN(QueryPoint, k);
@@ -223,14 +229,14 @@ namespace KNNonAir.Domain.Context
             PATable = new Dictionary<int, PATableInfo>();
             foreach (KeyValuePair<int, Region> region in Regions)
             {
-                List<Vertex> borders = region.Value.BorderPoints;
-                borders = borders.OrderBy(o => o.Coordinate.Longitude).ToList();
-                double x = borders.First().Coordinate.Longitude;
-                double width = borders.Last().Coordinate.Longitude - x;
+                List<Vertex> vertices = region.Value.Road.Graph.Vertices.ToList();
+                vertices = vertices.OrderBy(o => o.Coordinate.Longitude).ToList();
+                double x = vertices.First().Coordinate.Longitude;
+                double width = vertices.Last().Coordinate.Longitude - x;
 
-                borders = borders.OrderBy(o => o.Coordinate.Latitude).ToList();
-                double y = borders.Last().Coordinate.Latitude;
-                double height = y - borders.First().Coordinate.Latitude;
+                vertices = vertices.OrderBy(o => o.Coordinate.Latitude).ToList();
+                double y = vertices.Last().Coordinate.Latitude;
+                double height = y - vertices.First().Coordinate.Latitude;
 
                 PATableInfo tableInfo = new PATableInfo(region.Value.PoIs.Count, new MBR(x, y, width, height));
                 PATable.Add(region.Key, tableInfo);
@@ -248,6 +254,80 @@ namespace KNNonAir.Domain.Context
             EBTable = new CountingTable(Road, PoIs);
             EBTable.MinTable = tableInfo.MinTable;
             EBTable.MaxCountTable = tableInfo.MaxCountTable;
+        }
+
+        public void PASearch(int k)
+        {
+            QueryPoint = Road.PickQueryPoint();
+            CountingTable counting = new CountingTable(PoIs);
+            counting.ComputePAMinMax(Shortcut, PATable, QueryPoint, k);
+
+            double upperBound = 0;
+            Queue<Region> cList = new Queue<Region>();
+
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            int position = random.Next(0, Regions.Count-1);
+            int count = 0;
+
+            foreach (KeyValuePair<int, double> max in counting.PAMax.OrderBy(o => o.Value))
+            {
+                upperBound = max.Value;
+                count += PATable[max.Key].PoICount - 1;
+                int temp = 0;
+
+                for (int i = 0; i < Regions.Count; i++)
+                {
+                    int index = (position + i) % Regions.Count;
+                    
+                    if (counting.PAMin[index] <= upperBound)
+                    {
+                        temp++;
+                        cList.Enqueue(Regions[index]);
+                    }
+                    //else counting.ShortcutNetwork.Shortcut.Remove(index);
+                }
+
+                if (count + temp >= k) break;
+            }
+
+            int start = cList.First().Id;
+            int end = start;
+            Tuning.Clear();
+            while (cList.Count > 0)
+            {
+                Region region = cList.Dequeue();
+                if (counting.PAMin[region.Id] > upperBound)
+                {
+                    //counting.ShortcutNetwork.Shortcut.Remove(region.Id);
+                    continue;
+                }
+                Tuning.Add(region);
+                end = region.Id;
+
+                if (region.Road.Graph.ContainsVertex(QueryPoint))
+                {
+                    counting.PADirect.Graph.Clear();
+
+                    //foreach (Edge<Vertex> edge in counting.DirectEdges) counting.PARoadGraph.Graph.RemoveEdge(edge);
+                    //counting.DirectEdges.Clear();
+                }
+                counting.ShortcutNetwork.Shortcut.Remove(region.Id);
+                counting.PARoadGraph.AddGraph(region.Road);
+
+                
+                upperBound = counting.UpdateUpperBoundPA(QueryPoint, upperBound, k);
+            }
+
+            Latency.Clear();
+            while (start % Regions.Count() != end)
+            {
+                Latency.Add(Regions[start % Regions.Count()]);
+                start++;
+            }
+            Latency.Add(Regions[end]);
+
+            //counting.Initialize(counting.PARoadGraph);
+            Answers = counting.GetKNN(QueryPoint, k);
         }
     }
 }

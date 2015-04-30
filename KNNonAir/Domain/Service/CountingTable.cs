@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using KNNonAir.Access;
 
 namespace KNNonAir.Domain.Service
 {
@@ -18,9 +19,28 @@ namespace KNNonAir.Domain.Service
         private Dictionary<Edge<Vertex>, double> _distances;
         private UndirectedDijkstraShortestPathAlgorithm<Vertex, Edge<Vertex>> _dijkstra;
         private UndirectedVertexDistanceRecorderObserver<Vertex, Edge<Vertex>> _distObserver;
-
+        // EB
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
+        // PA
+        //public List<Edge<Vertex>> DirectEdges { get; set; }
+        public RoadGraph PAShortcut { get; set; }
+        public RoadGraph PADirect { get; set; }
+        public RoadGraph PARoadGraph { get; set; }
+        public Dictionary<int, double> PAMin { get; set; }
+        public Dictionary<int, double> PAMax { get; set; }
+        public ShortcutNetwork ShortcutNetwork { get; set; }
+
+        public CountingTable(List<Vertex> pois) 
+        {
+            _road = new RoadGraph(false);
+            _pois = pois;
+            PAShortcut = new RoadGraph(false);
+            PADirect = new RoadGraph(false);
+            PARoadGraph = new RoadGraph(false);
+            PAMin = new Dictionary<int, double>();
+            PAMax = new Dictionary<int, double>();
+        }
 
         public CountingTable(RoadGraph road)
         {
@@ -280,6 +300,7 @@ namespace KNNonAir.Domain.Service
         {
             Dictionary<int, RoadGraph> shortcutGraph = new Dictionary<int, RoadGraph>();
             Dictionary<Edge<Vertex>, double> distances = new Dictionary<Edge<Vertex>,double>();
+            ShortcutNetwork shortcut = new ShortcutNetwork();
 
             foreach (KeyValuePair<int, Region> region in regions)
             {
@@ -297,12 +318,92 @@ namespace KNNonAir.Domain.Service
                     }
                 }
                 shortcutGraph.Add(region.Key, road);
+                shortcut.RegionBorders.Add(region.Key, region.Value.BorderPoints);
             }
 
-            ShortcutNetwork shortcut = new ShortcutNetwork();
             shortcut.Distances = distances;
             shortcut.Shortcut = shortcutGraph;
             return shortcut;
+        }
+
+        public void Initialize()
+        {
+            PAShortcut.Graph.Clear();
+            foreach (KeyValuePair<int, RoadGraph> graph in ShortcutNetwork.Shortcut)
+            {
+                PAShortcut.AddGraph(graph.Value);
+            }
+
+            _road.Graph.Clear();
+            _road.AddGraph(PAShortcut);
+            _road.AddGraph(PADirect);
+            _road.AddGraph(PARoadGraph);
+
+            _distances = new Dictionary<Edge<Vertex>,double>(ShortcutNetwork.Distances);
+
+            foreach (Edge<Vertex> edge in PADirect.Graph.Edges)
+            {
+                _distances.Add(edge, Arithmetics.GetDistance(edge.Source, edge.Target));
+            }
+
+            foreach (Edge<Vertex> edge in PARoadGraph.Graph.Edges)
+            {
+                _distances.Add(edge, Arithmetics.GetDistance(edge.Source, edge.Target));
+            }
+
+            _dijkstra = new UndirectedDijkstraShortestPathAlgorithm<Vertex, Edge<Vertex>>(_road.Graph, AlgorithmExtensions.GetIndexer<Edge<Vertex>, double>(_distances));
+            _distObserver = new UndirectedVertexDistanceRecorderObserver<Vertex, Edge<Vertex>>(AlgorithmExtensions.GetIndexer<Edge<Vertex>, double>(_distances));
+            _distObserver.Attach(_dijkstra);
+        }
+        
+        public void ComputePAMinMax(ShortcutNetwork shortcutNetwork, Dictionary<int, PATableInfo> paTable, Vertex queryPoint, int k)
+        {
+            ShortcutNetwork = new ShortcutNetwork(shortcutNetwork);
+
+            foreach (KeyValuePair<int, PATableInfo> paItem in paTable)
+            {
+                PAShortcut.AddGraph(shortcutNetwork.Shortcut[paItem.Key]);
+
+                if (paItem.Value.BorderMBR.Contains(queryPoint))
+                {
+                    foreach (Vertex border in shortcutNetwork.RegionBorders[paItem.Key])
+                    {
+                        //Edge<Vertex> edge = new Edge<Vertex>(queryPoint, border);
+                        //DirectEdges.Add(edge);
+                        PADirect.Graph.AddVerticesAndEdge(new Edge<Vertex>(queryPoint, border));
+                        //shortcutNetwork.Distances.Add(edge, Arithmetics.GetDistance(edge.Source, edge.Target));
+                    }
+                }
+            }
+
+            Initialize();
+            //_distances = shortcutNetwork.Distances;                 
+            _dijkstra.Compute(queryPoint);
+
+            foreach (KeyValuePair<int, List<Vertex>> borders in shortcutNetwork.RegionBorders)
+            {
+                double min = double.MaxValue;
+                double max = double.MinValue;
+
+                foreach (Vertex border in borders.Value)
+                {
+                    if (_distObserver.Distances[border] < min) min = _distObserver.Distances[border];
+                    if (_distObserver.Distances[border] > max) max = _distObserver.Distances[border];
+                }
+
+                PAMin.Add(borders.Key, min);
+                PAMax.Add(borders.Key, max);
+            }
+        }
+
+        public double UpdateUpperBoundPA(Vertex queryPoint, double upperBound, int k)
+        {
+            Initialize();
+            //if (DirectEdges.Count() > 0) _distances.Union(shortcutNetwork.Distances);
+
+            List<Vertex> knn = GetKNN(queryPoint, k);
+            if (_distObserver.Distances[knn.Last()] < upperBound) return _distObserver.Distances[knn.Last()];
+            else return upperBound;
         }
     }
 }
