@@ -20,7 +20,7 @@ namespace KNNonAir.Domain.Service
 
             double latitude = source.Coordinate.Latitude + (U * (target.Coordinate.Latitude - source.Coordinate.Latitude));
             double longitude = source.Coordinate.Longitude + (U * (target.Coordinate.Longitude - source.Coordinate.Longitude));
-            Vertex result = new InterestPoint(latitude, longitude);
+            Vertex result = new Vertex(latitude, longitude);
 
             double minX, maxX, minY, maxY;
             minX = Math.Min(source.Coordinate.Latitude, target.Coordinate.Latitude);

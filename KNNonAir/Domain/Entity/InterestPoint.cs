@@ -1,9 +1,12 @@
-﻿
+﻿using System;
+using System.Runtime.Serialization;
+
 namespace KNNonAir.Domain.Entity
 {
-    class InterestPoint : Vertex
+    [Serializable]
+    class InterestPoint : Vertex, ISerializable
     {
-        public InterestPoint() { }
+        public InterestPoint() : base() { }
 
         public InterestPoint(double latitude, double longitude) : base(latitude, longitude) { }
     }

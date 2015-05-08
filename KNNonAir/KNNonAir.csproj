@@ -97,7 +97,7 @@
     <Compile Include="Access\VertexInfo.cs" />
     <Compile Include="Domain\Entity\MBR.cs" />
     <Compile Include="Domain\Entity\RoadGraph.cs" />
-    <Compile Include="Domain\Service\CountingTable.cs" />
+    <Compile Include="Domain\Service\Dijkstra.cs" />
     <Compile Include="Domain\Service\KdTree.cs" />
     <Compile Include="Domain\Entity\Region.cs" />
     <Compile Include="Domain\Service\Arithmetics.cs" />
@@ -107,6 +107,10 @@
     <Compile Include="Domain\Service\KdTreeNode.cs" />
     <Compile Include="Domain\Service\Parser.cs" />
     <Compile Include="Domain\Service\ShortcutNetwork.cs" />
+    <Compile Include="Domain\Service\Strategy.cs" />
+    <Compile Include="Domain\Service\StrategyEB.cs" />
+    <Compile Include="Domain\Service\StrategyNPI.cs" />
+    <Compile Include="Domain\Service\StrategyPA.cs" />
     <Compile Include="Domain\Service\VQTree.cs" />
     <Compile Include="Domain\Service\VQTreeNode.cs" />
     <Compile Include="Presentation\MainForm.cs">
@@ -120,7 +124,7 @@
     <Compile Include="Domain\Context\PresentationModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Domain\Context\RoadNetwork.cs" />
+    <Compile Include="Domain\Context\Model.cs" />
     <Compile Include="Domain\Entity\Vertex.cs" />
     <Compile Include="Domain\Entity\VoronoiCell.cs" />
     <EmbeddedResource Include="Presentation\MainForm.resx">

@@ -12,11 +12,20 @@ namespace KNNonAir.Domain.Service
     {
         public Dictionary<Edge<Vertex>, double> Distances;
         public Dictionary<int, RoadGraph> Shortcut { get; set; }
+        public Dictionary<int, List<Vertex>> RegionBorders { get; set; }
 
         public ShortcutNetwork()
         {
             Distances = new Dictionary<Edge<Vertex>, double>();
             Shortcut = new Dictionary<int, RoadGraph>();
+            RegionBorders = new Dictionary<int, List<Vertex>>();
+        }
+
+        public ShortcutNetwork(ShortcutNetwork shortcutNetwork)
+        {
+            Distances = new Dictionary<Edge<Vertex>,double>(shortcutNetwork.Distances);
+            Shortcut = new Dictionary<int,RoadGraph>(shortcutNetwork.Shortcut);
+            RegionBorders = new Dictionary<int,List<Vertex>>(shortcutNetwork.RegionBorders);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -29,8 +38,20 @@ namespace KNNonAir.Domain.Service
                 distances.Add(new EdgeInfo(source, target), distance.Value);
             }
 
+            Dictionary<int, List<VertexInfo>> regionBorders = new Dictionary<int,List<VertexInfo>>();
+            foreach (KeyValuePair<int, List<Vertex>> regionBorder in RegionBorders)
+            {
+                List<VertexInfo> borders = new List<VertexInfo>();
+                foreach (Vertex border in regionBorder.Value)
+                {
+                    borders.Add(new VertexInfo(border.Coordinate.Latitude, border.Coordinate.Longitude));
+                }
+                regionBorders.Add(regionBorder.Key, borders);
+            }
+
             info.AddValue("Distances", distances);
             info.AddValue("Shortcut", Shortcut);
+            info.AddValue("RegionBorders", regionBorders);
         }
     }
 }
