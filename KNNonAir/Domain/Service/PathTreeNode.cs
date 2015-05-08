@@ -21,47 +21,45 @@ namespace KNNonAir.Domain.Service
             Children = new List<PathTreeNode>();
         }
 
-        private void AddChild(RoadGraph road)
+        private void AddChild(AdjacencyGraph<Vertex, Edge<Vertex>> bidirectionRoad)
         {
             Edge<Vertex> myEdge = null;
-            if (Edge != null && road.Graph.TryGetEdge(Edge.Source, Edge.Target, out myEdge)) road.Graph.RemoveEdge(myEdge);
-            else if (Edge != null && road.Graph.TryGetEdge(Edge.Target, Edge.Source, out myEdge)) road.Graph.RemoveEdge(myEdge);
+            if (Edge != null && bidirectionRoad.TryGetEdge(Edge.Source, Edge.Target, out myEdge)) bidirectionRoad.RemoveEdge(myEdge);
+            if (Edge != null && bidirectionRoad.TryGetEdge(Edge.Target, Edge.Source, out myEdge)) bidirectionRoad.RemoveEdge(myEdge);
 
-            foreach (Edge<Vertex> edge in road.Graph.Edges)
+            foreach (Edge<Vertex> edge in bidirectionRoad.OutEdges(Vertex))
             {
-                if (!edge.IsAdjacent(Vertex)) continue;
-
                 PathTreeNode child = new PathTreeNode();
-                child.Vertex = edge.GetOtherVertex(Vertex);
-                child.Edge = new Edge<Vertex>(Vertex, child.Vertex);
+                child.Vertex = edge.Target;
+                child.Edge = edge;
                 child.Parent = this;
                 child.Distance = Distance + Arithmetics.GetDistance(child.Edge.Source, child.Edge.Target);
                 Children.Add(child);
             }
         }
 
-        public void FindPathsByRange(RoadGraph graph, double range, PathNodeHandler findPathCompleted)
-        {
-            findPathCompleted(this);
-            AddChild(graph);
+        //public void FindPathsByRange(RoadGraph graph, double range, PathNodeHandler findPathCompleted)
+        //{
+        //    findPathCompleted(this);
+        //    AddChild(graph);
 
-            foreach (PathTreeNode child in Children)
-            {
-                if (child.Distance > range) continue;
-                else child.FindPathsByRange(graph, range, findPathCompleted);
-            }
-        }
+        //    foreach (PathTreeNode child in Children)
+        //    {
+        //        if (child.Distance > range) continue;
+        //        else child.FindPathsByRange(graph, range, findPathCompleted);
+        //    }
+        //}
 
-        public void FindPath(RoadGraph graph, Vertex poi, PathNodeHandler findPathCompleted)
+        public void FindPath(AdjacencyGraph<Vertex, Edge<Vertex>> bidirectionRoad, Vertex poi, PathNodeHandler findPathCompleted)
         {
-            AddChild(graph);
+            AddChild(bidirectionRoad);
 
             foreach (PathTreeNode child in Children)
             {
                 if (child.Vertex is InterestPoint) findPathCompleted(child);
                 else if (child.Vertex is BorderPoint && ((BorderPoint)child.Vertex).PoIs.Contains(poi)) continue;
-                else if (Children.Count > 1) child.FindPath(graph.Clone(), poi, findPathCompleted);
-                else child.FindPath(graph, poi, findPathCompleted);
+                else if (Children.Count > 1) child.FindPath(bidirectionRoad.Clone(), poi, findPathCompleted);
+                else child.FindPath(bidirectionRoad, poi, findPathCompleted);
             }
         }
 

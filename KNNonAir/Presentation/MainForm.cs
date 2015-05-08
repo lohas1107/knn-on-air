@@ -13,7 +13,7 @@ namespace KNNonAir.Presentation
 {
     public partial class MainForm : Form
     {
-        private RoadNetwork _roadNetwork;
+        private Model _model;
         private PresentationModel _presentationModel;
         private GMapOverlay _polyOverlay;
         private GMapOverlay _markersOverlay;
@@ -28,13 +28,14 @@ namespace KNNonAir.Presentation
             PointLatLng GUAM = new PointLatLng(13.45, 144.783333);
             InitializeGMap(GUAM, 11);
 
-            _roadNetwork = new RoadNetwork();
-            _presentationModel = new PresentationModel(_roadNetwork);
+            _model = new Model();
+            _presentationModel = new PresentationModel(_model);
             _packetSize = Convert.ToInt32(packetToolStripComboBox.SelectedItem);
 
-            dataGridView.Rows.Add(2);
+            dataGridView.Rows.Add(3);
             dataGridView.Rows[0].HeaderCell.Value = "EB";
             dataGridView.Rows[1].HeaderCell.Value = "PA";
+            dataGridView.Rows[2].HeaderCell.Value = "NPI";
         }
 
         private void InitializeGMap(PointLatLng center, double zoom)
@@ -136,41 +137,52 @@ namespace KNNonAir.Presentation
         }
         #endregion
 
+        // File
+        private void ClickReadFileToolStripSplitButton(object sender, EventArgs e)
+        {
+            _model.AddNVD();
+            DrawColorLines(_presentationModel.GetNVDEdges());
+        }
+
         private void ClickAddRoadsToolStripMenuItem(object sender, EventArgs e)
         {
-            _roadNetwork.LoadRoads();
+            _model.LoadRoads();
             DrawLines(_presentationModel.GetRoads());
-            DrawMarkers(_roadNetwork.Road.GetSideVertexs()); // 標示孤點
+            DrawMarkers(_model.Road.GetSideVertexs()); // 標示孤點
         }
 
-        private void ClickAddLandMarkToolStripMenuItem(object sender, EventArgs e)
+        private void ClickAddPoIToolStripMenuItem(object sender, EventArgs e)
         {
-            _roadNetwork.LoadPoIs();
-            DrawMarkers(_roadNetwork.PoIs);
-        }
-
-        private void ClickNvdToolStripButton(object sender, EventArgs e)
-        {
-            _roadNetwork.GenerateNVD();
-            DrawColorLines(_presentationModel.GetNVDEdges());
-            DrawMarkers(_roadNetwork.PoIs);
-        }
-
-        private void ClickSaveNVDToolStripMenuItem(object sender, EventArgs e)
-        {
-            FileIO.SaveNVDFile(Parser.ParseNVD(_roadNetwork.NVD));
+            _model.LoadPoIs();
+            DrawMarkers(_model.PoIs);
         }
 
         private void ClickAddNVDToolStripMenuItem(object sender, EventArgs e)
         {
-            _roadNetwork.AddNVD();
+            _model.AddNVD();
             DrawColorLines(_presentationModel.GetNVDEdges());
         }
 
-        private void ClickPartitionToolStripButton(object sender, EventArgs e)
+        private void ClickAddEBTableToolStripMenuItem(object sender, EventArgs e)
         {
-            _roadNetwork.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
-            DrawColorLines(_presentationModel.GetRegionEdges());
+            _model.AddEBTable();
+            dataGridView.Rows[0].Cells[1].Value = _model.GetSize(_model.EB, _packetSize);
+        }
+
+        private void ClickSaveNVDToolStripMenuItem(object sender, EventArgs e)
+        {
+            FileIO.SaveNVDFile(Parser.ParseNVD(_model.NVD));
+        }
+
+        private void ClickSaveEBTableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.SaveEBTable();
+        }
+
+        // Parameters
+        private void strategyToolStripComboBox_TextChanged(object sender, EventArgs e)
+        {
+            _model.ChangeStrategy(strategyToolStripComboBox.Text);
         }
 
         private void PacketToolStripComboBoxTextChanged(object sender, EventArgs e)
@@ -178,66 +190,49 @@ namespace KNNonAir.Presentation
             _packetSize = Convert.ToInt32(packetToolStripComboBox.SelectedItem);
         }
 
-        private void ClickQuadTreeToolStripButton(object sender, EventArgs e)
+        // Action
+        private void ClickNvdToolStripButton(object sender, EventArgs e)
         {
-            _roadNetwork.GenerateVQTree();
-            DrawMBRs();
-            dataGridView.Rows[0].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.VQTree, _packetSize);
+            _model.GenerateNVD();
+            DrawColorLines(_presentationModel.GetNVDEdges());
+            DrawMarkers(_model.PoIs);
+        }
+
+        private void ClickPartitionToolStripButton(object sender, EventArgs e)
+        {
+            _model.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
+            _model.InitializeStrategy(strategyToolStripComboBox.Text);
+            DrawColorLines(_presentationModel.GetRegionEdges());
+        }
+
+        private void ClickIndexToolStripButton(object sender, EventArgs e)
+        {
+            _model.GenerateIndex();
+            if (strategyToolStripComboBox.Text == "EB") DrawMBRs();
+            dataGridView.Rows[0].Cells[0].Value = _model.GetSize(_model.EB.VQTree, _packetSize);
+            dataGridView.Rows[1].Cells[0].Value = _model.GetSize(_model.PA.ShortcutNetwork, _packetSize);
         }
 
         private void ClickTableToolStripButton(object sender, EventArgs e)
         {
-            _roadNetwork.ComputeEBTable();
-            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.EBTable, _packetSize);
+            _model.ComputeTable();
+            dataGridView.Rows[0].Cells[1].Value = _model.GetSize(_model.EB, _packetSize);
+            dataGridView.Rows[1].Cells[1].Value = _model.GetSize(_model.PA.PATable, _packetSize);
         }
 
         private void ClickSearchToolStripButton(object sender, EventArgs e)
         {
-            _roadNetwork.SearchKNN(Convert.ToInt32(kToolStripComboBox.SelectedItem));
-            DrawMarkers(_roadNetwork.PoIs);
-            DrawAnswer(_roadNetwork.QueryPoint, _roadNetwork.Answers);
-            dataGridView.Rows[0].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, _packetSize);
-            dataGridView.Rows[0].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, _packetSize);
-            dataGridView.Rows[0].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, _packetSize);
-        }
+            _model.SearchKNN(Convert.ToInt32(kToolStripComboBox.SelectedItem));
+            DrawMarkers(_model.PoIs);
+            DrawAnswer(_model.CurrentStrategy.QueryPoint, _model.Answers);
 
-        private void ClickShortcutToolStripButton(object sender, EventArgs e)
-        {
-            _roadNetwork.GenerateSN();
-            dataGridView.Rows[1].Cells[0].Value = _roadNetwork.GetSize(_roadNetwork.Shortcut, _packetSize);
-        }
-
-        private void ClickPATableToolStripButton(object sender, EventArgs e)
-        {
-            _roadNetwork.ComputePATable();
-            dataGridView.Rows[1].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.PATable, _packetSize);
-        }
-
-        private void ClickSaveEBTableToolStripMenuItem(object sender, EventArgs e)
-        {
-            _roadNetwork.SaveEBTable();
-        }
-
-        private void ClickAddEBTableToolStripMenuItem(object sender, EventArgs e)
-        {
-            _roadNetwork.AddEBTable();
-            dataGridView.Rows[0].Cells[1].Value = _roadNetwork.GetSize(_roadNetwork.EBTable, _packetSize);
-        }
-
-        private void ClickPASearchToolStripButton(object sender, EventArgs e)
-        {
-            _roadNetwork.PASearch(Convert.ToInt32(kToolStripComboBox.SelectedItem));
-            DrawMarkers(_roadNetwork.PoIs);
-            DrawAnswer(_roadNetwork.QueryPoint, _roadNetwork.Answers);
-            dataGridView.Rows[1].Cells[2].Value = _roadNetwork.GetSize(_roadNetwork.Regions, _packetSize);
-            dataGridView.Rows[1].Cells[3].Value = _roadNetwork.GetSize(_roadNetwork.Latency, _packetSize);
-            dataGridView.Rows[1].Cells[4].Value = _roadNetwork.GetSize(_roadNetwork.Tuning, _packetSize);
-        }
-
-        private void ClickReadFileToolStripSplitButton(object sender, EventArgs e)
-        {
-            _roadNetwork.AddNVD();
-            DrawColorLines(_presentationModel.GetNVDEdges());
+            dataGridView.Rows[0].Cells[2].Value = _model.GetSize(_model.Regions, _packetSize);
+            dataGridView.Rows[0].Cells[3].Value = _model.GetSize(_model.EB.Latency, _packetSize) + _model.GetSize(_model.EB.Overflow, _packetSize);
+            dataGridView.Rows[0].Cells[4].Value = _model.GetSize(_model.EB.Tuning, _packetSize);
+           
+            dataGridView.Rows[1].Cells[2].Value = _model.GetSize(_model.Regions, _packetSize);
+            dataGridView.Rows[1].Cells[3].Value = _model.GetSize(_model.PA.Latency, _packetSize);
+            dataGridView.Rows[1].Cells[4].Value = _model.GetSize(_model.PA.Tuning, _packetSize);
         }
     }
 }

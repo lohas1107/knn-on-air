@@ -9,6 +9,8 @@ namespace KNNonAir.Domain.Entity
     {
         public List<Vertex> PoIs { get; set; }
 
+        public BorderPoint() { }
+
         public BorderPoint(double latitude, double longitude) : base(latitude, longitude)
         {
             PoIs = new List<Vertex>();
