@@ -5,7 +5,7 @@ using QuickGraph;
 
 namespace KNNonAir.Domain.Service
 {
-    abstract class Strategy
+    public abstract class Strategy
     {
         private Random _random;
         protected Dijkstra _dijkstra;

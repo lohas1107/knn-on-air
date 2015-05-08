@@ -8,7 +8,7 @@ using QuickGraph;
 namespace KNNonAir.Domain.Service
 {
     [Serializable]
-    class StrategyEB : Strategy, ISerializable
+    public class StrategyEB : Strategy, ISerializable
     {
         public VQTree VQTree { get; set; }
 

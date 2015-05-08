@@ -7,7 +7,7 @@ using System;
 
 namespace KNNonAir.Domain.Context
 {
-    class Model
+    public class Model
     {
         public RoadGraph Road { get; set; }
         public List<Vertex> PoIs { get; set; }

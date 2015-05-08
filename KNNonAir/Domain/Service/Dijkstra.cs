@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace KNNonAir.Domain.Service
 {
-    class Dijkstra
+    public class Dijkstra
     {
         public RoadGraph Road { get; set; }
         private Dictionary<Edge<Vertex>, double> _distances;

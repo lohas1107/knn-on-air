@@ -6,7 +6,7 @@ using QuickGraph;
 
 namespace KNNonAir.Domain.Service
 {
-    class StrategyPA : Strategy
+    public class StrategyPA : Strategy
     {
         private ShortcutNetwork _shortcutNetwork;
 

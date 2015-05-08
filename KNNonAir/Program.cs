@@ -11,7 +11,7 @@ namespace KNNonAir
     delegate void PathNodeHandler(PathTreeNode node);
     delegate void BorderPointHandler(Vertex borderPoint, Edge<Vertex> edge);
     delegate void RegionHandler(Region region);
-    delegate void MBRHandler(MBR mbr);
+    public delegate void MBRHandler(MBR mbr);
 
     static class Program
     {
