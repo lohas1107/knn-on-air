@@ -1,18 +1,34 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
+using KNNonAir.Domain.Context;
 
 namespace Evaluation
 {
     class Program
     {
-        private static EBAlgorithm _eb;
+        private const int FREQUENCY = 500;
+
+        private static Flow _flow;
 
         static void Main(string[] args)
         {
             if (args.Count() == 0) return;
 
-            if (args[0] == "1") _eb = new EBAlgorithm(args.Skip(0).ToArray<String>());
+            Model model = new Model();
+
+            if (args[2] == "EB") _flow = new EBFlow(model, args);
+            else if (args[2] == "PA") _flow = new PAFlow(model, args);
+
+            for (int i = 0; i < FREQUENCY; i++)
+            {
+                _flow.SearchKNN();
+                _flow.Evaluate();
+            }
+
+            _flow.OutputResult(FREQUENCY);
+
+            Console.WriteLine("Finish!");
+            Console.ReadKey();
         }
     }
 }

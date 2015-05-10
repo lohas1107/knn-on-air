@@ -4,6 +4,7 @@ using KNNonAir.Domain.Service;
 using QuickGraph;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 namespace KNNonAir.Domain.Context
 {
@@ -56,9 +57,9 @@ namespace KNNonAir.Domain.Context
             }
         }
 
-        public void AddNVD()
+        public void AddNVD(string filepath)
         {
-            List<NVCInfo> nvcList = FileIO.ReadNVDFile();
+            List<NVCInfo> nvcList = FileIO.ReadNVDFile(filepath);
 
             if (nvcList != null)
             {
@@ -104,9 +105,9 @@ namespace KNNonAir.Domain.Context
             FileIO.SaveEBTable(Parser.ParseCountingTable(PoIs, EB));
         }
 
-        public void AddEBTable()
+        public void AddEBTable(String filepath)
         {
-            EBTableInfo tableInfo = FileIO.ReadEBTableFile();
+            EBTableInfo tableInfo = FileIO.ReadEBTableFile(filepath);
             EB.MinTable = tableInfo.MinTable;
             EB.MaxCountTable = tableInfo.MaxCountTable;
         }
