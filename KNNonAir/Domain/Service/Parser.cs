@@ -187,7 +187,7 @@ namespace KNNonAir.Domain.Service
             }
         }
 
-        public static EBTableInfo ParseCountingTable(List<Vertex> pois, StrategyEB eb)
+        public static EBTableInfo ParseCountingTable(List<Vertex> pois, AlgorithmEB eb)
         {
             List<VertexInfo> poiList = new List<VertexInfo>();
 

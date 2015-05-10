@@ -180,9 +180,9 @@ namespace KNNonAir.Presentation
         }
 
         // Parameters
-        private void strategyToolStripComboBox_TextChanged(object sender, EventArgs e)
+        private void AlgorithmToolStripComboBoxTextChanged(object sender, EventArgs e)
         {
-            _model.ChangeStrategy(strategyToolStripComboBox.Text);
+            _model.ChangeAlgorithm(algorithmToolStripComboBox.Text);
         }
 
         private void PacketToolStripComboBoxTextChanged(object sender, EventArgs e)
@@ -201,14 +201,14 @@ namespace KNNonAir.Presentation
         private void ClickPartitionToolStripButton(object sender, EventArgs e)
         {
             _model.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
-            _model.InitializeStrategy(strategyToolStripComboBox.Text);
+            _model.InitializeAlgorithm(algorithmToolStripComboBox.Text);
             DrawColorLines(_presentationModel.GetRegionEdges());
         }
 
         private void ClickIndexToolStripButton(object sender, EventArgs e)
         {
             _model.GenerateIndex();
-            if (strategyToolStripComboBox.Text == "EB") DrawMBRs();
+            if (algorithmToolStripComboBox.Text == "EB") DrawMBRs();
             dataGridView.Rows[0].Cells[0].Value = _model.GetSize(_model.EB.VQTree, _packetSize);
             dataGridView.Rows[1].Cells[0].Value = _model.GetSize(_model.PA.ShortcutNetwork, _packetSize);
         }
@@ -224,7 +224,7 @@ namespace KNNonAir.Presentation
         {
             _model.SearchKNN(Convert.ToInt32(kToolStripComboBox.SelectedItem));
             DrawMarkers(_model.PoIs);
-            DrawAnswer(_model.CurrentStrategy.QueryPoint, _model.Answers);
+            DrawAnswer(_model.CurrentAlgorithm.QueryPoint, _model.Answers);
 
             dataGridView.Rows[0].Cells[2].Value = _model.GetSize(_model.Regions, _packetSize);
             dataGridView.Rows[0].Cells[3].Value = _model.GetSize(_model.EB.Latency, _packetSize) + _model.GetSize(_model.EB.Overflow, _packetSize);

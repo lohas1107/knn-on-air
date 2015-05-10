@@ -15,10 +15,10 @@ namespace KNNonAir.Domain.Context
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
         public Dictionary<int, Region> Regions { get; set; }
 
-        public Strategy CurrentStrategy { get; set; }
-        public StrategyEB EB { get; set; }
-        public StrategyPA PA { get; set; }
-        public StrategyNPI NPI { get; set; }
+        public Algorithm CurrentAlgorithm { get; set; }
+        public AlgorithmEB EB { get; set; }
+        public AlgorithmPA PA { get; set; }
+        public AlgorithmNPI NPI { get; set; }
 
         public List<Vertex> Answers { get; set; }
 
@@ -75,29 +75,29 @@ namespace KNNonAir.Domain.Context
             Regions = kdTree.Regions;
         }
 
-        public void ChangeStrategy(string text)
+        public void ChangeAlgorithm(string text)
         {
-            if (text == "EB") CurrentStrategy = EB;
-            else if (text == "PA") CurrentStrategy = PA;
-            else if (text == "NPI") CurrentStrategy = NPI;
+            if (text == "EB") CurrentAlgorithm = EB;
+            else if (text == "PA") CurrentAlgorithm = PA;
+            else if (text == "NPI") CurrentAlgorithm = NPI;
         }
 
-        public void InitializeStrategy(string text)
+        public void InitializeAlgorithm(string text)
         {
-            EB = new StrategyEB(Road, PoIs, Regions);
-            PA = new StrategyPA(Road, PoIs, Regions);
-            NPI = new StrategyNPI(Road, PoIs, Regions);
-            ChangeStrategy(text);
+            EB = new AlgorithmEB(Road, PoIs, Regions);
+            PA = new AlgorithmPA(Road, PoIs, Regions);
+            NPI = new AlgorithmNPI(Road, PoIs, Regions);
+            ChangeAlgorithm(text);
         }
 
         public void GenerateIndex()
         {
-            CurrentStrategy.GenerateIndex();
+            CurrentAlgorithm.GenerateIndex();
         }
 
         public void ComputeTable()
         {
-            CurrentStrategy.ComputeTable();
+            CurrentAlgorithm.ComputeTable();
         }
 
         public void SaveEBTable()
@@ -114,8 +114,8 @@ namespace KNNonAir.Domain.Context
 
         public void SearchKNN(int k)
         {
-            Answers = CurrentStrategy.SearchKNN(k);
-            CurrentStrategy.Evaluate();
+            Answers = CurrentAlgorithm.SearchKNN(k);
+            CurrentAlgorithm.Evaluate();
         }
 
         public double GetSize(object obj, double packetSize)

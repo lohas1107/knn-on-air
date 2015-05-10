@@ -6,7 +6,7 @@ using QuickGraph;
 
 namespace KNNonAir.Domain.Service
 {
-    public class StrategyPA : Strategy
+    public class AlgorithmPA : Algorithm
     {
         private ShortcutNetwork _shortcutNetwork;
 
@@ -18,7 +18,7 @@ namespace KNNonAir.Domain.Service
         public Dictionary<int, double> PAMin { get; set; }
         public Dictionary<int, double> PAMax { get; set; }
 
-        public StrategyPA(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
+        public AlgorithmPA(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
         {
             _shortcutNetwork = new ShortcutNetwork();
 

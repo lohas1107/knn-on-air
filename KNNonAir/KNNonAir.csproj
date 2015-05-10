@@ -107,10 +107,10 @@
     <Compile Include="Domain\Service\KdTreeNode.cs" />
     <Compile Include="Domain\Service\Parser.cs" />
     <Compile Include="Domain\Service\ShortcutNetwork.cs" />
-    <Compile Include="Domain\Service\Strategy.cs" />
-    <Compile Include="Domain\Service\StrategyEB.cs" />
-    <Compile Include="Domain\Service\StrategyNPI.cs" />
-    <Compile Include="Domain\Service\StrategyPA.cs" />
+    <Compile Include="Domain\Service\Algorithm.cs" />
+    <Compile Include="Domain\Service\AlgorithmEB.cs" />
+    <Compile Include="Domain\Service\AlgorithmNPI.cs" />
+    <Compile Include="Domain\Service\AlgorithmPA.cs" />
     <Compile Include="Domain\Service\VQTree.cs" />
     <Compile Include="Domain\Service\VQTreeNode.cs" />
     <Compile Include="Presentation\MainForm.cs">

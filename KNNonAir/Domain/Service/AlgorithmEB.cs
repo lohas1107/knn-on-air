@@ -8,20 +8,20 @@ using QuickGraph;
 namespace KNNonAir.Domain.Service
 {
     [Serializable]
-    public class StrategyEB : Strategy, ISerializable
+    public class AlgorithmEB : Algorithm, ISerializable
     {
         public VQTree VQTree { get; set; }
 
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
 
-        public StrategyEB(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
+        public AlgorithmEB(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
         {
             MinTable = new Dictionary<int, Dictionary<int, double>>();
             MaxCountTable = new Dictionary<int, Tuple<int, double>>();
         }
 
-        public StrategyEB(SerializationInfo info, StreamingContext context)
+        public AlgorithmEB(SerializationInfo info, StreamingContext context)
         {
             MinTable = (Dictionary<int, Dictionary<int, double>>)info.GetValue("MinTable", typeof(Dictionary<int, Dictionary<int, double>>));
             MaxCountTable = (Dictionary<int, Tuple<int, double>>)info.GetValue("MaxCountTable", typeof(Dictionary<int, Tuple<int, double>>));

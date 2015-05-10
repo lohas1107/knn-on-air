@@ -5,7 +5,7 @@ using QuickGraph;
 
 namespace KNNonAir.Domain.Service
 {
-    public abstract class Strategy
+    public abstract class Algorithm
     {
         private Random _random;
         protected Dijkstra _dijkstra;
@@ -23,9 +23,9 @@ namespace KNNonAir.Domain.Service
         public List<Region> Latency { get; set; }
         public List<Region> Overflow { get; set; }
 
-        public Strategy() { }
+        public Algorithm() { }
 
-        public Strategy(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions)
+        public Algorithm(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions)
         {
             Road = road;
             PoIs = pois;

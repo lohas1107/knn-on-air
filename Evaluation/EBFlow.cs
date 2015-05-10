@@ -22,7 +22,7 @@ namespace Evaluation
         {
             _model.AddNVD(NVD_PATH);
             _model.Partition(REGION_NUMBER);
-            _model.InitializeStrategy(ALGORITHM_CATEGORY);
+            _model.InitializeAlgorithm(ALGORITHM_CATEGORY);
             _model.GenerateIndex();
             _model.AddEBTable(EBTABLE_PATH);
             _model.SearchKNN(K);

@@ -49,7 +49,7 @@
             this.saveNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.parameterToolStrip = new System.Windows.Forms.ToolStrip();
-            this.strategyToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.algorithmToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.packetToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.kToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -281,7 +281,7 @@
             // 
             this.parameterToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.parameterToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.strategyToolStripComboBox,
+            this.algorithmToolStripComboBox,
             this.partitionToolStripComboBox,
             this.packetToolStripComboBox,
             this.kToolStripComboBox});
@@ -290,18 +290,18 @@
             this.parameterToolStrip.Size = new System.Drawing.Size(199, 25);
             this.parameterToolStrip.TabIndex = 2;
             // 
-            // strategyToolStripComboBox
+            // algorithmToolStripComboBox
             // 
-            this.strategyToolStripComboBox.AutoSize = false;
-            this.strategyToolStripComboBox.Items.AddRange(new object[] {
+            this.algorithmToolStripComboBox.AutoSize = false;
+            this.algorithmToolStripComboBox.Items.AddRange(new object[] {
             "EB",
             "PA",
             "NPI"});
-            this.strategyToolStripComboBox.Name = "strategyToolStripComboBox";
-            this.strategyToolStripComboBox.Size = new System.Drawing.Size(43, 24);
-            this.strategyToolStripComboBox.Text = "EB";
-            this.strategyToolStripComboBox.ToolTipText = "strategies";
-            this.strategyToolStripComboBox.TextChanged += new System.EventHandler(this.strategyToolStripComboBox_TextChanged);
+            this.algorithmToolStripComboBox.Name = "algorithmToolStripComboBox";
+            this.algorithmToolStripComboBox.Size = new System.Drawing.Size(43, 24);
+            this.algorithmToolStripComboBox.Text = "EB";
+            this.algorithmToolStripComboBox.ToolTipText = "algorithms";
+            this.algorithmToolStripComboBox.TextChanged += new System.EventHandler(this.AlgorithmToolStripComboBoxTextChanged);
             // 
             // partitionToolStripComboBox
             // 
@@ -485,7 +485,7 @@
         private System.Windows.Forms.ToolStripComboBox partitionToolStripComboBox;
         private System.Windows.Forms.ToolStripComboBox packetToolStripComboBox;
         private System.Windows.Forms.ToolStripComboBox kToolStripComboBox;
-        private System.Windows.Forms.ToolStripComboBox strategyToolStripComboBox;
+        private System.Windows.Forms.ToolStripComboBox algorithmToolStripComboBox;
     }
 }
 
