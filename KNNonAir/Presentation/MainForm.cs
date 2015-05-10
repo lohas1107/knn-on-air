@@ -140,7 +140,7 @@ namespace KNNonAir.Presentation
         // File
         private void ClickReadFileToolStripSplitButton(object sender, EventArgs e)
         {
-            _model.AddNVD();
+            _model.AddNVD(null);
             DrawColorLines(_presentationModel.GetNVDEdges());
         }
 
@@ -159,13 +159,13 @@ namespace KNNonAir.Presentation
 
         private void ClickAddNVDToolStripMenuItem(object sender, EventArgs e)
         {
-            _model.AddNVD();
+            _model.AddNVD(null);
             DrawColorLines(_presentationModel.GetNVDEdges());
         }
 
         private void ClickAddEBTableToolStripMenuItem(object sender, EventArgs e)
         {
-            _model.AddEBTable();
+            _model.AddEBTable(null);
             dataGridView.Rows[0].Cells[1].Value = _model.GetSize(_model.EB, _packetSize);
         }
 

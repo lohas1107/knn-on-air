@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace KNNonAir.Domain.Entity
 {
-    class VoronoiCell
+    public class VoronoiCell
     {
         public Vertex PoI { get; set; }
         public RoadGraph Road { get; set; }

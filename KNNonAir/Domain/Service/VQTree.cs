@@ -6,7 +6,7 @@ using KNNonAir.Domain.Entity;
 namespace KNNonAir.Domain.Service
 {
     [Serializable]
-    class VQTree : ISerializable
+    public class VQTree : ISerializable
     {
         public event MBRHandler PartitionMBRCompleted;
         [NonSerialized]

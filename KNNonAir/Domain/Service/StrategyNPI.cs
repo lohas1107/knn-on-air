@@ -7,7 +7,7 @@ using KNNonAir.Domain.Entity;
 
 namespace KNNonAir.Domain.Service
 {
-    class StrategyNPI : Strategy
+    public class StrategyNPI : Strategy
     {
         public StrategyNPI(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
         {
