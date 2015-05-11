@@ -307,10 +307,12 @@
             // 
             this.partitionToolStripComboBox.AutoSize = false;
             this.partitionToolStripComboBox.Items.AddRange(new object[] {
+            "8",
             "16",
             "32",
             "64",
-            "128"});
+            "128",
+            "256"});
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
             this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.partitionToolStripComboBox.Text = "16";
@@ -364,7 +366,7 @@
             this.searchToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(278, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(164, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(133, 25);
             this.actionToolStrip.TabIndex = 1;
             // 
             // nvdToolStripButton
