@@ -4,9 +4,9 @@ using KNNonAir.Domain.Context;
 
 namespace Evaluation
 {
-    class EBFlow : Flow
+    class FlowEB : Flow
     {
-        public EBFlow(Model model, string[] args) : base(model, args)
+        public FlowEB(Model model, string[] args) : base(model, args)
         {
             NVD_PATH = _args[0];
             REGION_NUMBER = Convert.ToInt16(_args[1]);
@@ -43,13 +43,6 @@ namespace Evaluation
         public override void OutputResult(int frequency)
         {
             BROCAST_LENGTH = INDEX_SIZE + TABLE_SIZE + REGIONS_SIZE;
-
-            List<string> argList = new List<string>();
-            argList.Add(ALGORITHM_CATEGORY);
-            argList.Add(EBTABLE_PATH.Substring(0, 5));
-            argList.Add(K.ToString());
-            argList.Add(PACKET_SIZE.ToString());
-            OUTPUT_PATH = String.Join("_", argList) + ".txt";
 
             base.OutputResult(frequency);
         }

@@ -16,8 +16,8 @@ namespace Evaluation
 
             Model model = new Model();
 
-            if (args[2] == "EB") _flow = new EBFlow(model, args);
-            else if (args[2] == "PA") _flow = new PAFlow(model, args);
+            if (args[2] == "EB") _flow = new FlowEB(model, args);
+            else if (args[2] == "PA") _flow = new FlowPA(model, args);
 
             for (int i = 0; i < FREQUENCY; i++)
             {

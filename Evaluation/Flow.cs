@@ -44,6 +44,14 @@ namespace Evaluation
 
         public virtual void OutputResult(int frequency)
         {
+            List<string> argList = new List<string>();
+            argList.Add(ALGORITHM_CATEGORY);
+            argList.Add(NVD_PATH.Substring(0, 2));
+            argList.Add(REGION_NUMBER.ToString());
+            argList.Add(K.ToString());
+            argList.Add(PACKET_SIZE.ToString());
+            OUTPUT_PATH = String.Join("_", argList) + ".txt";
+
             File.AppendAllText(OUTPUT_PATH, "Brocast Length: " + BROCAST_LENGTH + Environment.NewLine);
             File.AppendAllText(OUTPUT_PATH, "| Latency | Tuning |" + Environment.NewLine);
 

@@ -61,9 +61,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EBFlow.cs" />
+    <Compile Include="FlowEB.cs" />
     <Compile Include="Flow.cs" />
-    <Compile Include="PAFlow.cs" />
+    <Compile Include="FlowPA.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

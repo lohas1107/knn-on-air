@@ -4,9 +4,9 @@ using KNNonAir.Domain.Context;
 
 namespace Evaluation
 {
-    class PAFlow : Flow
+    class FlowPA : Flow
     {
-        public PAFlow(Model model, string[] args) : base(model, args)
+        public FlowPA(Model model, string[] args) : base(model, args)
         {
             NVD_PATH = _args[0];
             REGION_NUMBER = Convert.ToInt16(_args[1]);
@@ -42,14 +42,6 @@ namespace Evaluation
         public override void OutputResult(int frequency)
         {
             BROCAST_LENGTH = (INDEX_SIZE + TABLE_SIZE) * REGION_NUMBER + REGIONS_SIZE;
-
-            List<string> argList = new List<string>();
-            argList.Add(ALGORITHM_CATEGORY);
-            argList.Add(NVD_PATH.Substring(0, 2));
-            argList.Add(REGION_NUMBER.ToString());
-            argList.Add(K.ToString());
-            argList.Add(PACKET_SIZE.ToString());
-            OUTPUT_PATH = String.Join("_", argList) + ".txt";
 
             base.OutputResult(frequency);
         }
