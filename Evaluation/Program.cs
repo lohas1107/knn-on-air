@@ -19,6 +19,8 @@ namespace Evaluation
             if (args[2] == "EB") _flow = new FlowEB(model, args);
             else if (args[2] == "PA") _flow = new FlowPA(model, args);
 
+            _flow.Initialize();
+
             for (int i = 0; i < FREQUENCY; i++)
             {
                 _flow.SearchKNN();

@@ -17,21 +17,26 @@ namespace Evaluation
             Console.WriteLine(String.Join("_", args));
         }
 
-        public override void SearchKNN()
+        public override void Initialize()
         {
             _model.AddNVD(NVD_PATH);
             _model.Partition(REGION_NUMBER);
             _model.InitializeAlgorithm(ALGORITHM_CATEGORY);
             _model.GenerateIndex();
             _model.ComputeTable();
+
+            INDEX_SIZE = _model.GetSize(_model.PA.ShortcutNetwork, PACKET_SIZE);
+            TABLE_SIZE = _model.GetSize(_model.PA.PATable, PACKET_SIZE);
+            REGIONS_SIZE = _model.GetSize(_model.Regions, PACKET_SIZE);
+        }
+
+        public override void SearchKNN()
+        {
             _model.SearchKNN(K);
         }
 
         public override void Evaluate()
         {
-            INDEX_SIZE = _model.GetSize(_model.PA.ShortcutNetwork, PACKET_SIZE);
-            TABLE_SIZE = _model.GetSize(_model.PA.PATable, PACKET_SIZE);
-            REGIONS_SIZE = _model.GetSize(_model.Regions, PACKET_SIZE);
             TUNING_SIZE = _model.GetSize(_model.PA.Tuning, PACKET_SIZE);
             LATENCY_SIZE = _model.GetSize(_model.PA.Latency, PACKET_SIZE);
 

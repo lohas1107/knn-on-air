@@ -39,6 +39,7 @@ namespace Evaluation
             Latency = new List<double>();
         }
 
+        public abstract void Initialize();
         public abstract void SearchKNN();
         public abstract void Evaluate();
 
