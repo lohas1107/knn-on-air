@@ -85,10 +85,11 @@ namespace KNNonAir.Domain.Service
 
         public virtual void Evaluate()
         {
-            while (Start % Regions.Count != End)
+            int start = Start;
+            while (start % Regions.Count != End)
             {
-                Latency.Add(Regions[Start % Regions.Count]);
-                Start++;
+                Latency.Add(Regions[start % Regions.Count]);
+                start++;
             }
             Latency.Add(Regions[End]);
 

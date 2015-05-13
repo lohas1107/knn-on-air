@@ -40,8 +40,12 @@ namespace Evaluation
             TUNING_SIZE = _model.GetSize(_model.PA.Tuning, PACKET_SIZE);
             LATENCY_SIZE = _model.GetSize(_model.PA.Latency, PACKET_SIZE);
 
+            int slot = 0;
+            if (_model.PA.End < _model.PA.Start) slot = _model.PA.End + REGION_NUMBER - _model.PA.Start + 1;
+            else slot = _model.PA.End - _model.PA.Start + 1;
+
             Tuning.Add(INDEX_SIZE + TABLE_SIZE + TUNING_SIZE);
-            Latency.Add(INDEX_SIZE + TABLE_SIZE + LATENCY_SIZE); 
+            Latency.Add((INDEX_SIZE + TABLE_SIZE) * slot + LATENCY_SIZE); 
         }
 
         public override void OutputResult(int frequency)
