@@ -61,11 +61,11 @@ namespace KNNonAir.Domain.Context
             return nvdEdges;
         }
 
-        public List<Tuple<Color, List<PointLatLng>>> GetRegionEdges()
+        public List<Tuple<Color, List<PointLatLng>>> GetRegionEdges(Dictionary<int, KNNonAir.Domain.Entity.Region> regions)
         {
             List<Tuple<Color, List<PointLatLng>>> regionEdges = new List<Tuple<Color, List<PointLatLng>>>();
 
-            foreach (KeyValuePair<int, KNNonAir.Domain.Entity.Region> region in _model.Regions)
+            foreach (KeyValuePair<int, KNNonAir.Domain.Entity.Region> region in regions)
             {
                 GetColorEdges(regionEdges, region.Value.Road.Graph.Edges);
             }
@@ -73,11 +73,11 @@ namespace KNNonAir.Domain.Context
             return regionEdges;
         }
 
-        public List<List<PointLatLng>> GetVQTree()
+        public List<List<PointLatLng>> GetMBRs(List<MBR> mbrList)
         {
             List<List<PointLatLng>> mbrs = new List<List<PointLatLng>>();
 
-            foreach (MBR mbr in _model.EB.VQTree.MBRs)
+            foreach (MBR mbr in mbrList)
             {
                 Vertex topLeft = new Vertex(mbr.Y, mbr.X);
                 Vertex topRight = new Vertex(mbr.Y, mbr.X + mbr.Width);

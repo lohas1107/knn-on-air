@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using QuickGraph;
 
 namespace KNNonAir.Domain.Entity
 {
     [Serializable]
     public class MBR : ISerializable
     {
+        public int Id { get; set; }
         public List<Vertex> Vertices { get; set; }
         public double X { get; set; } // Longitude
         public double Y { get; set; } // Latitude
@@ -34,6 +36,14 @@ namespace KNNonAir.Domain.Entity
             vertices = vertices.OrderBy(o => o.Coordinate.Latitude).ToList();
             Y = vertices.Last().Coordinate.Latitude;
             Height = Y - vertices.First().Coordinate.Latitude;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("X", X);
+            info.AddValue("Y", Y);
+            info.AddValue("Width", Width);
+            info.AddValue("Height", Height);
         }
 
         public bool ContainsIn(Vertex vertex)
@@ -70,12 +80,32 @@ namespace KNNonAir.Domain.Entity
             }
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public Region ToRegion(RoadGraph road)
         {
-            info.AddValue("X", X);
-            info.AddValue("Y", Y);
-            info.AddValue("Width", Width);
-            info.AddValue("Height", Height);
+            Region region = new Region();
+            region.Id = Id;
+
+            foreach (Edge<Vertex> edge in road.Graph.Edges)
+            {
+                if (!Vertices.Contains(edge.Source) && !Vertices.Contains(edge.Target)) continue;
+                else if (Vertices.Contains(edge.Source) && Vertices.Contains(edge.Target))
+                {
+                    if (edge.Source is InterestPoint) region.PoIs.Add(edge.Source);
+                    if (edge.Target is InterestPoint) region.PoIs.Add(edge.Target);
+                    region.Road.Graph.AddVerticesAndEdge(edge);
+                }
+                else if (Vertices.Contains(edge.Source) || Vertices.Contains(edge.Target))
+                {
+                    Vertex borderSource = new BorderPoint(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude);
+                    Vertex borderTarget = new BorderPoint(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude);
+                    region.BorderPoints.Add(borderSource);
+                    region.BorderPoints.Add(borderTarget);
+                    Edge<Vertex> borderEdge = new Edge<Vertex>(borderSource, borderTarget);
+                    region.Road.Graph.AddVerticesAndEdge(borderEdge);
+                }
+            }
+
+            return region;
         }
     }
 }

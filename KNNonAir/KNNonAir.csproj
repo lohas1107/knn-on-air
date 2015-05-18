@@ -98,6 +98,7 @@
     <Compile Include="Domain\Entity\MBR.cs" />
     <Compile Include="Domain\Entity\RoadGraph.cs" />
     <Compile Include="Domain\Service\Dijkstra.cs" />
+    <Compile Include="Domain\Service\GridPartition.cs" />
     <Compile Include="Domain\Service\KdTree.cs" />
     <Compile Include="Domain\Entity\Region.cs" />
     <Compile Include="Domain\Service\Arithmetics.cs" />

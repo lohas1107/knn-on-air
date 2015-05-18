@@ -18,7 +18,7 @@ namespace KNNonAir.Domain.Service
         public Dictionary<int, double> PAMin { get; set; }
         public Dictionary<int, double> PAMax { get; set; }
 
-        public AlgorithmPA(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
+        public AlgorithmPA(RoadGraph road, List<Vertex> pois) : base(road, pois)
         {
             _shortcutNetwork = new ShortcutNetwork();
 
@@ -28,6 +28,14 @@ namespace KNNonAir.Domain.Service
             PARoadGraph = new RoadGraph(false);
             PAMin = new Dictionary<int, double>();
             PAMax = new Dictionary<int, double>();
+        }
+
+        public override void Partition(Dictionary<Vertex, VoronoiCell> nvd, int amount)
+        {
+            base.Partition(nvd, amount);
+
+            KdTree kdTree = new KdTree(nvd, amount);
+            Regions = kdTree.Regions;
         }
 
         public override void GenerateIndex()

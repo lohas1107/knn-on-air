@@ -25,11 +25,10 @@ namespace KNNonAir.Domain.Service
 
         public Algorithm() { }
 
-        public Algorithm(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions)
+        public Algorithm(RoadGraph road, List<Vertex> pois)
         {
             Road = road;
             PoIs = pois;
-            Regions = regions;
 
             _random = new Random(Guid.NewGuid().GetHashCode());
             _dijkstra = new Dijkstra(road);
@@ -48,6 +47,10 @@ namespace KNNonAir.Domain.Service
         {
             _dijkstra = new Dijkstra(road, distances);
         }
+
+        public virtual void Partition(Dictionary<Vertex, VoronoiCell> nvd, int amount) { }
+
+        public virtual void Partition(RoadGraph road, int amount) { }
 
         public abstract void GenerateIndex();
 

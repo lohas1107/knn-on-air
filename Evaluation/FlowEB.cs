@@ -28,7 +28,7 @@ namespace Evaluation
            
             INDEX_SIZE = _model.GetSize(_model.EB.VQTree, PACKET_SIZE);
             TABLE_SIZE = _model.GetSize(_model.EB, PACKET_SIZE);
-            REGIONS_SIZE = _model.GetSize(_model.Regions, PACKET_SIZE);
+            REGIONS_SIZE = _model.GetSize(_model.EB.Regions, PACKET_SIZE);
         }
 
         public override void SearchKNN()

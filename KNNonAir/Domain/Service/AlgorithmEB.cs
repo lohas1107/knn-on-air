@@ -15,7 +15,7 @@ namespace KNNonAir.Domain.Service
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
 
-        public AlgorithmEB(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
+        public AlgorithmEB(RoadGraph road, List<Vertex> pois) : base(road, pois)
         {
             MinTable = new Dictionary<int, Dictionary<int, double>>();
             MaxCountTable = new Dictionary<int, Tuple<int, double>>();
@@ -31,6 +31,14 @@ namespace KNNonAir.Domain.Service
         {
             info.AddValue("MinTable", MinTable);
             info.AddValue("MaxCountTable", MaxCountTable);
+        }
+
+        public override void Partition(Dictionary<Vertex, VoronoiCell> nvd, int amount)
+        {
+            base.Partition(nvd, amount);
+
+            KdTree kdTree = new KdTree(nvd, amount);
+            Regions = kdTree.Regions;
         }
 
         public override void GenerateIndex()

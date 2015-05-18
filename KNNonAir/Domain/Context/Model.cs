@@ -13,7 +13,6 @@ namespace KNNonAir.Domain.Context
         public RoadGraph Road { get; set; }
         public List<Vertex> PoIs { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
-        public Dictionary<int, Region> Regions { get; set; }
 
         public Algorithm CurrentAlgorithm { get; set; }
         public AlgorithmEB EB { get; set; }
@@ -69,12 +68,6 @@ namespace KNNonAir.Domain.Context
             }
         }
 
-        public void Partition(int frames)
-        {
-            KdTree kdTree = new KdTree(NVD, frames);
-            Regions = kdTree.Regions;
-        }
-
         public void ChangeAlgorithm(string text)
         {
             if (text == "EB") CurrentAlgorithm = EB;
@@ -84,10 +77,16 @@ namespace KNNonAir.Domain.Context
 
         public void InitializeAlgorithm(string text)
         {
-            EB = new AlgorithmEB(Road, PoIs, Regions);
-            PA = new AlgorithmPA(Road, PoIs, Regions);
-            NPI = new AlgorithmNPI(Road, PoIs, Regions);
+            EB = new AlgorithmEB(Road, PoIs);
+            PA = new AlgorithmPA(Road, PoIs);
+            NPI = new AlgorithmNPI(Road, PoIs);
             ChangeAlgorithm(text);
+        }
+
+        public void Partition(int frames)
+        {
+            if (CurrentAlgorithm is AlgorithmNPI) CurrentAlgorithm.Partition(Road, frames);
+            else CurrentAlgorithm.Partition(NVD, frames);
         }
 
         public void GenerateIndex()
