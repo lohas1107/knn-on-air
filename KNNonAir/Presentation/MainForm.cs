@@ -203,8 +203,10 @@ namespace KNNonAir.Presentation
             _model.InitializeAlgorithm(algorithmToolStripComboBox.Text);
 
             _model.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
-            if (algorithmToolStripComboBox.Text == "NPI") DrawColorLines(_presentationModel.GetRegionEdges(_model.NPI.Regions));
-            else DrawColorLines(_presentationModel.GetRegionEdges(_model.EB.Regions));
+            
+            if (algorithmToolStripComboBox.Text == "EB") DrawColorLines(_presentationModel.GetRegionEdges(_model.EB.Regions));
+            else if (algorithmToolStripComboBox.Text == "PA") DrawColorLines(_presentationModel.GetRegionEdges(_model.PA.Regions));
+            else if (algorithmToolStripComboBox.Text == "NPI") DrawColorLines(_presentationModel.GetRegionEdges(_model.NPI.Regions));
         }
 
         private void ClickIndexToolStripButton(object sender, EventArgs e)
@@ -223,6 +225,7 @@ namespace KNNonAir.Presentation
             _model.ComputeTable();
             dataGridView.Rows[0].Cells[1].Value = _model.GetSize(_model.EB, _packetSize);
             dataGridView.Rows[1].Cells[1].Value = _model.GetSize(_model.PA.PATable, _packetSize);
+            dataGridView.Rows[2].Cells[1].Value = _model.GetSize(_model.NPI.CountDiameterTable, _packetSize) + _model.GetSize(_model.NPI.MinMaxTable, _packetSize);
         }
 
         private void ClickSearchToolStripButton(object sender, EventArgs e)

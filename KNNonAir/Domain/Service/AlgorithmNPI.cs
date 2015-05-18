@@ -10,10 +10,14 @@ namespace KNNonAir.Domain.Service
     public class AlgorithmNPI : Algorithm
     {
         public List<MBR> Grids { get; set; }
+        public Dictionary<int, Tuple<int, double>> CountDiameterTable { get; set; }
+        public Dictionary<int, Dictionary<int, Tuple<double, double>>> MinMaxTable { get; set; }
 
         public AlgorithmNPI(RoadGraph road, List<Vertex> pois) : base(road, pois)
         {
             Regions = new Dictionary<int, Region>();
+            CountDiameterTable = new Dictionary<int, Tuple<int, double>>();
+            MinMaxTable = new Dictionary<int, Dictionary<int, Tuple<double, double>>>();
         }
 
         public override void Partition(RoadGraph road, int amount)
@@ -36,7 +40,60 @@ namespace KNNonAir.Domain.Service
 
         public override void ComputeTable()
         {
-            
+            foreach (KeyValuePair<int, Region> region in Regions)
+            {
+                int count = region.Value.PoIs.Count();
+                double diameter = 0;
+
+                foreach (Vertex vertex in region.Value.Road.Graph.Vertices)
+                {
+                    _dijkstra.Compute(vertex);
+                    double tempDiameter = _dijkstra.Distances.OrderBy(o => o.Value).Last().Value;
+                    if (tempDiameter > diameter) diameter = tempDiameter;
+                }
+
+                CountDiameterTable.Add(region.Value.Id, new Tuple<int, double>(count, diameter));
+            }
+
+            for (int from = 0; from < Regions.Count; from++)
+            {
+                Dictionary<int, Tuple<double, double>> item = new Dictionary<int, Tuple<double, double>>();
+
+                for (int to = 0; to < Regions.Count; to++)
+                {
+                    if (from == to) continue;
+
+                    Tuple<double, double> minMax = ComputeMinMax(Regions[from], Regions[to]);
+                    item.Add(to, minMax);
+                }
+
+                MinMaxTable.Add(from, item);
+            }  
+        }
+
+        private Tuple<double, double> ComputeMinMax(Region fromRegion, Region toRegion)
+        {
+            if (fromRegion.BorderPoints.Count() == 0) return new Tuple<double, double>(double.MaxValue, double.MaxValue);
+
+            double min = double.MaxValue;
+            double max = double.MinValue;
+
+            foreach (Vertex fromBorder in fromRegion.BorderPoints)
+            {
+                _dijkstra.Compute(fromBorder);
+                if (toRegion.BorderPoints.Count() == 0) return new Tuple<double, double>(double.MaxValue, double.MaxValue);
+
+                foreach (Vertex toBorder in toRegion.BorderPoints)
+                {
+                    if (!_dijkstra.Distances.ContainsKey(toBorder)) continue;
+                    
+                    double distance = _dijkstra.Distances[toBorder];
+                    if (distance < min) min = distance;
+                    if (distance > max) max = distance;
+                }
+            }
+
+            return new Tuple<double, double>(min, max);
         }
 
         public override List<Vertex> SearchKNN(int k)
