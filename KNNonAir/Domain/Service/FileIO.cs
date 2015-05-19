@@ -96,5 +96,17 @@ namespace KNNonAir.Domain.Service
             string output = JsonConvert.SerializeObject(npi);
             File.WriteAllText(_filepath, output);
         }
+
+        public static NPITableInfo ReadNPITableFile(string filepath)
+        {
+            if (filepath == null)
+            {
+                if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
+            }
+            else _filepath = filepath;
+
+            NPITableInfo table = JsonConvert.DeserializeObject<NPITableInfo>(File.ReadAllText(_filepath));
+            return table;
+        }
     }
 }

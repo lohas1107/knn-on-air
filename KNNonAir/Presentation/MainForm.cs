@@ -169,6 +169,12 @@ namespace KNNonAir.Presentation
             dataGridView.Rows[0].Cells[1].Value = _model.GetSize(_model.EB, _packetSize);
         }
 
+        private void ClickAddNPITableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.AddNPITable(null);
+            dataGridView.Rows[2].Cells[1].Value = _model.GetSize(_model.NPI.CountDiameterTable, _packetSize) + _model.GetSize(_model.NPI.MinMaxTable, _packetSize);
+        }
+
         private void ClickSaveNVDToolStripMenuItem(object sender, EventArgs e)
         {
             FileIO.SaveNVDFile(Parser.ParseNVD(_model.NVD));

@@ -104,16 +104,23 @@ namespace KNNonAir.Domain.Context
             FileIO.SaveEBTable(Parser.ParseCountingTable(PoIs, EB));
         }
 
-        public void SaveNPITable()
-        {
-            FileIO.SaveNPITable(Parser.ParseNPITable(NPI));
-        }
-
         public void AddEBTable(String filepath)
         {
             EBTableInfo tableInfo = FileIO.ReadEBTableFile(filepath);
             EB.MinTable = tableInfo.MinTable;
             EB.MaxCountTable = tableInfo.MaxCountTable;
+        }
+
+        public void SaveNPITable()
+        {
+            FileIO.SaveNPITable(Parser.ParseNPITable(NPI));
+        }
+
+        public void AddNPITable(String filepath)
+        {
+            NPITableInfo tableInfo = FileIO.ReadNPITableFile(filepath);
+            NPI.CountDiameterTable = tableInfo.CountDiameterTable;
+            NPI.MinMaxTable = tableInfo.MinMaxTable;
         }
 
         public void SearchKNN(int k)
