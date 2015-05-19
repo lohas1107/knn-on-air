@@ -88,5 +88,13 @@ namespace KNNonAir.Domain.Service
             EBTableInfo table = JsonConvert.DeserializeObject<EBTableInfo>(File.ReadAllText(_filepath));
             return table;
         }
+
+        public static void SaveNPITable(NPITableInfo npi)
+        {
+            if (SaveFile(JSON_FILE_FILTER) != DialogResult.OK) return;
+
+            string output = JsonConvert.SerializeObject(npi);
+            File.WriteAllText(_filepath, output);
+        }
     }
 }

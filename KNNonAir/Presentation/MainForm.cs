@@ -179,6 +179,11 @@ namespace KNNonAir.Presentation
             _model.SaveEBTable();
         }
 
+        private void ClickSaveNPITableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.SaveNPITable();
+        }
+
         // Parameters
         private void AlgorithmToolStripComboBoxTextChanged(object sender, EventArgs e)
         {

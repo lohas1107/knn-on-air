@@ -198,5 +198,10 @@ namespace KNNonAir.Domain.Service
 
             return new EBTableInfo(poiList, eb.MinTable, eb.MaxCountTable);
         }
+
+        public static NPITableInfo ParseNPITable(AlgorithmNPI NPI)
+        {
+            return new NPITableInfo(NPI.CountDiameterTable, NPI.MinMaxTable);
+        }
     }
 }

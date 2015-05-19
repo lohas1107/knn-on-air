@@ -48,6 +48,7 @@
             this.saveFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.saveNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveNPITableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.parameterToolStrip = new System.Windows.Forms.ToolStrip();
             this.algorithmToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -256,7 +257,8 @@
             this.saveFileToolStripSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.saveFileToolStripSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveNVDToolStripMenuItem,
-            this.saveEBTableToolStripMenuItem});
+            this.saveEBTableToolStripMenuItem,
+            this.saveNPITableToolStripMenuItem});
             this.saveFileToolStripSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("saveFileToolStripSplitButton.Image")));
             this.saveFileToolStripSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveFileToolStripSplitButton.Name = "saveFileToolStripSplitButton";
@@ -266,16 +268,23 @@
             // saveNVDToolStripMenuItem
             // 
             this.saveNVDToolStripMenuItem.Name = "saveNVDToolStripMenuItem";
-            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.saveNVDToolStripMenuItem.Text = "Save NVD";
             this.saveNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNVDToolStripMenuItem);
             // 
             // saveEBTableToolStripMenuItem
             // 
             this.saveEBTableToolStripMenuItem.Name = "saveEBTableToolStripMenuItem";
-            this.saveEBTableToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.saveEBTableToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.saveEBTableToolStripMenuItem.Text = "Save EB Table";
             this.saveEBTableToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveEBTableToolStripMenuItem);
+            // 
+            // saveNPITableToolStripMenuItem
+            // 
+            this.saveNPITableToolStripMenuItem.Name = "saveNPITableToolStripMenuItem";
+            this.saveNPITableToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.saveNPITableToolStripMenuItem.Text = "Save NPI Table";
+            this.saveNPITableToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNPITableToolStripMenuItem);
             // 
             // parameterToolStrip
             // 
@@ -288,7 +297,7 @@
             this.parameterToolStrip.Location = new System.Drawing.Point(79, 0);
             this.parameterToolStrip.Name = "parameterToolStrip";
             this.parameterToolStrip.Size = new System.Drawing.Size(199, 25);
-            this.parameterToolStrip.TabIndex = 2;
+            this.parameterToolStrip.TabIndex = 1;
             // 
             // algorithmToolStripComboBox
             // 
@@ -367,7 +376,7 @@
             this.actionToolStrip.Location = new System.Drawing.Point(278, 0);
             this.actionToolStrip.Name = "actionToolStrip";
             this.actionToolStrip.Size = new System.Drawing.Size(133, 25);
-            this.actionToolStrip.TabIndex = 1;
+            this.actionToolStrip.TabIndex = 2;
             // 
             // nvdToolStripButton
             // 
@@ -488,6 +497,7 @@
         private System.Windows.Forms.ToolStripComboBox packetToolStripComboBox;
         private System.Windows.Forms.ToolStripComboBox kToolStripComboBox;
         private System.Windows.Forms.ToolStripComboBox algorithmToolStripComboBox;
+        private System.Windows.Forms.ToolStripMenuItem saveNPITableToolStripMenuItem;
     }
 }
 

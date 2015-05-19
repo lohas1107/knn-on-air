@@ -104,6 +104,11 @@ namespace KNNonAir.Domain.Context
             FileIO.SaveEBTable(Parser.ParseCountingTable(PoIs, EB));
         }
 
+        public void SaveNPITable()
+        {
+            FileIO.SaveNPITable(Parser.ParseNPITable(NPI));
+        }
+
         public void AddEBTable(String filepath)
         {
             EBTableInfo tableInfo = FileIO.ReadEBTableFile(filepath);

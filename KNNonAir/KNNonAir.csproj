@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Access\BorderInfo.cs" />
     <Compile Include="Access\EdgeInfo.cs" />
+    <Compile Include="Access\NPITableInfo.cs" />
     <Compile Include="Access\NVCInfo.cs" />
     <Compile Include="Access\EBTableInfo.cs" />
     <Compile Include="Access\PATableInfo.cs" />
