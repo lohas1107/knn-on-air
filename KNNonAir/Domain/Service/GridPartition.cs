@@ -34,7 +34,7 @@ namespace KNNonAir.Domain.Service
             {
                 for (int j = 0; j < _n; j++)
                 {
-                    MBR mbr = new MBR(square.X + (_gridSideLength * i), square.Y - (_gridSideLength * j), _gridSideLength, _gridSideLength);
+                    MBR mbr = new MBR(square.X + (_gridSideLength * j), square.Y - (_gridSideLength * i), _gridSideLength, _gridSideLength);
                     mbr.Id = Convert.ToInt16(i * _n + j);
                     grids.Add(mbr);
                 }
