@@ -15,7 +15,7 @@ namespace KNNonAir.Domain.Service
 
         public AlgorithmNPI(RoadGraph road, List<Vertex> pois) : base(road, pois)
         {
-            Regions = new Dictionary<int, Region>();
+            Regions = new List<Region>();
             CountDiameterTable = new Dictionary<int, Tuple<int, double>>();
             MinMaxTable = new Dictionary<int, Dictionary<int, Tuple<double, double>>>();
         }
@@ -29,7 +29,7 @@ namespace KNNonAir.Domain.Service
 
             foreach (MBR grid in Grids)
             {
-                Regions.Add(grid.Id, grid.ToRegion(Road));
+                Regions.Add(grid.ToRegion(Road));
             }
         }
 
@@ -40,19 +40,19 @@ namespace KNNonAir.Domain.Service
 
         public override void ComputeTable()
         {
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
-                int count = region.Value.PoIs.Count();
+                int count = region.PoIs.Count();
                 double diameter = 0;
 
-                foreach (Vertex vertex in region.Value.Road.Graph.Vertices)
+                foreach (Vertex vertex in region.Road.Graph.Vertices)
                 {
                     _dijkstra.Compute(vertex);
                     double tempDiameter = _dijkstra.Distances.OrderBy(o => o.Value).Last().Value;
                     if (tempDiameter > diameter) diameter = tempDiameter;
                 }
 
-                CountDiameterTable.Add(region.Value.Id, new Tuple<int, double>(count, diameter));
+                CountDiameterTable.Add(region.Id, new Tuple<int, double>(count, diameter));
             }
 
             for (int from = 0; from < Regions.Count; from++)

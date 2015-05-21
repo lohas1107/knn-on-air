@@ -12,7 +12,7 @@ namespace KNNonAir.Domain.Service
 
         public RoadGraph Road;
         public List<Vertex> PoIs;
-        public Dictionary<int, Region> Regions { get; set; }
+        public List<Region> Regions { get; set; }
         public Vertex QueryPoint { get; set; }
 
         public int Position { get; set; }

@@ -61,13 +61,13 @@ namespace KNNonAir.Domain.Context
             return nvdEdges;
         }
 
-        public List<Tuple<Color, List<PointLatLng>>> GetRegionEdges(Dictionary<int, KNNonAir.Domain.Entity.Region> regions)
+        public List<Tuple<Color, List<PointLatLng>>> GetRegionEdges(List<KNNonAir.Domain.Entity.Region> regions)
         {
             List<Tuple<Color, List<PointLatLng>>> regionEdges = new List<Tuple<Color, List<PointLatLng>>>();
 
-            foreach (KeyValuePair<int, KNNonAir.Domain.Entity.Region> region in regions)
+            foreach (KNNonAir.Domain.Entity.Region region in regions)
             {
-                GetColorEdges(regionEdges, region.Value.Road.Graph.Edges);
+                GetColorEdges(regionEdges, region.Road.Graph.Edges);
             }
 
             return regionEdges;

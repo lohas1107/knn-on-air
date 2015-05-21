@@ -41,19 +41,19 @@ namespace KNNonAir.Domain.Service
         public override void GenerateIndex()
         {
             RoadGraph road = new RoadGraph(false);
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
-                road.AddGraph(region.Value.Road);
+                road.AddGraph(region.Road);
             }
             UpdateVisitGraph(road);
 
             Dictionary<int, RoadGraph> shortcutGraph = new Dictionary<int, RoadGraph>();
             Dictionary<Edge<Vertex>, double> distances = new Dictionary<Edge<Vertex>, double>();
 
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
                 RoadGraph shortcut = new RoadGraph(false);
-                List<Vertex> borders = region.Value.BorderPoints;
+                List<Vertex> borders = region.BorderPoints;
                 for (int i = 0; i < borders.Count; i++)
                 {
                     _dijkstra.Compute(borders[i]);
@@ -64,8 +64,8 @@ namespace KNNonAir.Domain.Service
                         distances.Add(edge, _dijkstra.Distances[borders[j]]);
                     }
                 }
-                shortcutGraph.Add(region.Key, shortcut);
-                _shortcutNetwork.RegionBorders.Add(region.Key, region.Value.BorderPoints);
+                shortcutGraph.Add(region.Id, shortcut);
+                _shortcutNetwork.RegionBorders.Add(region.Id, region.BorderPoints);
             }
 
             _shortcutNetwork.Distances = distances;
@@ -75,9 +75,9 @@ namespace KNNonAir.Domain.Service
 
         public override void ComputeTable()
         {
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
-                List<Vertex> vertices = region.Value.Road.Graph.Vertices.ToList();
+                List<Vertex> vertices = region.Road.Graph.Vertices.ToList();
                 vertices = vertices.OrderBy(o => o.Coordinate.Longitude).ToList();
                 double x = vertices.First().Coordinate.Longitude;
                 double width = vertices.Last().Coordinate.Longitude - x;
@@ -86,8 +86,8 @@ namespace KNNonAir.Domain.Service
                 double y = vertices.Last().Coordinate.Latitude;
                 double height = y - vertices.First().Coordinate.Latitude;
 
-                PATableInfo tableInfo = new PATableInfo(region.Value.PoIs.Count, new MBR(x, y, width, height));
-                PATable.Add(region.Key, tableInfo);
+                PATableInfo tableInfo = new PATableInfo(region.PoIs.Count, new MBR(x, y, width, height));
+                PATable.Add(region.Id, tableInfo);
             }
         }
 

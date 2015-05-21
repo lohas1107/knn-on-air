@@ -46,12 +46,12 @@ namespace KNNonAir.Domain.Service
             List<Vertex> borderPoints = new List<Vertex>();
             MBR mbr = new MBR(Road.Graph.Vertices);
 
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
-                foreach (Vertex borderPoint in region.Value.BorderPoints)
+                foreach (Vertex borderPoint in region.BorderPoints)
                 {
                     if (!borderPoints.Contains(borderPoint)) borderPoints.Add(borderPoint);
-                    mbr.AddVertices(region.Value.Road.Graph.Vertices);
+                    mbr.AddVertices(region.Road.Graph.Vertices);
                 }
             }
 
