@@ -56,6 +56,8 @@ namespace KNNonAir.Domain.Service
 
         public abstract void ComputeTable();
 
+        public abstract void Schedule();
+
         public virtual void InitializeQuery()
         {
             QueryPoint = Road.PickQueryPoint();

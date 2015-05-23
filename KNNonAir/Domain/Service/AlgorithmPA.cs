@@ -160,6 +160,8 @@ namespace KNNonAir.Domain.Service
             else return upperBound;
         }
 
+        public override void Schedule() { }
+        
         public override void InitializeQuery()
         {
             base.InitializeQuery();

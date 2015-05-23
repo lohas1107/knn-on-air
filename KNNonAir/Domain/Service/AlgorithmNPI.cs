@@ -31,6 +31,8 @@ namespace KNNonAir.Domain.Service
             {
                 Regions.Add(grid.ToRegion(Road));
             }
+
+            Schedule();
         }
 
         public override void GenerateIndex()
@@ -96,6 +98,12 @@ namespace KNNonAir.Domain.Service
             return new Tuple<double, double>(min, max);
         }
 
+        public override void Schedule()
+        {
+            HilbertCurve hilbert = new HilbertCurve();
+            Regions = hilbert.OrderByHilbert(Regions);
+        }
+        
         public override List<Vertex> SearchKNN(int k)
         {
             return null;
