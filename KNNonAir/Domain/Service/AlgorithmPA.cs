@@ -226,11 +226,5 @@ namespace KNNonAir.Domain.Service
 
             return GetKNN(QueryPoint, k); ;
         }
-
-        public override void Evaluate()
-        {
-            base.Evaluate();
-            Overflow.Clear();
-        }
     }
 }

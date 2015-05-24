@@ -97,11 +97,6 @@ namespace KNNonAir.Domain.Service
                 start++;
             }
             Latency.Add(Regions[End]);
-
-            for (int i = Position; i < Regions.Count; i++)
-            {
-                Overflow.Add(Regions[i]);
-            }
         }
     }
 }

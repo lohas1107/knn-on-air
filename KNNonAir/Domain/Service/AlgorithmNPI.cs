@@ -66,10 +66,10 @@ namespace KNNonAir.Domain.Service
                     if (from == to) continue;
 
                     Tuple<double, double> minMax = ComputeMinMax(Regions[from], Regions[to]);
-                    item.Add(to, minMax);
+                    item.Add(Regions[to].Id, minMax);
                 }
 
-                MinMaxTable.Add(from, item);
+                MinMaxTable.Add(Regions[from].Id, item);
             }  
         }
 
@@ -103,10 +103,62 @@ namespace KNNonAir.Domain.Service
             HilbertCurve hilbert = new HilbertCurve();
             Regions = hilbert.OrderByHilbert(Regions);
         }
-        
+
+        private double GetUpperBound(int regionId, int k)
+        {
+            int count = 0;
+            double upperBound = 0;
+
+            foreach(KeyValuePair<int, Tuple<double, double>> kvp in MinMaxTable[regionId].OrderBy(i => i.Value.Item1))
+            {
+                count += CountDiameterTable[kvp.Key].Item1;
+                double tempUB = CountDiameterTable[regionId].Item2 + CountDiameterTable[kvp.Key].Item2 + MinMaxTable[regionId][kvp.Key].Item2;
+                upperBound = Math.Max(upperBound, tempUB);
+                if (count >= k) break;
+            }
+
+            return upperBound;
+        }
+
         public override List<Vertex> SearchKNN(int k)
         {
-            return null;
+            InitializeQuery();
+
+            int regionId = -1;
+            foreach (MBR mbr in Grids)
+            {
+                if (mbr.Contains(QueryPoint))
+                {
+                    regionId = mbr.Id;
+                    break;
+                }
+            }
+
+            double upperBound = GetUpperBound(regionId, k);
+
+            List<Region> cList = new List<Region>();
+            for (int i = 0; i < Regions.Count; i++)
+            {
+                int index = (Position + i) % Regions.Count;
+                if (regionId == Regions[index].Id || MinMaxTable[regionId][Regions[index].Id].Item1 <= upperBound)
+                {
+                    cList.Add(Regions[index]);
+                }
+            }
+
+            Start = Regions.IndexOf(cList.First());
+            End = Regions.IndexOf(cList.Last());
+
+            RoadGraph graph = new RoadGraph(false);
+
+            foreach (Region region in cList)
+            {
+                Tuning.Add(region);
+                graph.AddGraph(region.Road);
+            }
+
+            UpdateVisitGraph(graph);
+            return GetKNN(QueryPoint, k);
         }
     }
 }

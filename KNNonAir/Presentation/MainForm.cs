@@ -252,6 +252,10 @@ namespace KNNonAir.Presentation
             dataGridView.Rows[1].Cells[2].Value = _model.GetSize(_model.PA.Regions, _packetSize);
             dataGridView.Rows[1].Cells[3].Value = _model.GetSize(_model.PA.Latency, _packetSize);
             dataGridView.Rows[1].Cells[4].Value = _model.GetSize(_model.PA.Tuning, _packetSize);
+
+            dataGridView.Rows[2].Cells[2].Value = _model.GetSize(_model.NPI.Regions, _packetSize);
+            dataGridView.Rows[2].Cells[3].Value = _model.GetSize(_model.NPI.Latency, _packetSize);
+            dataGridView.Rows[2].Cells[4].Value = _model.GetSize(_model.NPI.Tuning, _packetSize);
         }
     }
 }

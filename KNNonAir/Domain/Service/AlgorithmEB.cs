@@ -283,5 +283,15 @@ namespace KNNonAir.Domain.Service
             UpdateVisitGraph(graph);
             return GetKNN(QueryPoint, k);
         }
+
+        public override void Evaluate()
+        {
+            base.Evaluate();
+
+            for (int i = Position; i < Regions.Count; i++)
+            {
+                Overflow.Add(Regions[i]);
+            }
+        }
     }
 }
