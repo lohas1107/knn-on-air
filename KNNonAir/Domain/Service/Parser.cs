@@ -109,21 +109,20 @@ namespace KNNonAir.Domain.Service
 
             foreach (NVCInfo nvc in nvcList)
             {
-                road.Graph.AddVertex(new InterestPoint(nvc.PoI.Latitude, nvc.PoI.Longitude));
-
-                foreach (BorderInfo borderInfo in nvc.BPs)
-                {
-                    Vertex borderPoint = new BorderPoint(borderInfo.Vertex.Latitude, borderInfo.Vertex.Longitude);
-                    road.Graph.AddVertex(borderPoint);
-                }
-
                 foreach (EdgeInfo edge in nvc.Graph)
                 {
-                    Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
-                    Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
-                    if (!road.Graph.ContainsVertex(source)) road.Graph.AddVertex(source);
-                    if (!road.Graph.ContainsVertex(target)) road.Graph.AddVertex(target);
-                    road.Graph.AddEdge(new Edge<Vertex>(source, target));
+                    Vertex source;
+                    Vertex target;
+
+                    if (edge.Source == nvc.PoI) source = new InterestPoint(edge.Source.Latitude, edge.Source.Longitude);
+                    else if (nvc.BPs.Contains(new BorderInfo(edge.Source.Latitude, edge.Source.Longitude))) source = new BorderPoint(edge.Source.Latitude, edge.Source.Longitude);
+                    else source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
+
+                    if (edge.Target == nvc.PoI) target = new InterestPoint(edge.Target.Latitude, edge.Target.Longitude);
+                    else if (nvc.BPs.Contains(new BorderInfo(edge.Target.Latitude, edge.Target.Longitude))) target = new BorderPoint(edge.Target.Latitude, edge.Target.Longitude);
+                    else target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
+
+                    road.Graph.AddVerticesAndEdge(new Edge<Vertex>(source, target));
                 }
             }
 
@@ -138,23 +137,28 @@ namespace KNNonAir.Domain.Service
             {
                 VoronoiCell vc = new VoronoiCell();
                 vc.PoI = new InterestPoint(nvc.PoI.Latitude, nvc.PoI.Longitude);
-                vc.Road.Graph.AddVertex(vc.PoI);
 
                 foreach (BorderInfo borderPoint in nvc.BPs)
                 {
                     BorderPoint bp = new BorderPoint(borderPoint.Vertex.Latitude, borderPoint.Vertex.Longitude);
                     foreach (VertexInfo poi in borderPoint.PoIs) bp.PoIs.Add(new InterestPoint(poi.Latitude, poi.Longitude));
                     vc.BorderPoints.Add(bp);
-                    vc.Road.Graph.AddVertex(bp);
                 }
 
                 foreach (EdgeInfo edge in nvc.Graph)
                 {
-                    Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
-                    Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
-                    if (!vc.Road.Graph.ContainsVertex(source)) vc.Road.Graph.AddVertex(source);
-                    if (!vc.Road.Graph.ContainsVertex(target)) vc.Road.Graph.AddVertex(target);
-                    vc.Road.Graph.AddEdge(new Edge<Vertex>(source, target));
+                    Vertex source;
+                    Vertex target;
+
+                    if (edge.Source == nvc.PoI) source = new InterestPoint(edge.Source.Latitude, edge.Source.Longitude);
+                    else if (nvc.BPs.Contains(new BorderInfo(edge.Source.Latitude, edge.Source.Longitude))) source = new BorderPoint(edge.Source.Latitude, edge.Source.Longitude);
+                    else source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
+
+                    if (edge.Target == nvc.PoI) target = new InterestPoint(edge.Target.Latitude, edge.Target.Longitude);
+                    else if (nvc.BPs.Contains(new BorderInfo(edge.Target.Latitude, edge.Target.Longitude))) target = new BorderPoint(edge.Target.Latitude, edge.Target.Longitude);
+                    else target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
+
+                    vc.Road.Graph.AddVerticesAndEdge(new Edge<Vertex>(source, target));
                 }
 
                 nvd.Add(vc.PoI, vc);
@@ -202,6 +206,53 @@ namespace KNNonAir.Domain.Service
         public static NPITableInfo ParseNPITable(AlgorithmNPI NPI)
         {
             return new NPITableInfo(NPI.CountDiameterTable, NPI.MinMaxTable);
+        }
+
+        public static RoadPoIInfo ParseRoadPoI(RoadGraph road, List<Vertex> pois)
+        {
+            List<EdgeInfo> edgeInfo = new List<EdgeInfo>();
+            List<VertexInfo> poiInfo = new List<VertexInfo>();
+
+            foreach (Edge<Vertex> edge in road.Graph.Edges)
+            {
+                VertexInfo source = new VertexInfo(edge.Source.Coordinate.Latitude, edge.Source.Coordinate.Longitude);
+                VertexInfo target = new VertexInfo(edge.Target.Coordinate.Latitude, edge.Target.Coordinate.Longitude);
+                edgeInfo.Add(new EdgeInfo(source, target));
+            }
+
+            foreach (Vertex poi in pois) poiInfo.Add(new VertexInfo(poi.Coordinate.Latitude, poi.Coordinate.Longitude));
+
+            return new RoadPoIInfo(edgeInfo, poiInfo);
+        }
+
+        public static RoadGraph ParseRoadInfo(RoadPoIInfo roadPoI)
+        {
+            RoadGraph road = new RoadGraph(false);
+
+            foreach (EdgeInfo edge in roadPoI.Road)
+            {
+                Vertex source = new Vertex(edge.Source.Latitude, edge.Source.Longitude);
+                Vertex target = new Vertex(edge.Target.Latitude, edge.Target.Longitude);
+
+                if (roadPoI.PoIs.Contains(edge.Source)) source = new InterestPoint(edge.Source.Latitude, edge.Source.Longitude);
+                if (roadPoI.PoIs.Contains(edge.Target)) target = new InterestPoint(edge.Target.Latitude, edge.Target.Longitude);
+
+                road.Graph.AddVerticesAndEdge(new Edge<Vertex>(source, target));
+            }
+
+            return road;
+        }
+
+        public static List<Vertex> ParsePoIInfo(List<VertexInfo> list)
+        {
+            List<Vertex> pois = new List<Vertex>();
+
+            foreach (VertexInfo poi in list)
+            {
+                pois.Add(new InterestPoint(poi.Latitude, poi.Longitude));
+            }
+
+            return pois;
         }
     }
 }

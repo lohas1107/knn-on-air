@@ -27,15 +27,15 @@ namespace KNNonAir.Domain.Context
             PoIs = new List<Vertex>();
         }
 
-        public void LoadRoads()
+        public void LoadRoads(string filepath)
         {
-            List<Edge<Vertex>> edgeList = Parser.ParseRoadData(FileIO.ReadGeoJsonFile());
+            List<Edge<Vertex>> edgeList = Parser.ParseRoadData(FileIO.ReadGeoJsonFile(filepath));
             if (edgeList != null) Road.LoadRoads(edgeList);
         }
 
-        public void LoadPoIs()
+        public void LoadPoIs(string filepath)
         {
-            List<Vertex> poiList = Parser.ParsePoIData(FileIO.ReadGeoJsonFile());
+            List<Vertex> poiList = Parser.ParsePoIData(FileIO.ReadGeoJsonFile(filepath));
             if (poiList == null) return;
 
             foreach (Vertex poi in poiList)
@@ -43,6 +43,18 @@ namespace KNNonAir.Domain.Context
                 Vertex adjustedPoI = Road.AdjustPoIToEdge(poi);
                 if (adjustedPoI != null) PoIs.Add(adjustedPoI);
             }
+        }
+
+        public void AddRoadPoI(string filepath)
+        {
+            RoadPoIInfo roadPoI = FileIO.ReadRoadPoIFile(filepath);
+            Road = Parser.ParseRoadInfo(roadPoI);
+            PoIs = Parser.ParsePoIInfo(roadPoI.PoIs);
+        }
+
+        public void SaveRoadPoI()
+        {
+            FileIO.SaveRoadPoI(Parser.ParseRoadPoI(Road, PoIs));
         }
 
         public void GenerateNVD()

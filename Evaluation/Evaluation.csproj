@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="FlowEB.cs" />
     <Compile Include="Flow.cs" />
+    <Compile Include="FlowNPI.cs" />
     <Compile Include="FlowPA.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

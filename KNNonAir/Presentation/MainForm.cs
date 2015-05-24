@@ -146,14 +146,21 @@ namespace KNNonAir.Presentation
 
         private void ClickAddRoadsToolStripMenuItem(object sender, EventArgs e)
         {
-            _model.LoadRoads();
+            _model.LoadRoads(null);
             DrawLines(_presentationModel.GetRoads());
             DrawMarkers(_model.Road.GetSideVertexs()); // 標示孤點
         }
 
         private void ClickAddPoIToolStripMenuItem(object sender, EventArgs e)
         {
-            _model.LoadPoIs();
+            _model.LoadPoIs(null);
+            DrawMarkers(_model.PoIs);
+        }
+
+        private void ClickAddRoadsPoIsToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.AddRoadPoI(null);
+            DrawLines(_presentationModel.GetRoads());
             DrawMarkers(_model.PoIs);
         }
 
@@ -173,6 +180,11 @@ namespace KNNonAir.Presentation
         {
             _model.AddNPITable(null);
             dataGridView.Rows[2].Cells[1].Value = _model.GetSize(_model.NPI.CountDiameterTable, _packetSize) + _model.GetSize(_model.NPI.MinMaxTable, _packetSize);
+        }
+
+        private void ClickSaveRoadsAndPoIsToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.SaveRoadPoI();
         }
 
         private void ClickSaveNVDToolStripMenuItem(object sender, EventArgs e)

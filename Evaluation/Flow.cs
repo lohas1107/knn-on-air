@@ -11,10 +11,11 @@ namespace Evaluation
         protected Model _model;
         protected string[] _args;
 
+        protected string ROAD_POI_PATH;
         protected string NVD_PATH;
         protected int REGION_NUMBER;
         protected string ALGORITHM_CATEGORY;
-        protected string EBTABLE_PATH;
+        protected string TABLE_PATH;
         protected int K;
         protected double PACKET_SIZE;
 
@@ -43,7 +44,7 @@ namespace Evaluation
         public abstract void SearchKNN();
         public abstract void Evaluate();
 
-        public virtual void OutputResult(int frequency)
+        protected virtual void SetOutputPath()
         {
             List<string> argList = new List<string>();
             argList.Add(ALGORITHM_CATEGORY);
@@ -52,6 +53,11 @@ namespace Evaluation
             argList.Add(K.ToString());
             argList.Add(PACKET_SIZE.ToString());
             OUTPUT_PATH = String.Join("_", argList) + ".txt";
+        }
+
+        public virtual void OutputResult(int frequency)
+        {
+            SetOutputPath();
 
             File.AppendAllText(OUTPUT_PATH, "Brocast Length: " + BROCAST_LENGTH + Environment.NewLine);
             File.AppendAllText(OUTPUT_PATH, "| Latency | Tuning |" + Environment.NewLine);

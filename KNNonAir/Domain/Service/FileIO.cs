@@ -40,10 +40,15 @@ namespace KNNonAir.Domain.Service
             return result;
         }
 
-        public static string ReadGeoJsonFile()
+        public static string ReadGeoJsonFile(string filepath)
         {
-            if (OpenFile(GEOJSON_FILE_FILTER) != DialogResult.OK) return null;
-            else return File.ReadAllText(_filepath);
+            if (filepath == null)
+            {
+                if (OpenFile(GEOJSON_FILE_FILTER) != DialogResult.OK) return null;
+            }
+            else _filepath = filepath;
+
+            return File.ReadAllText(_filepath);
         }
 
         public static void SaveNVDFile(List<NVCInfo> nvd)
@@ -107,6 +112,26 @@ namespace KNNonAir.Domain.Service
 
             NPITableInfo table = JsonConvert.DeserializeObject<NPITableInfo>(File.ReadAllText(_filepath));
             return table;
+        }
+
+        public static void SaveRoadPoI(RoadPoIInfo roadPoIInfo)
+        {
+            if (SaveFile(JSON_FILE_FILTER) != DialogResult.OK) return;
+
+            string output = JsonConvert.SerializeObject(roadPoIInfo);
+            File.WriteAllText(_filepath, output);
+        }
+
+        public static RoadPoIInfo ReadRoadPoIFile(string filepath)
+        {
+            if (filepath == null)
+            {
+                if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
+            }
+            else _filepath = filepath;
+
+            RoadPoIInfo roadPoI = JsonConvert.DeserializeObject<RoadPoIInfo>(File.ReadAllText(_filepath));
+            return roadPoI;
         }
     }
 }

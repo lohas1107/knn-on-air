@@ -18,6 +18,7 @@ namespace Evaluation
 
             if (args[2] == "EB") _flow = new FlowEB(model, args);
             else if (args[2] == "PA") _flow = new FlowPA(model, args);
+            else if (args[2] == "NPI") _flow = new FlowNPI(model, args);
 
             _flow.Initialize();
 
