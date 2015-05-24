@@ -29,9 +29,9 @@ namespace Evaluation
             _model.GenerateIndex();
             _model.AddNPITable(TABLE_PATH);
 
-            INDEX_SIZE = _model.GetSize(_model.PA.ShortcutNetwork, PACKET_SIZE);
-            TABLE_SIZE = _model.GetSize(_model.PA.PATable, PACKET_SIZE);
-            REGIONS_SIZE = _model.GetSize(_model.PA.Regions, PACKET_SIZE);
+            INDEX_SIZE = _model.GetSize(_model.NPI.Grids, PACKET_SIZE);
+            TABLE_SIZE = _model.GetSize(_model.NPI.CountDiameterTable, PACKET_SIZE) + _model.GetSize(_model.NPI.MinMaxTable, PACKET_SIZE);
+            REGIONS_SIZE = _model.GetSize(_model.NPI.Regions, PACKET_SIZE);
         }
 
         public override void SearchKNN()
@@ -41,12 +41,12 @@ namespace Evaluation
 
         public override void Evaluate()
         {
-            TUNING_SIZE = _model.GetSize(_model.PA.Tuning, PACKET_SIZE);
-            LATENCY_SIZE = _model.GetSize(_model.PA.Latency, PACKET_SIZE);
+            TUNING_SIZE = _model.GetSize(_model.NPI.Tuning, PACKET_SIZE);
+            LATENCY_SIZE = _model.GetSize(_model.NPI.Latency, PACKET_SIZE);
 
             int slot = 0;
-            if (_model.PA.End < _model.PA.Start) slot = _model.PA.End + REGION_NUMBER - _model.PA.Start + 1;
-            else slot = _model.PA.End - _model.PA.Start + 1;
+            if (_model.NPI.End < _model.NPI.Start) slot = _model.NPI.End + REGION_NUMBER - _model.NPI.Start + 1;
+            else slot = _model.NPI.End - _model.NPI.Start + 1;
 
             Tuning.Add(INDEX_SIZE + TABLE_SIZE + TUNING_SIZE);
             Latency.Add((INDEX_SIZE + TABLE_SIZE) * slot + LATENCY_SIZE); 
