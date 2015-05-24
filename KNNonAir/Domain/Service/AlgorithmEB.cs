@@ -15,7 +15,7 @@ namespace KNNonAir.Domain.Service
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
 
-        public AlgorithmEB(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
+        public AlgorithmEB(RoadGraph road, List<Vertex> pois) : base(road, pois)
         {
             MinTable = new Dictionary<int, Dictionary<int, double>>();
             MaxCountTable = new Dictionary<int, Tuple<int, double>>();
@@ -33,17 +33,25 @@ namespace KNNonAir.Domain.Service
             info.AddValue("MaxCountTable", MaxCountTable);
         }
 
+        public override void Partition(Dictionary<Vertex, VoronoiCell> nvd, int amount)
+        {
+            base.Partition(nvd, amount);
+
+            KdTree kdTree = new KdTree(nvd, amount);
+            Regions = kdTree.Regions;
+        }
+
         public override void GenerateIndex()
         {
             List<Vertex> borderPoints = new List<Vertex>();
             MBR mbr = new MBR(Road.Graph.Vertices);
 
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
-                foreach (Vertex borderPoint in region.Value.BorderPoints)
+                foreach (Vertex borderPoint in region.BorderPoints)
                 {
                     if (!borderPoints.Contains(borderPoint)) borderPoints.Add(borderPoint);
-                    mbr.AddVertices(region.Value.Road.Graph.Vertices);
+                    mbr.AddVertices(region.Road.Graph.Vertices);
                 }
             }
 
@@ -116,6 +124,8 @@ namespace KNNonAir.Domain.Service
             return maxDistance;
         }
 
+        public override void Schedule() { }
+        
         public bool CanTune(int id, int regionId, double upperBound)
         {
             if (id == regionId) return true;
@@ -272,6 +282,16 @@ namespace KNNonAir.Domain.Service
 
             UpdateVisitGraph(graph);
             return GetKNN(QueryPoint, k);
+        }
+
+        public override void Evaluate()
+        {
+            base.Evaluate();
+
+            for (int i = Position; i < Regions.Count; i++)
+            {
+                Overflow.Add(Regions[i]);
+            }
         }
     }
 }

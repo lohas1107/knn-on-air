@@ -123,12 +123,12 @@ namespace KNNonAir.Presentation
             gmap.Overlays.Add(_markersOverlay);
         }
 
-        private void DrawMBRs()
+        private void DrawMBRs(List<List<PointLatLng>> mbrs)
         {
             gmap.Overlays.Remove(_mbrOverlay);
             _mbrOverlay = new GMapOverlay("mbr");
 
-            foreach (List<PointLatLng> points in _presentationModel.GetVQTree())
+            foreach (List<PointLatLng> points in mbrs)
             {
                 SetPolygon(points, Color.Red, 100, 1);
             }
@@ -146,14 +146,21 @@ namespace KNNonAir.Presentation
 
         private void ClickAddRoadsToolStripMenuItem(object sender, EventArgs e)
         {
-            _model.LoadRoads();
+            _model.LoadRoads(null);
             DrawLines(_presentationModel.GetRoads());
             DrawMarkers(_model.Road.GetSideVertexs()); // 標示孤點
         }
 
         private void ClickAddPoIToolStripMenuItem(object sender, EventArgs e)
         {
-            _model.LoadPoIs();
+            _model.LoadPoIs(null);
+            DrawMarkers(_model.PoIs);
+        }
+
+        private void ClickAddRoadsPoIsToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.AddRoadPoI(null);
+            DrawLines(_presentationModel.GetRoads());
             DrawMarkers(_model.PoIs);
         }
 
@@ -169,6 +176,17 @@ namespace KNNonAir.Presentation
             dataGridView.Rows[0].Cells[1].Value = _model.GetSize(_model.EB, _packetSize);
         }
 
+        private void ClickAddNPITableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.AddNPITable(null);
+            dataGridView.Rows[2].Cells[1].Value = _model.GetSize(_model.NPI.CountDiameterTable, _packetSize) + _model.GetSize(_model.NPI.MinMaxTable, _packetSize);
+        }
+
+        private void ClickSaveRoadsAndPoIsToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.SaveRoadPoI();
+        }
+
         private void ClickSaveNVDToolStripMenuItem(object sender, EventArgs e)
         {
             FileIO.SaveNVDFile(Parser.ParseNVD(_model.NVD));
@@ -177,6 +195,11 @@ namespace KNNonAir.Presentation
         private void ClickSaveEBTableToolStripMenuItem(object sender, EventArgs e)
         {
             _model.SaveEBTable();
+        }
+
+        private void ClickSaveNPITableToolStripMenuItem(object sender, EventArgs e)
+        {
+            _model.SaveNPITable();
         }
 
         // Parameters
@@ -200,17 +223,24 @@ namespace KNNonAir.Presentation
 
         private void ClickPartitionToolStripButton(object sender, EventArgs e)
         {
-            _model.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
             _model.InitializeAlgorithm(algorithmToolStripComboBox.Text);
-            DrawColorLines(_presentationModel.GetRegionEdges());
+
+            _model.Partition(Convert.ToInt32(partitionToolStripComboBox.SelectedItem));
+            
+            if (algorithmToolStripComboBox.Text == "EB") DrawColorLines(_presentationModel.GetRegionEdges(_model.EB.Regions));
+            else if (algorithmToolStripComboBox.Text == "PA") DrawColorLines(_presentationModel.GetRegionEdges(_model.PA.Regions));
+            else if (algorithmToolStripComboBox.Text == "NPI") DrawColorLines(_presentationModel.GetRegionEdges(_model.NPI.Regions));
         }
 
         private void ClickIndexToolStripButton(object sender, EventArgs e)
         {
             _model.GenerateIndex();
-            if (algorithmToolStripComboBox.Text == "EB") DrawMBRs();
+            if (algorithmToolStripComboBox.Text == "EB") DrawMBRs(_presentationModel.GetMBRs(_model.EB.VQTree.MBRs));
+            if (algorithmToolStripComboBox.Text == "NPI") DrawMBRs(_presentationModel.GetMBRs(_model.NPI.Grids));
+
             dataGridView.Rows[0].Cells[0].Value = _model.GetSize(_model.EB.VQTree, _packetSize);
             dataGridView.Rows[1].Cells[0].Value = _model.GetSize(_model.PA.ShortcutNetwork, _packetSize);
+            dataGridView.Rows[2].Cells[0].Value = _model.GetSize(_model.NPI.Grids, _packetSize);
         }
 
         private void ClickTableToolStripButton(object sender, EventArgs e)
@@ -218,6 +248,7 @@ namespace KNNonAir.Presentation
             _model.ComputeTable();
             dataGridView.Rows[0].Cells[1].Value = _model.GetSize(_model.EB, _packetSize);
             dataGridView.Rows[1].Cells[1].Value = _model.GetSize(_model.PA.PATable, _packetSize);
+            dataGridView.Rows[2].Cells[1].Value = _model.GetSize(_model.NPI.CountDiameterTable, _packetSize) + _model.GetSize(_model.NPI.MinMaxTable, _packetSize);
         }
 
         private void ClickSearchToolStripButton(object sender, EventArgs e)
@@ -226,13 +257,17 @@ namespace KNNonAir.Presentation
             DrawMarkers(_model.PoIs);
             DrawAnswer(_model.CurrentAlgorithm.QueryPoint, _model.Answers);
 
-            dataGridView.Rows[0].Cells[2].Value = _model.GetSize(_model.Regions, _packetSize);
+            dataGridView.Rows[0].Cells[2].Value = _model.GetSize(_model.EB.Regions, _packetSize);
             dataGridView.Rows[0].Cells[3].Value = _model.GetSize(_model.EB.Latency, _packetSize) + _model.GetSize(_model.EB.Overflow, _packetSize);
             dataGridView.Rows[0].Cells[4].Value = _model.GetSize(_model.EB.Tuning, _packetSize);
-           
-            dataGridView.Rows[1].Cells[2].Value = _model.GetSize(_model.Regions, _packetSize);
+
+            dataGridView.Rows[1].Cells[2].Value = _model.GetSize(_model.PA.Regions, _packetSize);
             dataGridView.Rows[1].Cells[3].Value = _model.GetSize(_model.PA.Latency, _packetSize);
             dataGridView.Rows[1].Cells[4].Value = _model.GetSize(_model.PA.Tuning, _packetSize);
+
+            dataGridView.Rows[2].Cells[2].Value = _model.GetSize(_model.NPI.Regions, _packetSize);
+            dataGridView.Rows[2].Cells[3].Value = _model.GetSize(_model.NPI.Latency, _packetSize);
+            dataGridView.Rows[2].Cells[4].Value = _model.GetSize(_model.NPI.Tuning, _packetSize);
         }
     }
 }

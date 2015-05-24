@@ -1,29 +1,33 @@
-﻿using System;
+﻿using KNNonAir.Domain.Context;
+using System;
 using System.Collections.Generic;
-using KNNonAir.Domain.Context;
+using System.Linq;
+using System.Text;
 
 namespace Evaluation
 {
-    class FlowPA : Flow
+    class FlowNPI : Flow
     {
-        public FlowPA(Model model, string[] args) : base(model, args)
+        public FlowNPI(Model model, string[] args) : base(model, args)
         {
+            ROAD_POI_PATH = _args[0];
             NVD_PATH = _args[0];
             REGION_NUMBER = Convert.ToInt16(_args[1]);
             ALGORITHM_CATEGORY = _args[2];
-            K = Convert.ToInt16(_args[3]);
-            PACKET_SIZE = Convert.ToDouble(_args[4]);
+            TABLE_PATH = _args[3];
+            K = Convert.ToInt16(_args[4]);
+            PACKET_SIZE = Convert.ToDouble(_args[5]);
 
             Console.WriteLine(String.Join("_", args));
         }
 
         public override void Initialize()
         {
-            _model.AddNVD(NVD_PATH);
+            _model.AddRoadPoI(ROAD_POI_PATH);
             _model.InitializeAlgorithm(ALGORITHM_CATEGORY);
             _model.Partition(REGION_NUMBER);
             _model.GenerateIndex();
-            _model.ComputeTable();
+            _model.AddNPITable(TABLE_PATH);
 
             INDEX_SIZE = _model.GetSize(_model.PA.ShortcutNetwork, PACKET_SIZE);
             TABLE_SIZE = _model.GetSize(_model.PA.PATable, PACKET_SIZE);

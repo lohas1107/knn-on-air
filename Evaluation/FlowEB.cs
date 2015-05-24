@@ -11,7 +11,7 @@ namespace Evaluation
             NVD_PATH = _args[0];
             REGION_NUMBER = Convert.ToInt16(_args[1]);
             ALGORITHM_CATEGORY = _args[2];
-            EBTABLE_PATH = _args[3];
+            TABLE_PATH = _args[3];
             K = Convert.ToInt16(_args[4]);
             PACKET_SIZE = Convert.ToDouble(_args[5]);
 
@@ -21,14 +21,14 @@ namespace Evaluation
         public override void Initialize()
         {
             _model.AddNVD(NVD_PATH);
-            _model.Partition(REGION_NUMBER);
             _model.InitializeAlgorithm(ALGORITHM_CATEGORY);
+            _model.Partition(REGION_NUMBER);
             _model.GenerateIndex();
-            _model.AddEBTable(EBTABLE_PATH);
+            _model.AddEBTable(TABLE_PATH);
            
             INDEX_SIZE = _model.GetSize(_model.EB.VQTree, PACKET_SIZE);
             TABLE_SIZE = _model.GetSize(_model.EB, PACKET_SIZE);
-            REGIONS_SIZE = _model.GetSize(_model.Regions, PACKET_SIZE);
+            REGIONS_SIZE = _model.GetSize(_model.EB.Regions, PACKET_SIZE);
         }
 
         public override void SearchKNN()
