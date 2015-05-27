@@ -29,7 +29,7 @@ namespace KNNonAir.Domain.Service
 
             foreach (MBR grid in Grids)
             {
-                Regions.Add(grid.ToRegion(Road));
+                Regions.Add(grid.ToRegion(Road, PoIs));
             }
 
             Schedule();
@@ -109,7 +109,8 @@ namespace KNNonAir.Domain.Service
             int count = 0;
             double upperBound = 0;
 
-            foreach(KeyValuePair<int, Tuple<double, double>> kvp in MinMaxTable[regionId].OrderBy(i => i.Value.Item1))
+            Dictionary<int, Tuple<double, double>> minmax = MinMaxTable[regionId].OrderBy(i => i.Value.Item1).ToDictionary(i=>i.Key, i=>i.Value);
+            foreach (KeyValuePair<int, Tuple<double, double>> kvp in minmax)
             {
                 count += CountDiameterTable[kvp.Key].Item1;
                 double tempUB = CountDiameterTable[regionId].Item2 + CountDiameterTable[kvp.Key].Item2 + MinMaxTable[regionId][kvp.Key].Item2;

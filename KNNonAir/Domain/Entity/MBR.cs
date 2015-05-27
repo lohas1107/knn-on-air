@@ -80,7 +80,7 @@ namespace KNNonAir.Domain.Entity
             }
         }
 
-        public Region ToRegion(RoadGraph road)
+        public Region ToRegion(RoadGraph road, List<Vertex> pois)
         {
             Region region = new Region();
             region.Id = Id;
@@ -90,8 +90,8 @@ namespace KNNonAir.Domain.Entity
                 if (!Vertices.Contains(edge.Source) && !Vertices.Contains(edge.Target)) continue;
                 else if (Vertices.Contains(edge.Source) && Vertices.Contains(edge.Target))
                 {
-                    if (edge.Source is InterestPoint) region.PoIs.Add(edge.Source);
-                    if (edge.Target is InterestPoint) region.PoIs.Add(edge.Target);
+                    if (pois.Contains(edge.Source) && !region.PoIs.Contains(edge.Source)) region.PoIs.Add(edge.Source);
+                    if (pois.Contains(edge.Target) && !region.PoIs.Contains(edge.Target)) region.PoIs.Add(edge.Target);
                     region.Road.Graph.AddVerticesAndEdge(edge);
                 }
                 else if (Vertices.Contains(edge.Source) || Vertices.Contains(edge.Target))
