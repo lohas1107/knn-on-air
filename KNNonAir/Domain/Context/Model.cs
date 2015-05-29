@@ -4,20 +4,20 @@ using KNNonAir.Domain.Service;
 using QuickGraph;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 namespace KNNonAir.Domain.Context
 {
-    class Model
+    public class Model
     {
         public RoadGraph Road { get; set; }
         public List<Vertex> PoIs { get; set; }
         public Dictionary<Vertex, VoronoiCell> NVD { get; set; }
-        public Dictionary<int, Region> Regions { get; set; }
 
-        public Strategy CurrentStrategy { get; set; }
-        public StrategyEB EB { get; set; }
-        public StrategyPA PA { get; set; }
-        public StrategyNPI NPI { get; set; }
+        public Algorithm CurrentAlgorithm { get; set; }
+        public AlgorithmEB EB { get; set; }
+        public AlgorithmPA PA { get; set; }
+        public AlgorithmNPI NPI { get; set; }
 
         public List<Vertex> Answers { get; set; }
 
@@ -27,15 +27,15 @@ namespace KNNonAir.Domain.Context
             PoIs = new List<Vertex>();
         }
 
-        public void LoadRoads()
+        public void LoadRoads(string filepath)
         {
-            List<Edge<Vertex>> edgeList = Parser.ParseRoadData(FileIO.ReadGeoJsonFile());
+            List<Edge<Vertex>> edgeList = Parser.ParseRoadData(FileIO.ReadGeoJsonFile(filepath));
             if (edgeList != null) Road.LoadRoads(edgeList);
         }
 
-        public void LoadPoIs()
+        public void LoadPoIs(string filepath)
         {
-            List<Vertex> poiList = Parser.ParsePoIData(FileIO.ReadGeoJsonFile());
+            List<Vertex> poiList = Parser.ParsePoIData(FileIO.ReadGeoJsonFile(filepath));
             if (poiList == null) return;
 
             foreach (Vertex poi in poiList)
@@ -43,6 +43,18 @@ namespace KNNonAir.Domain.Context
                 Vertex adjustedPoI = Road.AdjustPoIToEdge(poi);
                 if (adjustedPoI != null) PoIs.Add(adjustedPoI);
             }
+        }
+
+        public void AddRoadPoI(string filepath)
+        {
+            RoadPoIInfo roadPoI = FileIO.ReadRoadPoIFile(filepath);
+            Road = Parser.ParseRoadInfo(roadPoI);
+            PoIs = Parser.ParsePoIInfo(roadPoI.PoIs);
+        }
+
+        public void SaveRoadPoI()
+        {
+            FileIO.SaveRoadPoI(Parser.ParseRoadPoI(Road, PoIs));
         }
 
         public void GenerateNVD()
@@ -56,9 +68,9 @@ namespace KNNonAir.Domain.Context
             }
         }
 
-        public void AddNVD()
+        public void AddNVD(string filepath)
         {
-            List<NVCInfo> nvcList = FileIO.ReadNVDFile();
+            List<NVCInfo> nvcList = FileIO.ReadNVDFile(filepath);
 
             if (nvcList != null)
             {
@@ -68,35 +80,35 @@ namespace KNNonAir.Domain.Context
             }
         }
 
+        public void ChangeAlgorithm(string text)
+        {
+            if (text == "EB") CurrentAlgorithm = EB;
+            else if (text == "PA") CurrentAlgorithm = PA;
+            else if (text == "NPI") CurrentAlgorithm = NPI;
+        }
+
+        public void InitializeAlgorithm(string text)
+        {
+            EB = new AlgorithmEB(Road, PoIs);
+            PA = new AlgorithmPA(Road, PoIs);
+            NPI = new AlgorithmNPI(Road, PoIs);
+            ChangeAlgorithm(text);
+        }
+
         public void Partition(int frames)
         {
-            KdTree kdTree = new KdTree(NVD, frames);
-            Regions = kdTree.Regions;
-        }
-
-        public void ChangeStrategy(string text)
-        {
-            if (text == "EB") CurrentStrategy = EB;
-            else if (text == "PA") CurrentStrategy = PA;
-            else if (text == "NPI") CurrentStrategy = NPI;
-        }
-
-        public void InitializeStrategy(string text)
-        {
-            EB = new StrategyEB(Road, PoIs, Regions);
-            PA = new StrategyPA(Road, PoIs, Regions);
-            NPI = new StrategyNPI(Road, PoIs, Regions);
-            ChangeStrategy(text);
+            if (CurrentAlgorithm is AlgorithmNPI) CurrentAlgorithm.Partition(Road, frames);
+            else CurrentAlgorithm.Partition(NVD, frames);
         }
 
         public void GenerateIndex()
         {
-            CurrentStrategy.GenerateIndex();
+            CurrentAlgorithm.GenerateIndex();
         }
 
         public void ComputeTable()
         {
-            CurrentStrategy.ComputeTable();
+            CurrentAlgorithm.ComputeTable();
         }
 
         public void SaveEBTable()
@@ -104,17 +116,29 @@ namespace KNNonAir.Domain.Context
             FileIO.SaveEBTable(Parser.ParseCountingTable(PoIs, EB));
         }
 
-        public void AddEBTable()
+        public void AddEBTable(String filepath)
         {
-            EBTableInfo tableInfo = FileIO.ReadEBTableFile();
+            EBTableInfo tableInfo = FileIO.ReadEBTableFile(filepath);
             EB.MinTable = tableInfo.MinTable;
             EB.MaxCountTable = tableInfo.MaxCountTable;
         }
 
+        public void SaveNPITable()
+        {
+            FileIO.SaveNPITable(Parser.ParseNPITable(NPI));
+        }
+
+        public void AddNPITable(String filepath)
+        {
+            NPITableInfo tableInfo = FileIO.ReadNPITableFile(filepath);
+            NPI.CountDiameterTable = tableInfo.CountDiameterTable;
+            NPI.MinMaxTable = tableInfo.MinMaxTable;
+        }
+
         public void SearchKNN(int k)
         {
-            Answers = CurrentStrategy.SearchKNN(k);
-            CurrentStrategy.Evaluate();
+            Answers = CurrentAlgorithm.SearchKNN(k);
+            CurrentAlgorithm.Evaluate();
         }
 
         public double GetSize(object obj, double packetSize)

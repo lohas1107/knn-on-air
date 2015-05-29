@@ -14,7 +14,7 @@ namespace KNNonAir.Domain.Service
         private const string XML_FILE_FILTER = "xml files (*.xml)|*.xml";
         private const string JSON_FILE_FILTER = "json files (*.json)|*.json";
 
-        private static string _fileName;
+        private static string _filepath;
 
         private static DialogResult OpenFile(string filter)
         {
@@ -23,7 +23,7 @@ namespace KNNonAir.Domain.Service
             openFileDialog.RestoreDirectory = true;
 
             DialogResult result = openFileDialog.ShowDialog();
-            _fileName = openFileDialog.FileName;
+            _filepath = openFileDialog.FileName;
 
             return result;
         }
@@ -35,15 +35,20 @@ namespace KNNonAir.Domain.Service
             saveFileDialog.RestoreDirectory = true;
 
             DialogResult result = saveFileDialog.ShowDialog();
-            _fileName = saveFileDialog.FileName;
+            _filepath = saveFileDialog.FileName;
 
             return result;
         }
 
-        public static string ReadGeoJsonFile()
+        public static string ReadGeoJsonFile(string filepath)
         {
-            if (OpenFile(GEOJSON_FILE_FILTER) != DialogResult.OK) return null;
-            else return File.ReadAllText(_fileName);
+            if (filepath == null)
+            {
+                if (OpenFile(GEOJSON_FILE_FILTER) != DialogResult.OK) return null;
+            }
+            else _filepath = filepath;
+
+            return File.ReadAllText(_filepath);
         }
 
         public static void SaveNVDFile(List<NVCInfo> nvd)
@@ -53,16 +58,19 @@ namespace KNNonAir.Domain.Service
             StringWriter writer = new StringWriter(new StringBuilder());
             XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
             serializer.Serialize(writer, nvd);
-            File.WriteAllText(_fileName, writer.ToString());
+            File.WriteAllText(_filepath, writer.ToString());
         }
 
-        public static List<NVCInfo> ReadNVDFile()
+        public static List<NVCInfo> ReadNVDFile(string filepath)
         {
-            if (OpenFile(XML_FILE_FILTER) != DialogResult.OK) return null;
-            
-            XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
-            List<NVCInfo> nvdList = (List<NVCInfo>)serializer.Deserialize(File.OpenText(_fileName));
+            if (filepath == null)
+            {
+                if (OpenFile(XML_FILE_FILTER) != DialogResult.OK) return null;
+            }
+            else _filepath = filepath;
 
+            XmlSerializer serializer = new XmlSerializer(typeof(List<NVCInfo>));
+            List<NVCInfo> nvdList = (List<NVCInfo>)serializer.Deserialize(File.OpenText(_filepath));
             return nvdList;
         }
 
@@ -71,15 +79,59 @@ namespace KNNonAir.Domain.Service
             if (SaveFile(JSON_FILE_FILTER) != DialogResult.OK) return;
 
             string output = JsonConvert.SerializeObject(countingTable);
-            File.WriteAllText(_fileName, output);
+            File.WriteAllText(_filepath, output);
         }
 
-        public static EBTableInfo ReadEBTableFile()
+        public static EBTableInfo ReadEBTableFile(string filepath)
         {
-            if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
+            if (filepath == null)
+            {
+                if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
+            }
+            else _filepath = filepath;
 
-            EBTableInfo table = JsonConvert.DeserializeObject<EBTableInfo>(File.ReadAllText(_fileName));
+            EBTableInfo table = JsonConvert.DeserializeObject<EBTableInfo>(File.ReadAllText(_filepath));
             return table;
+        }
+
+        public static void SaveNPITable(NPITableInfo npi)
+        {
+            if (SaveFile(JSON_FILE_FILTER) != DialogResult.OK) return;
+
+            string output = JsonConvert.SerializeObject(npi);
+            File.WriteAllText(_filepath, output);
+        }
+
+        public static NPITableInfo ReadNPITableFile(string filepath)
+        {
+            if (filepath == null)
+            {
+                if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
+            }
+            else _filepath = filepath;
+
+            NPITableInfo table = JsonConvert.DeserializeObject<NPITableInfo>(File.ReadAllText(_filepath));
+            return table;
+        }
+
+        public static void SaveRoadPoI(RoadPoIInfo roadPoIInfo)
+        {
+            if (SaveFile(JSON_FILE_FILTER) != DialogResult.OK) return;
+
+            string output = JsonConvert.SerializeObject(roadPoIInfo);
+            File.WriteAllText(_filepath, output);
+        }
+
+        public static RoadPoIInfo ReadRoadPoIFile(string filepath)
+        {
+            if (filepath == null)
+            {
+                if (OpenFile(JSON_FILE_FILTER) != DialogResult.OK) return null;
+            }
+            else _filepath = filepath;
+
+            RoadPoIInfo roadPoI = JsonConvert.DeserializeObject<RoadPoIInfo>(File.ReadAllText(_filepath));
+            return roadPoI;
         }
     }
 }

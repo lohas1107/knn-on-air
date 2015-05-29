@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace KNNonAir.Domain.Entity
 {
     [Serializable]
-    class Region : ISerializable
+    public class Region : ISerializable
     {
         public int Id { get; set; }
         public List<Vertex> PoIs { get; set; }

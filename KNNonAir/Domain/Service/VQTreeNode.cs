@@ -54,7 +54,7 @@ namespace KNNonAir.Domain.Service
             {
                 foreach (Vertex vertex in MBR.Vertices)
                 {
-                    if (vertex.RegionId != -1) return vertex.RegionId;
+                    if (vertex.Coordinate == queryPoint.Coordinate) return vertex.RegionId;
                 }
             }
             else

@@ -8,20 +8,20 @@ using QuickGraph;
 namespace KNNonAir.Domain.Service
 {
     [Serializable]
-    class StrategyEB : Strategy, ISerializable
+    public class AlgorithmEB : Algorithm, ISerializable
     {
         public VQTree VQTree { get; set; }
 
         public Dictionary<int, Dictionary<int, double>> MinTable { get; set; }
         public Dictionary<int, Tuple<int, double>> MaxCountTable { get; set; }
 
-        public StrategyEB(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
+        public AlgorithmEB(RoadGraph road, List<Vertex> pois) : base(road, pois)
         {
             MinTable = new Dictionary<int, Dictionary<int, double>>();
             MaxCountTable = new Dictionary<int, Tuple<int, double>>();
         }
 
-        public StrategyEB(SerializationInfo info, StreamingContext context)
+        public AlgorithmEB(SerializationInfo info, StreamingContext context)
         {
             MinTable = (Dictionary<int, Dictionary<int, double>>)info.GetValue("MinTable", typeof(Dictionary<int, Dictionary<int, double>>));
             MaxCountTable = (Dictionary<int, Tuple<int, double>>)info.GetValue("MaxCountTable", typeof(Dictionary<int, Tuple<int, double>>));
@@ -33,18 +33,26 @@ namespace KNNonAir.Domain.Service
             info.AddValue("MaxCountTable", MaxCountTable);
         }
 
+        public override void Partition(Dictionary<Vertex, VoronoiCell> nvd, int amount)
+        {
+            base.Partition(nvd, amount);
+
+            KdTree kdTree = new KdTree(nvd, amount);
+            Regions = kdTree.Regions;
+        }
+
         public override void GenerateIndex()
         {
             List<Vertex> borderPoints = new List<Vertex>();
             MBR mbr = new MBR(Road.Graph.Vertices);
 
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
-                foreach (Vertex borderPoint in region.Value.BorderPoints)
+                foreach (Vertex borderPoint in region.BorderPoints)
                 {
                     if (!borderPoints.Contains(borderPoint)) borderPoints.Add(borderPoint);
-                    mbr.AddVertices(region.Value.Road.Graph.Vertices);
                 }
+                mbr.AddVertices(region.Road.Graph.Vertices);
             }
 
             VQTree = new VQTree(borderPoints, mbr);
@@ -116,6 +124,8 @@ namespace KNNonAir.Domain.Service
             return maxDistance;
         }
 
+        public override void Schedule() { }
+        
         public bool CanTune(int id, int regionId, double upperBound)
         {
             if (id == regionId) return true;
@@ -127,6 +137,8 @@ namespace KNNonAir.Domain.Service
 
         private double GetUpperBound(int regionId, int k)
         {
+            if (MaxCountTable.Count() == 0 && MinTable.Count() == 0) return 0;
+
             double ub = MaxCountTable[regionId].Item2;
             int count = 0;
             List<double> minList = new List<double>();
@@ -154,12 +166,12 @@ namespace KNNonAir.Domain.Service
             return ub + min;
         }
 
-        private double UpdateUpperBound(Vertex queryPoint, int k, double upperBound)
+        private double UpdateUpperBound(int k, double upperBound)
         {
             double newUB = double.MaxValue;
             int count = 0;
 
-            _dijkstra.Compute(queryPoint);
+            _dijkstra.Compute(QueryPoint);
 
             foreach (KeyValuePair<Vertex, double> kvp in _dijkstra.Distances.OrderBy(o => o.Value))
             {
@@ -169,46 +181,47 @@ namespace KNNonAir.Domain.Service
                     newUB = kvp.Value;
                 }
                 else if (count == k && newUB < upperBound) return newUB;
+                else return upperBound;
             }
 
             return upperBound;
         }
 
-        private RoadGraph PruneRegionVertices(Region region, Vertex queryPoint, double upperBound, int k)
+        //private RoadGraph PruneRegionVertices(Region region, Vertex queryPoint, double upperBound, int k)
+        //{
+        //    List<Vertex> savedVertex = new List<Vertex>();
+        //    savedVertex.Add(queryPoint);
+
+        //    foreach (Vertex border in region.BorderPoints)
+        //    {
+        //        _dijkstra.Compute(border);
+
+        //        int count = 0;
+        //        foreach (KeyValuePair<Vertex, double> kvp in _dijkstra.Distances.OrderBy(o => o.Value))
+        //        {
+        //            if (count < k && kvp.Value <= upperBound - Arithmetics.GetDistance(queryPoint, border))
+        //            {
+        //                if (PoIs.Contains(kvp.Key)) count++;
+        //                if (!savedVertex.Contains(kvp.Key)) savedVertex.Add(kvp.Key);
+        //            }
+        //        }
+        //    }
+
+        //    RoadGraph road = new RoadGraph(false);
+        //    foreach (Edge<Vertex> edge in region.Road.Graph.Edges)
+        //    {
+        //        if (savedVertex.Contains(edge.Source) || savedVertex.Contains(edge.Target)) road.Graph.AddVerticesAndEdge(edge);
+        //    }
+
+        //    return road;
+        //}
+
+        private RoadGraph PruneGraphVertices(double upperBound, int k)
         {
             List<Vertex> savedVertex = new List<Vertex>();
-            savedVertex.Add(queryPoint);
+            savedVertex.Add(QueryPoint);
 
-            foreach (Vertex border in region.BorderPoints)
-            {
-                _dijkstra.Compute(border);
-
-                int count = 0;
-                foreach (KeyValuePair<Vertex, double> kvp in _dijkstra.Distances.OrderBy(o => o.Value))
-                {
-                    if (count < k && kvp.Value <= upperBound - Arithmetics.GetDistance(queryPoint, border))
-                    {
-                        if (PoIs.Contains(kvp.Key)) count++;
-                        if (!savedVertex.Contains(kvp.Key)) savedVertex.Add(kvp.Key);
-                    }
-                }
-            }
-
-            RoadGraph road = new RoadGraph(false);
-            foreach (Edge<Vertex> edge in region.Road.Graph.Edges)
-            {
-                if (savedVertex.Contains(edge.Source) && savedVertex.Contains(edge.Target)) road.Graph.AddVerticesAndEdge(edge);
-            }
-
-            return road;
-        }
-
-        private RoadGraph PruneGraphVertices(Vertex queryPoint, double upperBound, int k)
-        {
-            List<Vertex> savedVertex = new List<Vertex>();
-            savedVertex.Add(queryPoint);
-
-            _dijkstra.Compute(queryPoint);
+            _dijkstra.Compute(QueryPoint);
 
             int count = 0;
             foreach (KeyValuePair<Vertex, double> kvp in _dijkstra.Distances.OrderBy(o => o.Value))
@@ -223,7 +236,7 @@ namespace KNNonAir.Domain.Service
             RoadGraph road = new RoadGraph(false);
             foreach (Edge<Vertex> edge in _dijkstra.Road.Graph.Edges)
             {
-                if (savedVertex.Contains(edge.Source) && savedVertex.Contains(edge.Target)) road.Graph.AddVerticesAndEdge(edge);
+                if (savedVertex.Contains(edge.Source) || savedVertex.Contains(edge.Target)) road.Graph.AddVerticesAndEdge(edge);
             }
 
             return road;
@@ -231,9 +244,14 @@ namespace KNNonAir.Domain.Service
 
         public override List<Vertex> SearchKNN(int k)
         {
-            InitializeQuery();
+            int regionId = -1;
 
-            int regionId = VQTree.searchRegion(QueryPoint);
+            while (regionId == -1)
+            {
+                InitializeQuery();
+                regionId = VQTree.searchRegion(QueryPoint);
+            }
+
             double upperBound = GetUpperBound(regionId, k);
 
             Queue<Region> cList = new Queue<Region>();
@@ -254,22 +272,28 @@ namespace KNNonAir.Domain.Service
                 Tuning.Add(region);
                 End = region.Id;
 
-                if (region.Id == regionId)
+                graph.AddGraph(region.Road);
+                UpdateVisitGraph(graph);
+
+                if (graph.Graph.Vertices.Contains(QueryPoint))
                 {
-                    graph.AddGraph(region.Road);
-                    UpdateVisitGraph(graph);
-                    if (region.Id >= regionId) upperBound = UpdateUpperBound(QueryPoint, k, upperBound);
-                    graph = PruneGraphVertices(QueryPoint, upperBound, k);
-                }
-                else
-                {
-                    UpdateVisitGraph(region.Road);
-                    graph.AddGraph(PruneRegionVertices(region, QueryPoint, upperBound, k));
+                    upperBound = UpdateUpperBound(k, upperBound);
+                    if (upperBound > 0) graph = PruneGraphVertices(upperBound, k);
                 }
             }
 
             UpdateVisitGraph(graph);
             return GetKNN(QueryPoint, k);
+        }
+
+        public override void Evaluate()
+        {
+            base.Evaluate();
+
+            for (int i = Position; i < Regions.Count; i++)
+            {
+                Overflow.Add(Regions[i]);
+            }
         }
     }
 }

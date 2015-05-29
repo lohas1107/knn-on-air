@@ -8,7 +8,7 @@ using QuickGraph;
 namespace KNNonAir.Domain.Service
 {
     [Serializable]
-    class ShortcutNetwork : ISerializable
+    public class ShortcutNetwork : ISerializable
     {
         public Dictionary<Edge<Vertex>, double> Distances;
         public Dictionary<int, RoadGraph> Shortcut { get; set; }

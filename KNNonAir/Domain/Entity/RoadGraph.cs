@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 namespace KNNonAir.Domain.Entity
 {
     [Serializable]
-    class RoadGraph : ISerializable
+    public class RoadGraph : ISerializable
     {
         private const double ROAD_WIDTH_OFFSET = 0.00001; // about 1 meter
         //private const double FIFTY_METER = 0.0005;

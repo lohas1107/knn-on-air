@@ -6,7 +6,7 @@ using QuickGraph;
 
 namespace KNNonAir.Domain.Service
 {
-    class StrategyPA : Strategy
+    public class AlgorithmPA : Algorithm
     {
         private ShortcutNetwork _shortcutNetwork;
 
@@ -18,7 +18,7 @@ namespace KNNonAir.Domain.Service
         public Dictionary<int, double> PAMin { get; set; }
         public Dictionary<int, double> PAMax { get; set; }
 
-        public StrategyPA(RoadGraph road, List<Vertex> pois, Dictionary<int, Region> regions) : base(road, pois, regions)
+        public AlgorithmPA(RoadGraph road, List<Vertex> pois) : base(road, pois)
         {
             _shortcutNetwork = new ShortcutNetwork();
 
@@ -30,22 +30,30 @@ namespace KNNonAir.Domain.Service
             PAMax = new Dictionary<int, double>();
         }
 
+        public override void Partition(Dictionary<Vertex, VoronoiCell> nvd, int amount)
+        {
+            base.Partition(nvd, amount);
+
+            KdTree kdTree = new KdTree(nvd, amount);
+            Regions = kdTree.Regions;
+        }
+
         public override void GenerateIndex()
         {
             RoadGraph road = new RoadGraph(false);
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
-                road.AddGraph(region.Value.Road);
+                road.AddGraph(region.Road);
             }
             UpdateVisitGraph(road);
 
             Dictionary<int, RoadGraph> shortcutGraph = new Dictionary<int, RoadGraph>();
             Dictionary<Edge<Vertex>, double> distances = new Dictionary<Edge<Vertex>, double>();
 
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
                 RoadGraph shortcut = new RoadGraph(false);
-                List<Vertex> borders = region.Value.BorderPoints;
+                List<Vertex> borders = region.BorderPoints;
                 for (int i = 0; i < borders.Count; i++)
                 {
                     _dijkstra.Compute(borders[i]);
@@ -56,8 +64,8 @@ namespace KNNonAir.Domain.Service
                         distances.Add(edge, _dijkstra.Distances[borders[j]]);
                     }
                 }
-                shortcutGraph.Add(region.Key, shortcut);
-                _shortcutNetwork.RegionBorders.Add(region.Key, region.Value.BorderPoints);
+                shortcutGraph.Add(region.Id, shortcut);
+                _shortcutNetwork.RegionBorders.Add(region.Id, region.BorderPoints);
             }
 
             _shortcutNetwork.Distances = distances;
@@ -67,9 +75,9 @@ namespace KNNonAir.Domain.Service
 
         public override void ComputeTable()
         {
-            foreach (KeyValuePair<int, Region> region in Regions)
+            foreach (Region region in Regions)
             {
-                List<Vertex> vertices = region.Value.Road.Graph.Vertices.ToList();
+                List<Vertex> vertices = region.Road.Graph.Vertices.ToList();
                 vertices = vertices.OrderBy(o => o.Coordinate.Longitude).ToList();
                 double x = vertices.First().Coordinate.Longitude;
                 double width = vertices.Last().Coordinate.Longitude - x;
@@ -78,8 +86,8 @@ namespace KNNonAir.Domain.Service
                 double y = vertices.Last().Coordinate.Latitude;
                 double height = y - vertices.First().Coordinate.Latitude;
 
-                PATableInfo tableInfo = new PATableInfo(region.Value.PoIs.Count, new MBR(x, y, width, height));
-                PATable.Add(region.Key, tableInfo);
+                PATableInfo tableInfo = new PATableInfo(region.PoIs.Count, new MBR(x, y, width, height));
+                PATable.Add(region.Id, tableInfo);
             }
         }
 
@@ -124,22 +132,25 @@ namespace KNNonAir.Domain.Service
                 }
             }
 
-            UpdateVisitGraph();               
-            _dijkstra.Compute(QueryPoint);
-
-            foreach (KeyValuePair<int, List<Vertex>> borders in ShortcutNetwork.RegionBorders)
+            if (PADirect.Graph.Edges.Count() > 0)
             {
-                double min = double.MaxValue;
-                double max = double.MinValue;
+                UpdateVisitGraph();
+                _dijkstra.Compute(QueryPoint);
 
-                foreach (Vertex border in borders.Value)
+                foreach (KeyValuePair<int, List<Vertex>> borders in ShortcutNetwork.RegionBorders)
                 {
-                    if (_dijkstra.Distances[border] < min) min = _dijkstra.Distances[border];
-                    if (_dijkstra.Distances[border] > max) max = _dijkstra.Distances[border];
-                }
+                    double min = double.MaxValue;
+                    double max = double.MinValue;
 
-                PAMin.Add(borders.Key, min);
-                PAMax.Add(borders.Key, max);
+                    foreach (Vertex border in borders.Value)
+                    {
+                        if (_dijkstra.Distances[border] < min) min = _dijkstra.Distances[border];
+                        if (_dijkstra.Distances[border] > max) max = _dijkstra.Distances[border];
+                    }
+
+                    PAMin.Add(borders.Key, min);
+                    PAMax.Add(borders.Key, max);
+                }
             }
         }
 
@@ -152,6 +163,8 @@ namespace KNNonAir.Domain.Service
             else return upperBound;
         }
 
+        public override void Schedule() { }
+        
         public override void InitializeQuery()
         {
             base.InitializeQuery();
@@ -167,6 +180,7 @@ namespace KNNonAir.Domain.Service
         {
             InitializeQuery();
             ComputePAMinMax(k);
+
             double upperBound = 0;
             int poiCount = 0;
             Queue<Region> cList = new Queue<Region>();
@@ -192,13 +206,14 @@ namespace KNNonAir.Domain.Service
                 if (poiCount + temp >= k) break;
             }
 
+            if (PAMin.Count == 0 && PAMax.Count == 0) cList.Enqueue(Regions[0]);
             Start = cList.First().Id;
             End = Start;
 
             while (cList.Count > 0)
             {
                 Region region = cList.Dequeue();
-                if (PAMin[region.Id] > upperBound) continue;
+                if (PAMin.Count() > 0 && PAMin[region.Id] > upperBound) continue;
 
                 Tuning.Add(region);
                 End = region.Id;
@@ -210,17 +225,10 @@ namespace KNNonAir.Domain.Service
                 ShortcutNetwork.Shortcut.Remove(region.Id);
                 PARoadGraph.AddGraph(region.Road);
 
-
                 upperBound = UpdateUpperBoundPA(upperBound, k);
             }
 
-            return GetKNN(QueryPoint, k); ;
-        }
-
-        public override void Evaluate()
-        {
-            base.Evaluate();
-            Overflow.Clear();
+            return GetKNN(QueryPoint, k);
         }
     }
 }
