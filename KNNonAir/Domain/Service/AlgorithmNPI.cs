@@ -9,12 +9,14 @@ namespace KNNonAir.Domain.Service
 {
     public class AlgorithmNPI : Algorithm
     {
+        public int IndexCount { get; set; }
         public List<MBR> Grids { get; set; }
         public Dictionary<int, Tuple<int, double>> CountDiameterTable { get; set; }
         public Dictionary<int, Dictionary<int, Tuple<double, double>>> MinMaxTable { get; set; }
 
         public AlgorithmNPI(RoadGraph road, List<Vertex> pois) : base(road, pois)
         {
+            IndexCount = 0;
             Regions = new List<Region>();
             CountDiameterTable = new Dictionary<int, Tuple<int, double>>();
             MinMaxTable = new Dictionary<int, Dictionary<int, Tuple<double, double>>>();
@@ -29,7 +31,9 @@ namespace KNNonAir.Domain.Service
 
             foreach (MBR grid in Grids)
             {
-                Regions.Add(grid.ToRegion(Road));
+                Region region = grid.ToRegion(Road, PoIs);
+                Regions.Add(region);
+                if (region.Road.Graph.VertexCount > 0) IndexCount++;
             }
 
             Schedule();
@@ -109,7 +113,8 @@ namespace KNNonAir.Domain.Service
             int count = 0;
             double upperBound = 0;
 
-            foreach(KeyValuePair<int, Tuple<double, double>> kvp in MinMaxTable[regionId].OrderBy(i => i.Value.Item1))
+            Dictionary<int, Tuple<double, double>> minmax = MinMaxTable[regionId].OrderBy(i => i.Value.Item1).ToDictionary(i=>i.Key, i=>i.Value);
+            foreach (KeyValuePair<int, Tuple<double, double>> kvp in minmax)
             {
                 count += CountDiameterTable[kvp.Key].Item1;
                 double tempUB = CountDiameterTable[regionId].Item2 + CountDiameterTable[kvp.Key].Item2 + MinMaxTable[regionId][kvp.Key].Item2;

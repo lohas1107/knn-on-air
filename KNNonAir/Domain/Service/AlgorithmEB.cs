@@ -51,8 +51,8 @@ namespace KNNonAir.Domain.Service
                 foreach (Vertex borderPoint in region.BorderPoints)
                 {
                     if (!borderPoints.Contains(borderPoint)) borderPoints.Add(borderPoint);
-                    mbr.AddVertices(region.Road.Graph.Vertices);
                 }
+                mbr.AddVertices(region.Road.Graph.Vertices);
             }
 
             VQTree = new VQTree(borderPoints, mbr);
@@ -137,6 +137,8 @@ namespace KNNonAir.Domain.Service
 
         private double GetUpperBound(int regionId, int k)
         {
+            if (MaxCountTable.Count() == 0 && MinTable.Count() == 0) return 0;
+
             double ub = MaxCountTable[regionId].Item2;
             int count = 0;
             List<double> minList = new List<double>();
@@ -276,7 +278,7 @@ namespace KNNonAir.Domain.Service
                 if (graph.Graph.Vertices.Contains(QueryPoint))
                 {
                     upperBound = UpdateUpperBound(k, upperBound);
-                    graph = PruneGraphVertices(upperBound, k);
+                    if (upperBound > 0) graph = PruneGraphVertices(upperBound, k);
                 }
             }
 

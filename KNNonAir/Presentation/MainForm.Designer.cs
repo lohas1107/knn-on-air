@@ -43,10 +43,12 @@
             this.readFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.addRoadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addRoadsPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNPITableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileToolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.saveRoadsAndPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveNVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveNPITableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,8 +64,6 @@
             this.quadTreeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tableToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.addRoadsPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveRoadsAndPoIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gmapStatusStrip.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -232,35 +232,42 @@
             // addRoadsToolStripMenuItem
             // 
             this.addRoadsToolStripMenuItem.Name = "addRoadsToolStripMenuItem";
-            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.addRoadsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.addRoadsToolStripMenuItem.Text = "Add Roads";
             this.addRoadsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsToolStripMenuItem);
             // 
             // addPoIsToolStripMenuItem
             // 
             this.addPoIsToolStripMenuItem.Name = "addPoIsToolStripMenuItem";
-            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.addPoIsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.addPoIsToolStripMenuItem.Text = "Add PoIs";
             this.addPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddPoIToolStripMenuItem);
+            // 
+            // addRoadsPoIsToolStripMenuItem
+            // 
+            this.addRoadsPoIsToolStripMenuItem.Name = "addRoadsPoIsToolStripMenuItem";
+            this.addRoadsPoIsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.addRoadsPoIsToolStripMenuItem.Text = "Add Roads and PoIs";
+            this.addRoadsPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsPoIsToolStripMenuItem);
             // 
             // addNVDToolStripMenuItem
             // 
             this.addNVDToolStripMenuItem.Name = "addNVDToolStripMenuItem";
-            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.addNVDToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.addNVDToolStripMenuItem.Text = "Add NVD";
             this.addNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNVDToolStripMenuItem);
             // 
             // addEBTableToolStripMenuItem
             // 
             this.addEBTableToolStripMenuItem.Name = "addEBTableToolStripMenuItem";
-            this.addEBTableToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.addEBTableToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.addEBTableToolStripMenuItem.Text = "Add EB Table";
             this.addEBTableToolStripMenuItem.Click += new System.EventHandler(this.ClickAddEBTableToolStripMenuItem);
             // 
             // addNPITableToolStripMenuItem
             // 
             this.addNPITableToolStripMenuItem.Name = "addNPITableToolStripMenuItem";
-            this.addNPITableToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.addNPITableToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.addNPITableToolStripMenuItem.Text = "Add NPI Table";
             this.addNPITableToolStripMenuItem.Click += new System.EventHandler(this.ClickAddNPITableToolStripMenuItem);
             // 
@@ -278,24 +285,31 @@
             this.saveFileToolStripSplitButton.Size = new System.Drawing.Size(32, 22);
             this.saveFileToolStripSplitButton.ToolTipText = "Save File";
             // 
+            // saveRoadsAndPoIsToolStripMenuItem
+            // 
+            this.saveRoadsAndPoIsToolStripMenuItem.Name = "saveRoadsAndPoIsToolStripMenuItem";
+            this.saveRoadsAndPoIsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.saveRoadsAndPoIsToolStripMenuItem.Text = "Save Roads and PoIs";
+            this.saveRoadsAndPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveRoadsAndPoIsToolStripMenuItem);
+            // 
             // saveNVDToolStripMenuItem
             // 
             this.saveNVDToolStripMenuItem.Name = "saveNVDToolStripMenuItem";
-            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.saveNVDToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.saveNVDToolStripMenuItem.Text = "Save NVD";
             this.saveNVDToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNVDToolStripMenuItem);
             // 
             // saveEBTableToolStripMenuItem
             // 
             this.saveEBTableToolStripMenuItem.Name = "saveEBTableToolStripMenuItem";
-            this.saveEBTableToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.saveEBTableToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.saveEBTableToolStripMenuItem.Text = "Save EB Table";
             this.saveEBTableToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveEBTableToolStripMenuItem);
             // 
             // saveNPITableToolStripMenuItem
             // 
             this.saveNPITableToolStripMenuItem.Name = "saveNPITableToolStripMenuItem";
-            this.saveNPITableToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.saveNPITableToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.saveNPITableToolStripMenuItem.Text = "Save NPI Table";
             this.saveNPITableToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveNPITableToolStripMenuItem);
             // 
@@ -320,7 +334,7 @@
             "PA",
             "NPI"});
             this.algorithmToolStripComboBox.Name = "algorithmToolStripComboBox";
-            this.algorithmToolStripComboBox.Size = new System.Drawing.Size(43, 23);
+            this.algorithmToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.algorithmToolStripComboBox.Text = "EB";
             this.algorithmToolStripComboBox.ToolTipText = "algorithms";
             this.algorithmToolStripComboBox.TextChanged += new System.EventHandler(this.AlgorithmToolStripComboBoxTextChanged);
@@ -329,6 +343,8 @@
             // 
             this.partitionToolStripComboBox.AutoSize = false;
             this.partitionToolStripComboBox.Items.AddRange(new object[] {
+            "1",
+            "4",
             "8",
             "16",
             "32",
@@ -336,7 +352,7 @@
             "128",
             "256"});
             this.partitionToolStripComboBox.Name = "partitionToolStripComboBox";
-            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 23);
+            this.partitionToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.partitionToolStripComboBox.Text = "16";
             this.partitionToolStripComboBox.ToolTipText = "regions";
             // 
@@ -353,7 +369,7 @@
             "896",
             "1024"});
             this.packetToolStripComboBox.Name = "packetToolStripComboBox";
-            this.packetToolStripComboBox.Size = new System.Drawing.Size(50, 23);
+            this.packetToolStripComboBox.Size = new System.Drawing.Size(50, 24);
             this.packetToolStripComboBox.Text = "128";
             this.packetToolStripComboBox.ToolTipText = "packet size";
             // 
@@ -372,7 +388,7 @@
             "90",
             "100"});
             this.kToolStripComboBox.Name = "kToolStripComboBox";
-            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 23);
+            this.kToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.kToolStripComboBox.Text = "10";
             this.kToolStripComboBox.ToolTipText = "k";
             // 
@@ -388,7 +404,7 @@
             this.searchToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(278, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(164, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(133, 25);
             this.actionToolStrip.TabIndex = 2;
             // 
             // nvdToolStripButton
@@ -448,20 +464,6 @@
             this.searchToolStripButton.Text = "EB Search";
             this.searchToolStripButton.ToolTipText = "Search KNN";
             this.searchToolStripButton.Click += new System.EventHandler(this.ClickSearchToolStripButton);
-            // 
-            // addRoadsPoIsToolStripMenuItem
-            // 
-            this.addRoadsPoIsToolStripMenuItem.Name = "addRoadsPoIsToolStripMenuItem";
-            this.addRoadsPoIsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.addRoadsPoIsToolStripMenuItem.Text = "Add Roads and PoIs";
-            this.addRoadsPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickAddRoadsPoIsToolStripMenuItem);
-            // 
-            // saveRoadsAndPoIsToolStripMenuItem
-            // 
-            this.saveRoadsAndPoIsToolStripMenuItem.Name = "saveRoadsAndPoIsToolStripMenuItem";
-            this.saveRoadsAndPoIsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.saveRoadsAndPoIsToolStripMenuItem.Text = "Save Roads and PoIs";
-            this.saveRoadsAndPoIsToolStripMenuItem.Click += new System.EventHandler(this.ClickSaveRoadsAndPoIsToolStripMenuItem);
             // 
             // MainForm
             // 

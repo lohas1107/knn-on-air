@@ -132,22 +132,25 @@ namespace KNNonAir.Domain.Service
                 }
             }
 
-            UpdateVisitGraph();               
-            _dijkstra.Compute(QueryPoint);
-
-            foreach (KeyValuePair<int, List<Vertex>> borders in ShortcutNetwork.RegionBorders)
+            if (PADirect.Graph.Edges.Count() > 0)
             {
-                double min = double.MaxValue;
-                double max = double.MinValue;
+                UpdateVisitGraph();
+                _dijkstra.Compute(QueryPoint);
 
-                foreach (Vertex border in borders.Value)
+                foreach (KeyValuePair<int, List<Vertex>> borders in ShortcutNetwork.RegionBorders)
                 {
-                    if (_dijkstra.Distances[border] < min) min = _dijkstra.Distances[border];
-                    if (_dijkstra.Distances[border] > max) max = _dijkstra.Distances[border];
-                }
+                    double min = double.MaxValue;
+                    double max = double.MinValue;
 
-                PAMin.Add(borders.Key, min);
-                PAMax.Add(borders.Key, max);
+                    foreach (Vertex border in borders.Value)
+                    {
+                        if (_dijkstra.Distances[border] < min) min = _dijkstra.Distances[border];
+                        if (_dijkstra.Distances[border] > max) max = _dijkstra.Distances[border];
+                    }
+
+                    PAMin.Add(borders.Key, min);
+                    PAMax.Add(borders.Key, max);
+                }
             }
         }
 
@@ -177,6 +180,7 @@ namespace KNNonAir.Domain.Service
         {
             InitializeQuery();
             ComputePAMinMax(k);
+
             double upperBound = 0;
             int poiCount = 0;
             Queue<Region> cList = new Queue<Region>();
@@ -202,13 +206,14 @@ namespace KNNonAir.Domain.Service
                 if (poiCount + temp >= k) break;
             }
 
+            if (PAMin.Count == 0 && PAMax.Count == 0) cList.Enqueue(Regions[0]);
             Start = cList.First().Id;
             End = Start;
 
             while (cList.Count > 0)
             {
                 Region region = cList.Dequeue();
-                if (PAMin[region.Id] > upperBound) continue;
+                if (PAMin.Count() > 0 && PAMin[region.Id] > upperBound) continue;
 
                 Tuning.Add(region);
                 End = region.Id;
@@ -220,11 +225,10 @@ namespace KNNonAir.Domain.Service
                 ShortcutNetwork.Shortcut.Remove(region.Id);
                 PARoadGraph.AddGraph(region.Road);
 
-
                 upperBound = UpdateUpperBoundPA(upperBound, k);
             }
 
-            return GetKNN(QueryPoint, k); ;
+            return GetKNN(QueryPoint, k);
         }
     }
 }
