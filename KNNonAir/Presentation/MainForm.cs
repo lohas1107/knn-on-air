@@ -203,6 +203,11 @@ namespace KNNonAir.Presentation
         }
 
         // Parameters
+        private void locationToolStripComboBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void AlgorithmToolStripComboBoxTextChanged(object sender, EventArgs e)
         {
             _model.ChangeAlgorithm(algorithmToolStripComboBox.Text);
