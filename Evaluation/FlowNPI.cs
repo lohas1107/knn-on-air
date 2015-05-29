@@ -44,17 +44,13 @@ namespace Evaluation
             TUNING_SIZE = _model.GetSize(_model.NPI.Tuning, PACKET_SIZE);
             LATENCY_SIZE = _model.GetSize(_model.NPI.Latency, PACKET_SIZE);
 
-            int slot = 0;
-            if (_model.NPI.End < _model.NPI.Start) slot = _model.NPI.End + REGION_NUMBER - _model.NPI.Start + 1;
-            else slot = _model.NPI.End - _model.NPI.Start + 1;
-
             Tuning.Add(INDEX_SIZE + TABLE_SIZE + TUNING_SIZE);
-            Latency.Add((INDEX_SIZE + TABLE_SIZE) * slot + LATENCY_SIZE); 
+            Latency.Add((INDEX_SIZE + TABLE_SIZE) * _model.NPI.LatencySlot + LATENCY_SIZE); 
         }
 
         public override void OutputResult(int frequency)
         {
-            BROCAST_LENGTH = (INDEX_SIZE + TABLE_SIZE) * REGION_NUMBER + REGIONS_SIZE;
+            BROCAST_LENGTH = (INDEX_SIZE + TABLE_SIZE) * _model.NPI.IndexCount + REGIONS_SIZE;
 
             base.OutputResult(frequency);
         }

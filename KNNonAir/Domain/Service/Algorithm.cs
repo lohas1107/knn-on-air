@@ -22,6 +22,7 @@ namespace KNNonAir.Domain.Service
         public List<Region> Tuning { get; set; }
         public List<Region> Latency { get; set; }
         public List<Region> Overflow { get; set; }
+        public int LatencySlot { get; set; }
 
         public Algorithm() { }
 
@@ -36,6 +37,8 @@ namespace KNNonAir.Domain.Service
             Latency = new List<Region>();
             Overflow = new List<Region>();
             Tuning = new List<Region>();
+
+            LatencySlot = 0;
         }
 
         public virtual void UpdateVisitGraph(RoadGraph road)
@@ -66,6 +69,7 @@ namespace KNNonAir.Domain.Service
             Latency.Clear();
             Tuning.Clear();
             UpdateVisitGraph(Road);
+            LatencySlot = 0;
         }
 
         public List<Vertex> GetKNN(Vertex queryPoint, int k)
@@ -93,10 +97,18 @@ namespace KNNonAir.Domain.Service
             int start = Start;
             while (start % Regions.Count != End)
             {
-                Latency.Add(Regions[start % Regions.Count]);
+                if (Regions[start % Regions.Count].Road.Graph.VertexCount > 0)
+                {
+                    Latency.Add(Regions[start % Regions.Count]);
+                    LatencySlot++;
+                }
                 start++;
             }
-            Latency.Add(Regions[End]);
+            if (Regions[start % Regions.Count].Road.Graph.VertexCount > 0)
+            {
+                Latency.Add(Regions[start % Regions.Count]);
+                LatencySlot++;
+            }
         }
     }
 }
