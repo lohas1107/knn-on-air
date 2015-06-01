@@ -13,6 +13,15 @@ namespace KNNonAir.Presentation
 {
     public partial class MainForm : Form
     {
+        private PointLatLng GU = new PointLatLng(13.45, 144.783333);
+        private PointLatLng NV = new PointLatLng(38.5, -117);
+        private PointLatLng WA = new PointLatLng(47.16, -120.525);
+        private PointLatLng MS = new PointLatLng(32.565, -90.055);
+        private PointLatLng FL = new PointLatLng(27.65, -83.43);
+        private PointLatLng NC = new PointLatLng(34.925, -79.735);
+        private PointLatLng TX = new PointLatLng(30.9, -99.845);
+        private PointLatLng CA = new PointLatLng(37.16, -119.53);
+
         private Model _model;
         private PresentationModel _presentationModel;
         private GMapOverlay _polyOverlay;
@@ -24,9 +33,7 @@ namespace KNNonAir.Presentation
         public MainForm()
         {
             InitializeComponent();
-
-            PointLatLng GUAM = new PointLatLng(13.45, 144.783333);
-            InitializeGMap(GUAM, 11);
+            InitializeGMap(GU, 11);
 
             _model = new Model();
             _presentationModel = new PresentationModel(_model);
@@ -205,7 +212,14 @@ namespace KNNonAir.Presentation
         // Parameters
         private void locationToolStripComboBox_TextChanged(object sender, EventArgs e)
         {
-
+            if (locationToolStripComboBox.Text == "GU") InitializeGMap(GU, 11);
+            else if (locationToolStripComboBox.Text == "NV") InitializeGMap(NV, 7);
+            else if (locationToolStripComboBox.Text == "WA") InitializeGMap(WA, 7);
+            else if (locationToolStripComboBox.Text == "MS") InitializeGMap(MS, 7);
+            else if (locationToolStripComboBox.Text == "FL") InitializeGMap(FL, 7);
+            else if (locationToolStripComboBox.Text == "NC") InitializeGMap(NC, 7);
+            else if (locationToolStripComboBox.Text == "TX") InitializeGMap(TX, 7);
+            else if (locationToolStripComboBox.Text == "CA") InitializeGMap(CA, 7);
         }
 
         private void AlgorithmToolStripComboBoxTextChanged(object sender, EventArgs e)
