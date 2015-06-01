@@ -53,6 +53,7 @@
             this.saveEBTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveNPITableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.parameterToolStrip = new System.Windows.Forms.ToolStrip();
+            this.locationToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.algorithmToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.partitionToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.packetToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -317,14 +318,34 @@
             // 
             this.parameterToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.parameterToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.locationToolStripComboBox,
             this.algorithmToolStripComboBox,
             this.partitionToolStripComboBox,
             this.packetToolStripComboBox,
             this.kToolStripComboBox});
             this.parameterToolStrip.Location = new System.Drawing.Point(79, 0);
             this.parameterToolStrip.Name = "parameterToolStrip";
-            this.parameterToolStrip.Size = new System.Drawing.Size(199, 25);
+            this.parameterToolStrip.Size = new System.Drawing.Size(241, 25);
             this.parameterToolStrip.TabIndex = 1;
+            // 
+            // locationToolStripComboBox
+            // 
+            this.locationToolStripComboBox.AutoSize = false;
+            this.locationToolStripComboBox.DropDownWidth = 40;
+            this.locationToolStripComboBox.Items.AddRange(new object[] {
+            "GU",
+            "NV",
+            "WA",
+            "MS",
+            "FL",
+            "NC",
+            "TX",
+            "CA"});
+            this.locationToolStripComboBox.Name = "locationToolStripComboBox";
+            this.locationToolStripComboBox.Size = new System.Drawing.Size(40, 24);
+            this.locationToolStripComboBox.Text = "GU";
+            this.locationToolStripComboBox.ToolTipText = "Locations";
+            this.locationToolStripComboBox.TextChanged += new System.EventHandler(this.locationToolStripComboBox_TextChanged);
             // 
             // algorithmToolStripComboBox
             // 
@@ -402,9 +423,9 @@
             this.quadTreeToolStripButton,
             this.tableToolStripButton,
             this.searchToolStripButton});
-            this.actionToolStrip.Location = new System.Drawing.Point(278, 0);
+            this.actionToolStrip.Location = new System.Drawing.Point(320, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(133, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(164, 25);
             this.actionToolStrip.TabIndex = 2;
             // 
             // nvdToolStripButton
@@ -530,6 +551,7 @@
         private System.Windows.Forms.ToolStripMenuItem addNPITableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addRoadsPoIsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveRoadsAndPoIsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripComboBox locationToolStripComboBox;
     }
 }
 
