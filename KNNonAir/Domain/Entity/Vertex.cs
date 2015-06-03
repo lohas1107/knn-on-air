@@ -7,7 +7,7 @@ using KNNonAir.Access;
 namespace KNNonAir.Domain.Entity
 {
     [Serializable]
-    public class Vertex : IComparable<Vertex>, ISerializable
+    public class Vertex : IEquatable<Vertex>, IComparable<Vertex>, ISerializable
     {
         [NonSerialized]
         private Point _point;
@@ -30,19 +30,36 @@ namespace KNNonAir.Domain.Entity
 
         public override int GetHashCode()
         {
-            return Coordinate.GetHashCode();
-        } 
+            unchecked { return (Coordinate.Latitude).GetHashCode() + (Coordinate.Longitude).GetHashCode(); }
+        }
 
-        public override bool Equals(object obj)
+        public static bool operator ==(Vertex v1, Vertex v2)
         {
-            if (obj == null) return false;
-            
-            if (obj is Vertex || obj is InterestPoint || obj is BorderPoint)
+            if (object.ReferenceEquals(v1, v2))
             {
-                var vertex = (Vertex)obj;
-                return (vertex.Coordinate == Coordinate);
+                return true;
             }
-            return false;
+            if (object.ReferenceEquals(v1, null) || object.ReferenceEquals(v2, null))
+            {
+                return false;
+            }
+
+            return v1.Coordinate.Latitude == v2.Coordinate.Latitude && v1.Coordinate.Longitude == v2.Coordinate.Longitude;
+        }
+
+        public static bool operator !=(Vertex v1, Vertex v2)
+        {
+            return !(v1 == v2);
+        }
+
+        public override bool Equals(object other)
+        {
+            return this == (other as Vertex);
+        }
+
+        public bool Equals(Vertex other)
+        {
+            return this == other;
         }
 
         public int CompareTo(Vertex other)

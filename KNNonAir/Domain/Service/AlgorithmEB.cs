@@ -91,7 +91,7 @@ namespace KNNonAir.Domain.Service
 
                     foreach (Vertex poi in toRegion.PoIs)
                     {
-                        if (!_dijkstra.Distances.ContainsKey(poi)) continue;
+                        if (!distances.ContainsKey(toBorder) || !_dijkstra.Distances.ContainsKey(poi)) continue;
                         if (distances[toBorder] + _dijkstra.Distances[poi] < minDistance)
                         {
                             minDistance = distances[toBorder] + _dijkstra.Distances[poi];

@@ -1,6 +1,7 @@
 ﻿using KNNonAir.Domain.Entity;
 using QuickGraph;
 using System.Collections.Generic;
+using System;
 
 namespace KNNonAir.Domain.Service
 {
@@ -12,6 +13,7 @@ namespace KNNonAir.Domain.Service
         private bool _isRepeat;
         private RoadGraph _road;
         private Dictionary<Vertex, Edge<Vertex>> _borderPoints;
+        AdjacencyGraph<Vertex, Edge<Vertex>> _bidirectionRoad;
 
         private event PathNodeHandler FindPathCompleted;
         private event BorderPointHandler FindBorderPointCompleted;
@@ -24,6 +26,7 @@ namespace KNNonAir.Domain.Service
             //_pathVertexs = new List<Vertex>();
             _isRepeat = true;
             _borderPoints = new Dictionary<Vertex, Edge<Vertex>>();
+            _bidirectionRoad = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
 
             FindPathCompleted += AddLeaf;
             FindBorderPointCompleted += AddBorderPoint;
@@ -33,14 +36,15 @@ namespace KNNonAir.Domain.Service
         {
             while (_isRepeat)
             {
-                AdjacencyGraph<Vertex, Edge<Vertex>>bidirectionRoad = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
+                _bidirectionRoad.Clear();
+                _bidirectionRoad = new AdjacencyGraph<Vertex, Edge<Vertex>>(false);
                 foreach (Edge<Vertex> edge in _road.Graph.Edges)
                 {
-                    bidirectionRoad.AddVerticesAndEdge(edge);
-                    bidirectionRoad.AddVerticesAndEdge(new Edge<Vertex>(edge.Target, edge.Source));
+                    _bidirectionRoad.AddVerticesAndEdge(edge);
+                    _bidirectionRoad.AddVerticesAndEdge(new Edge<Vertex>(edge.Target, edge.Source));
                 }
 
-                FindPaths(bidirectionRoad);
+                FindPaths(_bidirectionRoad);
                 FindBorderPoint();                
 
                 foreach (KeyValuePair<Vertex, Edge<Vertex>> kvp in _borderPoints)
