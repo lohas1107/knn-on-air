@@ -83,19 +83,12 @@ namespace KNNonAir.Domain.Service
             foreach (Vertex fromBorder in fromRegion.BorderPoints)
             {
                 _dijkstra.Compute(fromBorder);
-                Dictionary<Vertex, double> distances = new Dictionary<Vertex, double>(_dijkstra.Distances);
 
-                foreach (Vertex toBorder in toRegion.BorderPoints)
+                foreach (Vertex poi in toRegion.PoIs)
                 {
-                    _dijkstra.Compute(toBorder);
-
-                    foreach (Vertex poi in toRegion.PoIs)
+                    if (_dijkstra.Distances.ContainsKey(poi) && _dijkstra.Distances[poi] < minDistance)
                     {
-                        if (!distances.ContainsKey(toBorder) || !_dijkstra.Distances.ContainsKey(poi)) continue;
-                        if (distances[toBorder] + _dijkstra.Distances[poi] < minDistance)
-                        {
-                            minDistance = distances[toBorder] + _dijkstra.Distances[poi];
-                        }
+                        minDistance = _dijkstra.Distances[poi];
                     }
                 }
             }
@@ -113,8 +106,7 @@ namespace KNNonAir.Domain.Service
 
                 foreach (Vertex poi in fromRegion.PoIs)
                 {
-                    if (!_dijkstra.Distances.ContainsKey(poi)) continue;
-                    if (_dijkstra.Distances[poi] > maxDistance)
+                    if (_dijkstra.Distances.ContainsKey(poi) && _dijkstra.Distances[poi] > maxDistance)
                     {
                         maxDistance = _dijkstra.Distances[poi];
                     }
