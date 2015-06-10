@@ -127,15 +127,17 @@ namespace KNNonAir.Domain.Service
 
         public override List<Vertex> SearchKNN(int k)
         {
-            InitializeQuery();
-
             int regionId = -1;
-            foreach (MBR mbr in Grids)
+            while (regionId == -1)
             {
-                if (mbr.Contains(QueryPoint))
+                InitializeQuery();
+                foreach (MBR mbr in Grids)
                 {
-                    regionId = mbr.Id;
-                    break;
+                    if (mbr.Contains(QueryPoint))
+                    {
+                        regionId = mbr.Id;
+                        break;
+                    }
                 }
             }
 

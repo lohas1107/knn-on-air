@@ -59,6 +59,7 @@ namespace KNNonAir.Domain.Service
                     _dijkstra.Compute(borders[i]);
                     for (int j = i + 1; j < borders.Count; j++)
                     {
+                        if (!_dijkstra.Distances.ContainsKey(borders[j])) continue;
                         Edge<Vertex> edge = new Edge<Vertex>(borders[i], borders[j]);
                         shortcut.Graph.AddVerticesAndEdge(edge);
                         distances.Add(edge, _dijkstra.Distances[borders[j]]);
@@ -144,6 +145,7 @@ namespace KNNonAir.Domain.Service
 
                     foreach (Vertex border in borders.Value)
                     {
+                        if (!_dijkstra.Distances.ContainsKey(border)) continue;
                         if (_dijkstra.Distances[border] < min) min = _dijkstra.Distances[border];
                         if (_dijkstra.Distances[border] > max) max = _dijkstra.Distances[border];
                     }
