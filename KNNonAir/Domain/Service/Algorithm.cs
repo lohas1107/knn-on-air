@@ -80,6 +80,7 @@ namespace KNNonAir.Domain.Service
         {
             List<Vertex> knnList = new List<Vertex>();
 
+            if (!_dijkstra.Road.Graph.ContainsVertex(queryPoint)) return knnList;
             _dijkstra.Compute(queryPoint);
 
             foreach (KeyValuePair<Vertex, double> kvp in _dijkstra.Distances)
@@ -104,15 +105,15 @@ namespace KNNonAir.Domain.Service
                 if (Regions[start % Regions.Count].Road.Graph.VertexCount > 0)
                 {
                     Latency.Add(Regions[start % Regions.Count]);
-                    LatencySlot++;
                 }
+                LatencySlot++;
                 start++;
             }
             if (Regions[start % Regions.Count].Road.Graph.VertexCount > 0)
             {
                 Latency.Add(Regions[start % Regions.Count]);
-                LatencySlot++;
             }
+            LatencySlot++;
         }
     }
 }

@@ -161,12 +161,11 @@ namespace KNNonAir.Domain.Service
             UpdateVisitGraph();
 
             List<Vertex> knn = GetKNN(QueryPoint, k);
+            if (knn.Count() == 0) return upperBound;
             if (_dijkstra.Distances[knn.Last()] < upperBound) return _dijkstra.Distances[knn.Last()];
             else return upperBound;
         }
 
-        //public override void Schedule() { }
-        
         public override void InitializeQuery()
         {
             base.InitializeQuery();

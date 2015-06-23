@@ -115,8 +115,6 @@ namespace KNNonAir.Domain.Service
 
             return maxDistance;
         }
-
-        //public override void Schedule() { }
         
         public bool CanTune(int id, int regionId, double upperBound)
         {

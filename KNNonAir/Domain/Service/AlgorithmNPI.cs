@@ -102,12 +102,6 @@ namespace KNNonAir.Domain.Service
             return new Tuple<double, double>(min, max);
         }
 
-        //public override void Schedule()
-        //{
-        //    HilbertCurve hilbert = new HilbertCurve();
-        //    Regions = hilbert.OrderByHilbert(Regions);
-        //}
-
         private double GetUpperBound(int regionId, int k)
         {
             int count = 0;
