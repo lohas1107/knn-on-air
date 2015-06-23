@@ -398,6 +398,7 @@
             // 
             this.kToolStripComboBox.AutoSize = false;
             this.kToolStripComboBox.Items.AddRange(new object[] {
+            "1",
             "10",
             "20",
             "30",
@@ -425,7 +426,7 @@
             this.searchToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(320, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(164, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(133, 25);
             this.actionToolStrip.TabIndex = 2;
             // 
             // nvdToolStripButton

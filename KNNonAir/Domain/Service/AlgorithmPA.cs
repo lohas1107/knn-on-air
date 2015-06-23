@@ -35,7 +35,7 @@ namespace KNNonAir.Domain.Service
             base.Partition(nvd, amount);
 
             KdTree kdTree = new KdTree(nvd, amount);
-            Regions = kdTree.Regions;
+            Regions = Schedule(kdTree.Regions);
         }
 
         public override void GenerateIndex()
@@ -165,7 +165,7 @@ namespace KNNonAir.Domain.Service
             else return upperBound;
         }
 
-        public override void Schedule() { }
+        //public override void Schedule() { }
         
         public override void InitializeQuery()
         {
@@ -183,34 +183,48 @@ namespace KNNonAir.Domain.Service
             InitializeQuery();
             ComputePAMinMax(k);
 
-            double upperBound = 0;
+            double upperBound = double.MaxValue;
             int poiCount = 0;
+
             Queue<Region> cList = new Queue<Region>();
 
-            foreach (KeyValuePair<int, double> max in PAMax.OrderBy(o => o.Value))
+            if (k == 1)
             {
-                upperBound = max.Value;
-                poiCount += PATable[max.Key].PoICount - 1;
-                int temp = 0;
-                cList.Clear();
-
                 for (int i = 0; i < Regions.Count; i++)
                 {
-                    int index = (Position + i) % Regions.Count;
-
-                    if (PAMin[index] <= upperBound)
+                    if (PATable.ElementAt(i).Value.BorderMBR.Contains(QueryPoint))
                     {
-                        temp++;
-                        cList.Enqueue(Regions[index]);
+                        cList.Enqueue(Regions[i]);
                     }
                 }
+            }
+            else
+            {
+                foreach (KeyValuePair<int, double> max in PAMax.OrderBy(o => o.Value))
+                {
+                    upperBound = max.Value;
+                    poiCount += PATable[max.Key].PoICount - 1;
+                    int temp = 0;
+                    cList.Clear();
 
-                if (poiCount + temp >= k) break;
+                    for (int i = 0; i < Regions.Count; i++)
+                    {
+                        int index = (Position + i) % Regions.Count;
+
+                        if (PAMin[Regions[index].Id] <= upperBound)
+                        {
+                            temp++;
+                            cList.Enqueue(Regions[index]);
+                        }
+                    }
+
+                    if (poiCount + temp >= k) break;
+                }
             }
 
             if (PAMin.Count == 0 && PAMax.Count == 0) cList.Enqueue(Regions[0]);
-            Start = cList.First().Id;
-            End = Start;
+            Start = Position;
+            End = Regions.IndexOf(cList.First());
 
             while (cList.Count > 0)
             {
@@ -218,7 +232,7 @@ namespace KNNonAir.Domain.Service
                 if (PAMin.Count() > 0 && PAMin[region.Id] > upperBound) continue;
 
                 Tuning.Add(region);
-                End = region.Id;
+                End = Regions.IndexOf(region);
 
                 if (region.Road.Graph.ContainsVertex(QueryPoint))
                 {

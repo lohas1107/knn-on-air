@@ -55,11 +55,15 @@ namespace KNNonAir.Domain.Service
 
         public virtual void Partition(RoadGraph road, int amount) { }
 
+        public virtual List<Region> Schedule(List<Region> regions)
+        {
+            HilbertCurve hilbert = new HilbertCurve();
+            return hilbert.OrderByHilbert(regions);
+        }
+
         public abstract void GenerateIndex();
 
         public abstract void ComputeTable();
-
-        public abstract void Schedule();
 
         public virtual void InitializeQuery()
         {

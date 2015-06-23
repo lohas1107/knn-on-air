@@ -116,7 +116,7 @@ namespace KNNonAir.Domain.Service
             return maxDistance;
         }
 
-        public override void Schedule() { }
+        //public override void Schedule() { }
         
         public bool CanTune(int id, int regionId, double upperBound)
         {
@@ -247,11 +247,18 @@ namespace KNNonAir.Domain.Service
             double upperBound = GetUpperBound(regionId, k);
 
             Queue<Region> cList = new Queue<Region>();
-            for (int i = 0; i < Regions.Count; i++)
-            {
-                if (CanTune(i, regionId, upperBound)) cList.Enqueue(Regions[i]);
-            }
 
+            if (k == 1)
+            {
+                cList.Enqueue(Regions[regionId]);
+            }
+            else
+            {
+                for (int i = 0; i < Regions.Count; i++)
+                {
+                    if (CanTune(i, regionId, upperBound)) cList.Enqueue(Regions[i]);
+                }
+            }
             Start = 0;
             End = Start;
 
