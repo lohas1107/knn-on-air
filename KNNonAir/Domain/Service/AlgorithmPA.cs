@@ -223,7 +223,7 @@ namespace KNNonAir.Domain.Service
 
             if (PAMin.Count == 0 && PAMax.Count == 0) cList.Enqueue(Regions[0]);
             Start = Position;
-            End = Regions.IndexOf(cList.First());
+            if (cList.Count() > 0) End = Regions.IndexOf(cList.First());
 
             while (cList.Count > 0)
             {
