@@ -408,7 +408,12 @@
             "70",
             "80",
             "90",
-            "100"});
+            "100",
+            "150",
+            "200",
+            "250",
+            "300",
+            "1000"});
             this.kToolStripComboBox.Name = "kToolStripComboBox";
             this.kToolStripComboBox.Size = new System.Drawing.Size(43, 24);
             this.kToolStripComboBox.Text = "10";
@@ -426,7 +431,7 @@
             this.searchToolStripButton});
             this.actionToolStrip.Location = new System.Drawing.Point(320, 0);
             this.actionToolStrip.Name = "actionToolStrip";
-            this.actionToolStrip.Size = new System.Drawing.Size(133, 25);
+            this.actionToolStrip.Size = new System.Drawing.Size(164, 25);
             this.actionToolStrip.TabIndex = 2;
             // 
             // nvdToolStripButton
