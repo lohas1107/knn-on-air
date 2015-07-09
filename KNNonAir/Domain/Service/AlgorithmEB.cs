@@ -71,7 +71,7 @@ namespace KNNonAir.Domain.Service
                 }
                 MinTable.Add(from, tableItem);
 
-                Tuple<int, double> maxCount = new Tuple<int, double>(Regions[from].BorderPoints.Count, ComputeMax(Regions[from]));
+                Tuple<int, double> maxCount = new Tuple<int, double>(Regions[from].PoIs.Count, ComputeMax(Regions[from]));
                 MaxCountTable.Add(from, maxCount);
             }            
         }
@@ -132,7 +132,6 @@ namespace KNNonAir.Domain.Service
             double ub = MaxCountTable[regionId].Item2;
             int count = 0;
             List<double> minList = new List<double>();
-            minList.Add(0);
 
             for (int i = 0; i < MaxCountTable.Count; i++)
             {
@@ -146,6 +145,7 @@ namespace KNNonAir.Domain.Service
             while (count + MaxCountTable[regionId].Item1 < k && count < MaxCountTable.Count && minList.Count > 0)
             {
                 count = 0;
+                min = minList.First();
                 for (int i = 0; i < MaxCountTable.Count; i++)
                 {
                     if (CanTune(i, regionId, ub + min)) count++;
@@ -153,28 +153,16 @@ namespace KNNonAir.Domain.Service
                 minList.RemoveAt(0);
             }
 
-            return ub + min;
+            if (count + MaxCountTable[regionId].Item1 < k) return double.MaxValue;
+            else return ub + min;
         }
 
         private double UpdateUpperBound(int k, double upperBound)
         {
-            double newUB = double.MaxValue;
-            int count = 0;
-
-            _dijkstra.Compute(QueryPoint);
-
-            foreach (KeyValuePair<Vertex, double> kvp in _dijkstra.Distances.OrderBy(o => o.Value))
-            {
-                if (PoIs.Contains(kvp.Key) && count < k)
-                {
-                    count++;
-                    newUB = kvp.Value;
-                }
-                else if (count == k && newUB < upperBound) return newUB;
-                else return upperBound;
-            }
-
-            return upperBound;
+            List<Vertex> knn = GetKNN(QueryPoint, k);
+            if (knn.Count() < k) return upperBound;
+            if (_dijkstra.Distances[knn.Last()] < upperBound) return _dijkstra.Distances[knn.Last()];
+            else return upperBound;
         }
 
         //private RoadGraph PruneRegionVertices(Region region, Vertex queryPoint, double upperBound, int k)
@@ -275,7 +263,6 @@ namespace KNNonAir.Domain.Service
                 if (graph.Graph.Vertices.Contains(QueryPoint))
                 {
                     upperBound = UpdateUpperBound(k, upperBound);
-                    if (upperBound > 0) graph = PruneGraphVertices(upperBound, k);
                 }
             }
 
