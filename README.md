@@ -80,6 +80,6 @@ eg. *.bat NPI 範例: 執行檔位置、road_pois 檔案位置、切割區塊數
 
 * start Evaluation.exe WA_road_pois.json 16 NPI WA_16_npitable.json 10 640
 
-實驗結束會出現 Finish!，並產生對應地 txt 實驗結果檔。
+實驗結束會出現 Finish!，並產生對應的 txt 實驗結果檔。
 
 ![](https://dl.dropboxusercontent.com/u/16991848/README/finish.PNG "Finish!")
