@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace KNNonAir.Access
 {
     [Serializable]
-    public class VertexInfo : ISerializable
+    public class VertexInfo : IEquatable<VertexInfo>, ISerializable
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
@@ -27,6 +27,11 @@ namespace KNNonAir.Access
         {
             info.AddValue("Latitude", Latitude);
             info.AddValue("Longitude", Longitude);
+        }
+
+        public bool Equals(VertexInfo other)
+        {
+            return this.Latitude == other.Latitude && this.Longitude == other.Longitude;
         }
     }
 }

@@ -36,7 +36,7 @@ namespace KNNonAir.Domain.Service
                 if (region.Road.Graph.VertexCount > 0) IndexCount++;
             }
 
-            Schedule();
+            Regions = Schedule(Regions);
         }
 
         public override void GenerateIndex()
@@ -102,12 +102,6 @@ namespace KNNonAir.Domain.Service
             return new Tuple<double, double>(min, max);
         }
 
-        public override void Schedule()
-        {
-            HilbertCurve hilbert = new HilbertCurve();
-            Regions = hilbert.OrderByHilbert(Regions);
-        }
-
         private double GetUpperBound(int regionId, int k)
         {
             int count = 0;
@@ -127,15 +121,17 @@ namespace KNNonAir.Domain.Service
 
         public override List<Vertex> SearchKNN(int k)
         {
-            InitializeQuery();
-
             int regionId = -1;
-            foreach (MBR mbr in Grids)
+            while (regionId == -1)
             {
-                if (mbr.Contains(QueryPoint))
+                InitializeQuery();
+                foreach (MBR mbr in Grids)
                 {
-                    regionId = mbr.Id;
-                    break;
+                    if (mbr.Contains(QueryPoint))
+                    {
+                        regionId = mbr.Id;
+                        break;
+                    }
                 }
             }
 
@@ -151,14 +147,15 @@ namespace KNNonAir.Domain.Service
                 }
             }
 
-            Start = Regions.IndexOf(cList.First());
-            End = Regions.IndexOf(cList.Last());
+            Start = Position;
+            End = Regions.IndexOf(cList.First());
 
             RoadGraph graph = new RoadGraph(false);
 
             foreach (Region region in cList)
             {
                 Tuning.Add(region);
+                End = Regions.IndexOf(region);
                 graph.AddGraph(region.Road);
             }
 

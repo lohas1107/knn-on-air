@@ -50,7 +50,7 @@ namespace Evaluation
 
         public override void OutputResult(int frequency)
         {
-            BROCAST_LENGTH = (INDEX_SIZE + TABLE_SIZE) * _model.NPI.IndexCount + REGIONS_SIZE;
+            BROCAST_LENGTH = (INDEX_SIZE + TABLE_SIZE) * REGION_NUMBER + REGIONS_SIZE;
 
             base.OutputResult(frequency);
         }

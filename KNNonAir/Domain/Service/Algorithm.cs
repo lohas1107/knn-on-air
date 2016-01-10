@@ -55,11 +55,15 @@ namespace KNNonAir.Domain.Service
 
         public virtual void Partition(RoadGraph road, int amount) { }
 
+        public virtual List<Region> Schedule(List<Region> regions)
+        {
+            HilbertCurve hilbert = new HilbertCurve();
+            return hilbert.OrderByHilbert(regions);
+        }
+
         public abstract void GenerateIndex();
 
         public abstract void ComputeTable();
-
-        public abstract void Schedule();
 
         public virtual void InitializeQuery()
         {
@@ -76,6 +80,7 @@ namespace KNNonAir.Domain.Service
         {
             List<Vertex> knnList = new List<Vertex>();
 
+            if (!_dijkstra.Road.Graph.ContainsVertex(queryPoint)) return knnList;
             _dijkstra.Compute(queryPoint);
 
             foreach (KeyValuePair<Vertex, double> kvp in _dijkstra.Distances)
@@ -100,15 +105,15 @@ namespace KNNonAir.Domain.Service
                 if (Regions[start % Regions.Count].Road.Graph.VertexCount > 0)
                 {
                     Latency.Add(Regions[start % Regions.Count]);
-                    LatencySlot++;
                 }
+                LatencySlot++;
                 start++;
             }
             if (Regions[start % Regions.Count].Road.Graph.VertexCount > 0)
             {
                 Latency.Add(Regions[start % Regions.Count]);
-                LatencySlot++;
             }
+            LatencySlot++;
         }
     }
 }

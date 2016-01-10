@@ -25,6 +25,7 @@ namespace KNNonAir.Domain.Context
         {
             Road = new RoadGraph(false);
             PoIs = new List<Vertex>();
+            NVD = new Dictionary<Vertex, VoronoiCell>();
         }
 
         public void LoadRoads(string filepath)
@@ -61,6 +62,7 @@ namespace KNNonAir.Domain.Context
         {
             foreach (Vertex poi in PoIs)
             {
+                if (NVD.ContainsKey(poi)) continue;
                 PathTree pathTree = new PathTree(poi, Road);
                 pathTree.GenerateNVC();
                 VoronoiCell nvc = pathTree.FindNVC();

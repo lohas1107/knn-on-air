@@ -27,7 +27,9 @@ namespace KNNonAir.Domain.Service
             if (Edge != null && bidirectionRoad.TryGetEdge(Edge.Source, Edge.Target, out myEdge)) bidirectionRoad.RemoveEdge(myEdge);
             if (Edge != null && bidirectionRoad.TryGetEdge(Edge.Target, Edge.Source, out myEdge)) bidirectionRoad.RemoveEdge(myEdge);
 
-            foreach (Edge<Vertex> edge in bidirectionRoad.OutEdges(Vertex))
+            IEnumerable<Edge<Vertex>> outEdges = new List<Edge<Vertex>>();
+            bidirectionRoad.TryGetOutEdges(Vertex, out outEdges);
+            foreach (Edge<Vertex> edge in outEdges)
             {
                 PathTreeNode child = new PathTreeNode();
                 child.Vertex = edge.Target;
