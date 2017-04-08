@@ -4,7 +4,7 @@ knn-on-air
 
 【Step 1】 設定參數，依序為 `Location` `Algorithm` `Number of Regions` `Packet Size` `Value of K`
 
-![](https://dl.dropboxusercontent.com/u/16991848/README/parameter.PNG "Set Parameter")
+![](https://lh3.googleusercontent.com/WVV4PFEHrqdqWGREIQIhpA7ioTv8GZ-lfWUWMrkMDheGLDTldiek1Ci676FCPNx8IgT_pmvpvR944bCU8tHlfG_69KVcQlm2JJNEUUAHgZPz-1DCZci-ZCFS7fJHbqgFurzGEtbpVaCnGR3bhim9scx3fp1mUL2r_trduInUbjAsJQ2sITvWULDlsHrdnAKfwz2CglPthfV9tahPex3saVENOAjuf1MGOUjTq_uOXDWEnERfsjqRpDj8jcXbFLuwAeMBkRY5JyOdBjoyjIk_FEnKY9ngT8V1Iebqe3a5dXPSs5tWGG0-ZpB-xdhe208MEYfjkuRoFiKQ6n7FqlQwW5aXjzhviStMcmDbd-3QXcJdfytMdLWJp1meqtdlYf6XqqgGdLU-cQ8nvaizHlWg4LtqxDjN56kNz2ISVDzKT7g5VBOgCMp_v-9-w7sTjdF2_BJlDsfXCuqoj6JzAksf4wgRtnx_qc_X-kYPER-l6wRcNsK54yw80n4wOqIwUhA-bOdUxXRDGuMwASGhLYTzaJhvALlj6WQwXtAQB7hTPTMJDn65-sEXyz5X7j0QSiWhaTwTnXVZ60f4z1Q3CsvUa7B78k_f6642o22I4LmKghbHrGZyGSNA=w242-h30-no "Set Parameter")
 
 預設為 GU(關島)、EB (VEB演算法)、16個區塊、128 Bytes、10NN，實驗設定參數如下(排列組合)，
 
